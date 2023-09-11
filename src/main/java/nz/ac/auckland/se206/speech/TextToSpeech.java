@@ -27,7 +27,6 @@ public class TextToSpeech {
     }
 
     final TextToSpeech textToSpeech = new TextToSpeech();
-
     textToSpeech.speak(args);
     textToSpeech.terminate();
   }

@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/K_kBlAWd)
 # SOFTENG 206 - EscAIpe Room
 
 ## To setup OpenAI's API
@@ -6,7 +7,7 @@
 - put inside the credentials that you received from no-reply@digitaledu.ac.nz (put the quotes "")
 
   ```
-  email: "upi123@aucklanduni.ac.nz"
+  email: "UPI@aucklanduni.ac.nz"
   apiKey: "YOUR_KEY"
   ```
   these are your credentials to invoke the OpenAI GPT APIs
@@ -17,11 +18,11 @@
 - put inside the credentials that you received from gradestyle@digitaledu.ac.nz (put the quotes "")
 
   ```
-  email: "upi123@aucklanduni.ac.nz"
-  accessToken: "YOUR_KEY"
+  email: "UPI@aucklanduni.ac.nz"
+  accessToken: “YOUR_KEY”
   ```
 
- these are your credentials to invoke GradeStyle
+ these are your credentials to invoke gradestyle
 
 ## To run the game
 

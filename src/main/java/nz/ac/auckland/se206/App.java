@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import nz.ac.auckland.se206.controllers.RoomController;
+import nz.ac.auckland.se206.speech.TextToSpeech;
 
 /**
  * This is the entry point of the JavaFX application, while you can change this class, it should
@@ -14,13 +16,16 @@ import javafx.stage.Stage;
 public class App extends Application {
 
   private static Scene scene;
+  public static TextToSpeech textToSpeech;
+  public static RoomController mainRoom;
 
   public static void main(final String[] args) {
+    textToSpeech = new TextToSpeech();
     launch();
   }
 
-  public static void setRoot(String fxml) throws IOException {
-    scene.setRoot(loadFxml(fxml));
+  public static void setRoot(SceneManager.AppUI newUI) throws IOException {
+    scene.setRoot(SceneManager.getUI(newUI));
   }
 
   /**
@@ -43,11 +48,16 @@ public class App extends Application {
    */
   @Override
   public void start(final Stage stage) throws IOException {
-    Parent root = loadFxml("room");
-    scene = new Scene(root, 600, 470);
+    SceneManager.addAppUI(SceneManager.AppUI.INTRO, loadFxml("intro"));
+    SceneManager.addAppUI(SceneManager.AppUI.ROOM, loadFxml("room"));
+    SceneManager.addAppUI(SceneManager.AppUI.LOCKPICK, loadFxml("lockPick"));
+    SceneManager.addAppUI(SceneManager.AppUI.CHAT, loadFxml("chat"));
+    SceneManager.addAppUI(SceneManager.AppUI.LOSE, loadFxml("lose"));
+    SceneManager.addAppUI(SceneManager.AppUI.WIN, loadFxml("win"));
+    Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
+    scene = new Scene(root, 960, 640);
     stage.setScene(scene);
     stage.show();
     root.requestFocus();
   }
-
 }

@@ -1,27 +1,30 @@
 package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.GameState;
+import nz.ac.auckland.se206.GptInteraction;
+import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
-import nz.ac.auckland.se206.gpt.openai.ChatCompletionRequest;
-import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult;
-import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult.Choice;
 
 /** Controller class for the chat view. */
-public class ChatController {
+public class ChatController extends GptInteraction {
   @FXML private TextArea chatTextArea;
   @FXML private TextField inputText;
   @FXML private Button sendButton;
-
-  private ChatCompletionRequest chatCompletionRequest;
+  @FXML private Label labelTimer;
+  private static String wordList;
+  private static String wordToGuess;
 
   /**
    * Initializes the chat view, loading the riddle.
@@ -30,9 +33,23 @@ public class ChatController {
    */
   @FXML
   public void initialize() throws ApiProxyException {
-    chatCompletionRequest =
-        new ChatCompletionRequest().setN(1).setTemperature(0.2).setTopP(0.5).setMaxTokens(100);
-    runGpt(new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord("vase")));
+    chatTextArea.appendText("\n");
+
+    GameState.chatTimerLabel = labelTimer;
+
+    // Specifying a list of different words for the player to guess
+    wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
+    // Splitting the list into an array of individual entries
+    wordToGuess = wordList.split(",")[(int) (Math.random() * 5)];
+
+    try {
+      runGpt(
+          // runGpt is a method in the parent class, it returns the GPT response for the given
+          // input.
+          new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)), false);
+    } catch (ApiProxyException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -40,30 +57,12 @@ public class ChatController {
    *
    * @param msg the chat message to append
    */
-  private void appendChatMessage(ChatMessage msg) {
-    chatTextArea.appendText(msg.getRole() + ": " + msg.getContent() + "\n\n");
-  }
-
-  /**
-   * Runs the GPT model with a given chat message.
-   *
-   * @param msg the chat message to process
-   * @return the response chat message
-   * @throws ApiProxyException if there is an error communicating with the API proxy
-   */
-  private ChatMessage runGpt(ChatMessage msg) throws ApiProxyException {
-    chatCompletionRequest.addMessage(msg);
-    try {
-      ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
-      Choice result = chatCompletionResult.getChoices().iterator().next();
-      chatCompletionRequest.addMessage(result.getChatMessage());
-      appendChatMessage(result.getChatMessage());
-      return result.getChatMessage();
-    } catch (ApiProxyException e) {
-      // TODO handle exception appropriately
-      e.printStackTrace();
-      return null;
-    }
+  protected void appendChatMessage(String chatMessage, String role) {
+    // GUI changes are added to the GUI queue
+    Platform.runLater(
+        () -> {
+          chatTextArea.appendText("\n" + modifiedNaming.get(role) + " -> " + chatMessage);
+        });
   }
 
   /**
@@ -77,15 +76,20 @@ public class ChatController {
   private void onSendMessage(ActionEvent event) throws ApiProxyException, IOException {
     String message = inputText.getText();
     if (message.trim().isEmpty()) {
+      // If message is empty, don't do anything.
+      return;
+    } else if (message.contains(wordToGuess)) {
+      // If message has contents, pass it to ChatGPT
+      GameState.isLaserActive = false;
+      leaveChat();
       return;
     }
+    appendChatMessage(inputText.getText(), "user");
+    // The following code clears the entry box, writes the most recent user entry, and
+    // then runs chat GPT for the user's entry
     inputText.clear();
     ChatMessage msg = new ChatMessage("user", message);
-    appendChatMessage(msg);
-    ChatMessage lastMsg = runGpt(msg);
-    if (lastMsg.getRole().equals("assistant") && lastMsg.getContent().startsWith("Correct")) {
-      GameState.isRiddleResolved = true;
-    }
+    runGpt(msg, true);
   }
 
   /**
@@ -97,6 +101,12 @@ public class ChatController {
    */
   @FXML
   private void onGoBack(ActionEvent event) throws ApiProxyException, IOException {
-    App.setRoot("room");
+    leaveChat();
+  }
+
+  private void leaveChat() throws IOException {
+    // Challenge timer's GUI timer pointer is changed.
+    ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
+    App.setRoot(SceneManager.AppUI.ROOM);
   }
 }
