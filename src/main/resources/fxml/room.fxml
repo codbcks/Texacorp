@@ -7,22 +7,51 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="room" focusTraversable="true" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="470.0" prefWidth="600.0"
-   xmlns="http://javafx.com/javafx/18"
-   xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.RoomController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.RoomController">
    <children>
-      <ImageView fitHeight="378.0" fitWidth="494.0" layoutX="54.0" layoutY="76.0">
+      <ImageView fx:id="backdrop" fitHeight="640.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/room.png" />
+            <Image url="@../images/room_background.png" />
          </image>
       </ImageView>
-      <Label layoutX="30.0" layoutY="24.0" prefHeight="41.0" prefWidth="549.0" text="SOFTENG 206 - ESCAPE ROOM">
+      <ImageView fx:id="obstacleLaser" fitHeight="640.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../images/LaserHazard.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="evidence" fitHeight="64.0" fitWidth="64.0" layoutX="319.0" layoutY="270.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/evidence.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="itemLockPick" fitHeight="64.0" fitWidth="64.0" layoutX="875.0" layoutY="153.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../images/lockPick.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="itemBoltCutters" fitHeight="64.0" fitWidth="64.0" layoutX="30.0" layoutY="164.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../images/boltCutters.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="labelTimer" layoutX="431.0" layoutY="18.0" text="02:00" textFill="RED">
          <font>
-            <Font name="Arial" size="35.0" />
+            <Font name="Consolas" size="36.0" />
          </font>
       </Label>
-      <Rectangle fx:id="vase" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff" focusTraversable="true" height="41.0" layoutX="340.0" layoutY="193.0" onMouseClicked="#clickVase" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="38.0" />
-      <Rectangle fx:id="window" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff" focusTraversable="true" height="60.0" layoutX="404.0" layoutY="154.0" onMouseClicked="#clickWindow" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="65.0" />
-      <Rectangle fx:id="door" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff" focusTraversable="true" height="98.0" layoutX="137.0" layoutY="205.0" onMouseClicked="#clickDoor" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="65.0" />
+      <Label fx:id="labelDialogueBox" alignment="TOP_LEFT" layoutX="179.0" layoutY="497.0" prefHeight="135.0" prefWidth="728.0" textFill="RED" wrapText="true">
+         <font>
+            <Font name="Consolas" size="18.0" />
+         </font></Label>
+      <Label fx:id="labelCharacterName" alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="14.0" layoutY="496.0" prefHeight="40.0" prefWidth="128.0" textAlignment="RIGHT" textFill="RED">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Label>
+      <Rectangle fx:id="triggerCupboard" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="120.0" layoutX="20.0" layoutY="99.0" onMouseClicked="#clickTriggerCupboard" stroke="TRANSPARENT" strokeType="INSIDE" width="64.0" />
+      <Rectangle fx:id="triggerTimer" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="64.0" layoutX="385.0" layoutY="8.0" onMouseClicked="#clickTriggerTimer" stroke="TRANSPARENT" strokeType="INSIDE" width="190.0" />
+      <Rectangle fx:id="triggerDraws" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="98.0" layoutX="854.0" layoutY="196.0" onMouseClicked="#clickTriggerDraws" stroke="TRANSPARENT" strokeType="INSIDE" width="99.0" />
+      <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="98.0" layoutX="609.0" layoutY="121.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="44.0" />
+      <Rectangle fx:id="triggerDoor" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="223.0" layoutX="672.0" layoutY="1.0" onMouseClicked="#clickTriggerDoor" stroke="TRANSPARENT" strokeType="INSIDE" width="190.0" />
+      <Rectangle fx:id="triggerPodium" arcHeight="5.0" arcWidth="5.0" fill="#9c090900" height="135.0" layoutX="260.0" layoutY="256.0" onMouseClicked="#clickTriggerPodium" stroke="TRANSPARENT" strokeType="INSIDE" width="181.0" />
    </children>
 </Pane>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.IntroController">
+   <children>
+      <Label layoutX="185.0" layoutY="150.0" prefHeight="209.0" prefWidth="589.0" text="TEXACORP made their millions through private space travel, but new intel suggests that they're working on an illegal space weapons project. Break into their headquarters, find files we can use as evidence of their activity, and get out before the building self-destructs." wrapText="true">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnStart" layoutX="449.0" layoutY="359.0" mnemonicParsing="false" onAction="#startGame" text="Start">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+   </children>
+</Pane>

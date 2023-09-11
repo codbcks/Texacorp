@@ -62,7 +62,7 @@ public class OpenAiService {
       this.email = config.getEmail();
       this.apiKey = config.getApiKey();
     } catch (ApiProxyException e) {
-      // TODO handle exception appropriately
+      System.out.println("ERROR: Exception in OpenAiService constructor class!");
       e.printStackTrace();
     }
   }
