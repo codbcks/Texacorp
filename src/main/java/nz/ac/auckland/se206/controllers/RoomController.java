@@ -3,9 +3,12 @@ package nz.ac.auckland.se206.controllers;
 import java.io.IOException;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
@@ -15,6 +18,7 @@ import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.GptInteraction;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
+import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class RoomController extends GptInteraction {
@@ -32,6 +36,10 @@ public class RoomController extends GptInteraction {
   @FXML private Label labelCharacterName; // Character name label
   @FXML private Label labelTimer; // Timer label for room
   @FXML private Label labelDialogueBox; // Dialogue label
+  @FXML private TextArea inputText;
+
+  private static String wordToGuess;
+  private static String wordList;
 
   private final int INVX = 8; // Inventory x pos
   private final int INVY = 8; // Inventory y pos
@@ -43,9 +51,35 @@ public class RoomController extends GptInteraction {
   public void initialize() throws ApiProxyException {
     // Set challenge timer
     ChallengeTimer.setCurrentLabelTimer(labelTimer);
+    wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
+    // Splitting the list into an array of individual entries
+    wordToGuess = wordList.split(",")[(int) (Math.random() * 5)];
+
     // Set label timer
     GameState.roomTimerLabel = labelTimer;
     appendChatMessage("Once I take that folder, I'll only have 2 minutes to escape...", "user");
+
+    inputText.setOnKeyPressed(
+        event -> {
+          if (event.getCode() == KeyCode.ENTER) {
+            String message = inputText.getText().trim();
+            if (!message.isEmpty()) {
+              try {
+                onSendMessage(null);
+              } catch (ApiProxyException | IOException e) {
+                e.printStackTrace();
+              }
+            }
+            event.consume();
+          }
+        });
+  }
+
+  // Generate a riddle using GPT and set the word to guess
+  @FXML
+  public void generateRiddle(MouseEvent event) throws ApiProxyException {
+    String riddle = GptPromptEngineering.getRiddleWithGivenWord(wordToGuess);
+    appendChatMessage(riddle, "assistant");
   }
 
   // Trigger podium activates when the user clicks on the file in the middle of the room
@@ -94,7 +128,7 @@ public class RoomController extends GptInteraction {
       // Prompting ChatGPT to tell the player they have 2 minutes to live
       gptPromptHelper(
           "Say a warning message indicating that the building will self destruct in 2 minutes with"
-              + " under 30 words");
+              + " under 15 words");
     }
   }
 
@@ -103,8 +137,16 @@ public class RoomController extends GptInteraction {
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isLaserActive) {
       // Only switch when the laser is already active
-      ChallengeTimer.setCurrentLabelTimer(GameState.chatTimerLabel);
-      App.setRoot(SceneManager.AppUI.CHAT);
+      ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
+      try {
+        runGpt(
+            // runGpt is a method in the parent class, it returns the GPT response for the given
+            // input.
+            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+            false);
+      } catch (ApiProxyException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -179,6 +221,32 @@ public class RoomController extends GptInteraction {
           "Maybe I could use the sharper pieces to tunnel my way out... Hehe, no.", "user");
       triggerDraws.setVisible(false);
     }
+  }
+
+  /**
+   * Sends a message to the GPT model.
+   *
+   * @param event the action event triggered by the send button
+   * @throws ApiProxyException if there is an error communicating with the API proxy
+   * @throws IOException if there is an I/O error
+   */
+  @FXML
+  private void onSendMessage(ActionEvent event) throws ApiProxyException, IOException {
+    String message = inputText.getText();
+    inputText.clear();
+    if (message == null || message.trim().isEmpty()) {
+      // If message is empty, don't do anything.
+      return;
+    } else if (message.contains(wordToGuess)) {
+      // If message has contents, pass it to ChatGPT
+      GameState.isLaserActive = false;
+      return;
+    }
+    appendChatMessage(inputText.getText(), "user");
+    // The following code clears the entry box, writes the most recent user entry, and
+    // then runs chat GPT for the user's entry
+    ChatMessage msg = new ChatMessage("user", message);
+    runGpt(msg, true);
   }
 
   protected void appendChatMessage(String chatMessage, String role) {

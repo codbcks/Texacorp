@@ -51,11 +51,15 @@ public class App extends Application {
     SceneManager.addAppUI(SceneManager.AppUI.INTRO, loadFxml("intro"));
     SceneManager.addAppUI(SceneManager.AppUI.ROOM, loadFxml("room"));
     SceneManager.addAppUI(SceneManager.AppUI.LOCKPICK, loadFxml("lockPick"));
-    SceneManager.addAppUI(SceneManager.AppUI.CHAT, loadFxml("chat"));
     SceneManager.addAppUI(SceneManager.AppUI.LOSE, loadFxml("lose"));
     SceneManager.addAppUI(SceneManager.AppUI.WIN, loadFxml("win"));
     Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
-    scene = new Scene(root, 960, 640);
+
+    scene = new Scene(root, 1200, 640);
+
+    String cssPath = getClass().getResource("/css/styles.css").toExternalForm();
+    scene.getStylesheets().add(cssPath);
+
     stage.setScene(scene);
     stage.show();
     root.requestFocus();

@@ -8,7 +8,7 @@ public class SceneManager {
   public enum AppUI {
     INTRO,
     ROOM,
-    CHAT,
+    // CHAT,
     LOCKPICK,
     LOSE,
     WIN
