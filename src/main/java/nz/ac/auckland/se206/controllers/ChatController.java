@@ -107,6 +107,6 @@ public class ChatController extends GptInteraction {
   private void leaveChat() throws IOException {
     // Challenge timer's GUI timer pointer is changed.
     ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
-    App.setRoot(SceneManager.AppUI.ROOM);
+    App.setRoot(SceneManager.AppUI.ROOM1);
   }
 }

@@ -20,7 +20,7 @@ public class IntroController {
   @FXML
   private void startGame() throws IOException {
     // This is the entry point for the game
-    App.setRoot(SceneManager.AppUI.ROOM);
+    App.setRoot(SceneManager.AppUI.ROOM1);
   }
 
   @FXML
