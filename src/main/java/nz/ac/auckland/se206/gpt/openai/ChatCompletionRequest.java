@@ -207,12 +207,12 @@ public class ChatCompletionRequest {
     }
   }
 
-/**
- * Sets the messages for the request.
- * @param gptInteractionLog the series of ChatMessages to set
- * @return the current ChatCompletionRequest instance.
- */
-
+  /**
+   * Sets the messages for the request.
+   *
+   * @param gptInteractionLog the series of ChatMessages to set
+   * @return the current ChatCompletionRequest instance.
+   */
   public ChatCompletionRequest setMessages(List<ChatMessage> gptInteractionLog) {
     this.messages.addAll(gptInteractionLog);
     return this;

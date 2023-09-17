@@ -136,7 +136,6 @@ public class RoomController extends GptInteraction {
     }
   }
 
-  // This function moves the player over to the chat GUI
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isLaserActive) {
@@ -245,6 +244,18 @@ public class RoomController extends GptInteraction {
       // If message has contents, pass it to ChatGPT
       GameState.isLaserActive = false;
       return;
+      // If the player asks for a hint, and they have hints remaining, give them a hint
+      // We try to detect the different ways the player might ask for a hint
+    } else if (message.toLowerCase().contains("hint")
+        || message.toLowerCase().contains("another")
+        || message.toLowerCase().contains("help")) {
+      if (GameState.hintsRemaining > 0) {
+        GameState.hintsRemaining--;
+        appendChatMessage(provideHint(), "assistant");
+      } else {
+        appendChatMessage("No more hints!", "assistant");
+        return;
+      }
     }
     appendChatMessage(inputText.getText(), "user");
     // The following code clears the entry box, writes the most recent user entry, and

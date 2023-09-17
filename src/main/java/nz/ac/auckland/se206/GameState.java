@@ -14,5 +14,14 @@ public class GameState {
   /** Points to the relevent room GUI timer label */
   public static Label roomTimerLabel;
 
-  public static int hintsRemaining = 0;
+  /** Number of hints remaining for medium difficulty */
+  public static int hintsRemaining = 5;
+
+  public static Difficulty currentDifficulty = Difficulty.MEDIUM;
+
+  public enum Difficulty {
+    EASY,
+    MEDIUM,
+    HARD
+  }
 }

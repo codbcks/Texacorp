@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import javafx.concurrent.Task;
 import nz.ac.auckland.se206.gpt.ChatMessage;
+import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 import nz.ac.auckland.se206.gpt.openai.ChatCompletionRequest;
 import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult;
@@ -23,11 +24,23 @@ public abstract class GptInteraction {
 
   public GptInteraction() {
     chatCompletionRequest =
-        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(100);
+        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
     modifiedNaming = new HashMap<String, String>();
     // Entering the new names into the HashMap
     modifiedNaming.put("assistant", "TEXACORP AI");
     modifiedNaming.put("user", "YOU");
+    provideBackStory(GptPromptEngineering.initializeBackstory());
+    switch (GameState.currentDifficulty) {
+      case EASY:
+        provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
+        break;
+      case MEDIUM:
+        provideBackStory(GptPromptEngineering.setMediumHintDifficulty());
+        break;
+      case HARD:
+        provideBackStory(GptPromptEngineering.setHardHintDifficulty());
+        break;
+    }
   }
 
   /**
@@ -93,5 +106,36 @@ public abstract class GptInteraction {
     gptInteractionLog.clear();
   }
 
+  /**
+   * Method that provides GPT with its backstory for the game.
+   *
+   * @param story
+   */
+  public void provideBackStory(String story) {
+    addToLog(new ChatMessage("assistant", story));
+  }
+
   protected abstract void appendChatMessage(String chatMessage, String role);
+
+  /**
+   * Method that gets GPT to provide a hint to the player.
+   *
+   * @return the hint
+   */
+  public String provideHint() {
+    try {
+      if (chatCompletionRequest == null) {
+        chatCompletionRequest =
+            new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
+      }
+      chatCompletionRequest.addMessage(new ChatMessage("user", "Can you provide a hint?"));
+      ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+      Choice result = chatCompletionResult.getChoices().iterator().next();
+      return result.getChatMessage().getContent();
+    } catch (ApiProxyException e) {
+      System.out.println("Exception in GptInteraction.provideHint()");
+      e.printStackTrace();
+      return "An error has occurred. Please try again.";
+    }
+  }
 }
