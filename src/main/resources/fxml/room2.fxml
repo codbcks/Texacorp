@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room2Controller">
+   <children>
+      <Rectangle fx:id="moveRoom3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="864.0" layoutY="302.0" onMouseClicked="#clickMoveRoom3" stroke="BLACK" strokeType="INSIDE" width="82.0" />
+      <Rectangle fx:id="moveRoom1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="14.0" layoutY="302.0" onMouseClicked="#clickMoveRoom1" stroke="BLACK" strokeType="INSIDE" width="82.0" />
+   </children>
+</Pane>

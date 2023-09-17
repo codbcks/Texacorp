@@ -17,7 +17,7 @@ import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
-public class RoomController extends GptInteraction {
+public class Room1Controller extends GptInteraction {
   @FXML private ImageView backdrop; // Room graphic
   @FXML private ImageView evidence; // Evidence graphic
   @FXML private ImageView itemLockPick; // Lock-Pick icon
@@ -29,6 +29,7 @@ public class RoomController extends GptInteraction {
   @FXML private Rectangle triggerConsole; // Console trigger
   @FXML private Rectangle triggerDoor; // Door trigger
   @FXML private Rectangle triggerDraws; // Copper coil trigger
+  @FXML private Rectangle moveRoom2;
   @FXML private Label labelCharacterName; // Character name label
   @FXML private Label labelTimer; // Timer label for room
   @FXML private Label labelDialogueBox; // Dialogue label
@@ -69,7 +70,7 @@ public class RoomController extends GptInteraction {
                   try {
                     Thread.sleep(32);
                   } catch (InterruptedException e) {
-                    System.out.println("ERROR: Exception in RoomController.clickTriggerPodium!");
+                    System.out.println("ERROR: Exception in Room1Controller.clickTriggerPodium!");
                     e.printStackTrace();
                   }
                 }
@@ -106,6 +107,11 @@ public class RoomController extends GptInteraction {
       ChallengeTimer.setCurrentLabelTimer(GameState.chatTimerLabel);
       App.setRoot(SceneManager.AppUI.CHAT);
     }
+  }
+
+  @FXML
+  public void clickMoveRoom2(MouseEvent event) throws IOException {
+    App.setRoot(SceneManager.AppUI.ROOM2);
   }
 
   // This function triggers when the player tries to access the door

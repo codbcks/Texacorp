@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.RoomController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room1Controller">
    <children>
       <ImageView fx:id="backdrop" fitHeight="640.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -53,5 +53,6 @@
       <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="98.0" layoutX="609.0" layoutY="121.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="44.0" />
       <Rectangle fx:id="triggerDoor" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="223.0" layoutX="672.0" layoutY="1.0" onMouseClicked="#clickTriggerDoor" stroke="TRANSPARENT" strokeType="INSIDE" width="190.0" />
       <Rectangle fx:id="triggerPodium" arcHeight="5.0" arcWidth="5.0" fill="#9c090900" height="135.0" layoutX="260.0" layoutY="256.0" onMouseClicked="#clickTriggerPodium" stroke="TRANSPARENT" strokeType="INSIDE" width="181.0" />
+      <Rectangle fx:id="moveRoom2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="864.0" layoutY="302.0" onMouseClicked="#clickMoveRoom2" stroke="BLACK" strokeType="INSIDE" width="82.0" />
    </children>
 </Pane>

@@ -7,7 +7,9 @@ import javafx.scene.Parent;
 public class SceneManager {
   public enum AppUI {
     INTRO,
-    ROOM,
+    ROOM1,
+    ROOM2,
+    ROOM3,
     CHAT,
     LOCKPICK,
     LOSE,
