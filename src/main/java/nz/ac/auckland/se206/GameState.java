@@ -14,6 +14,5 @@ public class GameState {
   /** Points to the relevent room GUI timer label */
   public static Label roomTimerLabel;
 
-  /** Points to the relevent chat GUI timer label */
-  public static Label chatTimerLabel;
+  public static int hintsRemaining = 0;
 }

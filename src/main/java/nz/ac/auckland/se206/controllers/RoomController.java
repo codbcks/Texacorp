@@ -49,12 +49,10 @@ public class RoomController extends GptInteraction {
   /** Initializes labelTimer as the scene's dedicated timer GUI representation. */
   @FXML
   public void initialize() throws ApiProxyException {
+    inputText.getStyleClass().add("terminal-text-area");
     // Set challenge timer
     ChallengeTimer.setCurrentLabelTimer(labelTimer);
-    wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
-    // Splitting the list into an array of individual entries
-    wordToGuess = wordList.split(",")[(int) (Math.random() * 5)];
-
+    wordToGuess = getRandomWord();
     // Set label timer
     GameState.roomTimerLabel = labelTimer;
     appendChatMessage("Once I take that folder, I'll only have 2 minutes to escape...", "user");
@@ -73,6 +71,12 @@ public class RoomController extends GptInteraction {
             event.consume();
           }
         });
+  }
+
+  private String getRandomWord() {
+    wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
+    // Splitting the list into an array of individual entries
+    return wordList.split(",")[(int) (Math.random() * 5)];
   }
 
   // Generate a riddle using GPT and set the word to guess

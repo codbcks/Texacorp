@@ -57,9 +57,7 @@ public class App extends Application {
 
     scene = new Scene(root, 1200, 640);
 
-    String cssPath = getClass().getResource("/css/styles.css").toExternalForm();
-    scene.getStylesheets().add(cssPath);
-
+    scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
     stage.setScene(scene);
     stage.show();
     root.requestFocus();

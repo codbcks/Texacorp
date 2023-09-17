@@ -1,0 +1,10 @@
+.terminal-text-area {
+    -fx-background-color: black;
+    -fx-text-fill: green;
+    -fx-control-inner-background: black;
+    -fx-highlight-fill: lime;
+    -fx-highlight-text-fill: black;
+    -fx-cursor-color: green;
+    -fx-border-color: black;
+    -fx-prompt-text-fill: #00FF00;
+}

@@ -1,7 +1,6 @@
 package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -23,6 +22,6 @@ public class FailController {
 
   @FXML
   public void clickExit(ActionEvent event) {
-    Platform.exit();
+    System.exit(0);
   }
 }

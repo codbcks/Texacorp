@@ -60,13 +60,8 @@
       <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="98.0" layoutX="609.0" layoutY="121.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="44.0" />
       <Rectangle fx:id="triggerDoor" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="223.0" layoutX="672.0" layoutY="1.0" onMouseClicked="#clickTriggerDoor" stroke="TRANSPARENT" strokeType="INSIDE" width="190.0" />
       <Rectangle fx:id="triggerPodium" arcHeight="5.0" arcWidth="5.0" fill="#9c090900" height="135.0" layoutX="260.0" layoutY="256.0" onMouseClicked="#clickTriggerPodium" stroke="TRANSPARENT" strokeType="INSIDE" width="181.0" />
-      <ImageView fx:id="evidence1" fitHeight="272.0" fitWidth="238.0" layoutX="960.0" layoutY="397.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/evidence.png" />
-         </image>
-      </ImageView>
       <Button fx:id="sendButton" layoutX="960.0" layoutY="279.0" mnemonicParsing="false" onAction="#onSendMessage" prefHeight="31.0" prefWidth="238.0" text="Send" />
-      <TextArea fx:id="inputText" layoutX="966.0" layoutY="73.0" opacity="0.29" prefHeight="143.0" prefWidth="238.0" promptText="Enter text" style="-fx-background-color: transparent; -fx-text-fill: lime; -fx-font-family: 'Courier New'; -fx-font-size: 14px;" wrapText="true">
+      <TextArea fx:id="inputText" layoutX="966.0" layoutY="73.0" prefHeight="143.0" prefWidth="238.0" promptText="Enter text here" style="-fx-background-color: transparent; -fx-text-fill: lime; -fx-font-family: 'Courier New'; -fx-font-size: 14px;" wrapText="true">
          <font>
             <Font name="Consolas" size="14.0" />
          </font>

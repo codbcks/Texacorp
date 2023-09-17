@@ -1,6 +1,8 @@
 package nz.ac.auckland.se206;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javafx.concurrent.Task;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -10,11 +12,12 @@ import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult.Choice;
 
 public abstract class GptInteraction {
 
-  /* The GPT Interaction class contains code that was previosuly repeated in chat and room.
+  /* The GPT Interaction class contains code that was previously repeated in chat and room.
   This allows any class which extends it to interface with ChatGPT*/
 
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
+  protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
 
   // This HashMap replaces names with contextual equivalents
 
@@ -36,6 +39,7 @@ public abstract class GptInteraction {
    */
   protected void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
 
+    addToLog(msg);
     Task<Void> runGptTask =
         new Task<Void>() {
 
@@ -45,8 +49,7 @@ public abstract class GptInteraction {
             // The following code leverages the appendChatMessage function which is implemeneted in
             // all children of this class
             appendChatMessage("Processing...", "assistant");
-
-            chatCompletionRequest.addMessage(msg);
+            chatCompletionRequest.setMessages(gptInteractionLog);
             try {
               // Try catch for accessing ChatGPT
               ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
@@ -68,10 +71,26 @@ public abstract class GptInteraction {
           }
         };
 
-        // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
+    // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
     Thread runGptThread = new Thread(runGptTask);
 
     runGptThread.start();
+  }
+
+  /**
+   * Adds the chat message to the log of GPT interactions.
+   *
+   * @param msg the chat message to add
+   */
+  protected void addToLog(ChatMessage msg) {
+    gptInteractionLog.add(msg);
+  }
+
+  /**
+   * Clears the GPT interaction log. Initial thinking was that this would help moderate token use.
+   */
+  public void clearLog() {
+    gptInteractionLog.clear();
   }
 
   protected abstract void appendChatMessage(String chatMessage, String role);
