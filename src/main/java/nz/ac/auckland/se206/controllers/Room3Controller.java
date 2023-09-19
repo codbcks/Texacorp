@@ -1,14 +1,17 @@
 package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GptInteraction;
 import nz.ac.auckland.se206.SceneManager;
@@ -16,10 +19,11 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room3Controller extends GptInteraction {
 
-  @FXML private TextField pinTextField;
+  @FXML private Rectangle moveRoom2;
+  @FXML private Label pinTextField;
+  @FXML private Rectangle pinTextFieldBackground;
   @FXML private Rectangle pinPadClose;
   @FXML private Rectangle pinPadOpen;
-  @FXML private Rectangle moveRoom2;
   @FXML private Label pinHintText;
   @FXML private GridPane pinPad;
   @FXML private Button pinDigit0;
@@ -35,7 +39,20 @@ public class Room3Controller extends GptInteraction {
   @FXML private Button pinRemove;
   @FXML private Button pinSubmit;
   @FXML private Pane pinPadUi;
-  private boolean pinPadReady = true;
+
+  private Color pinPadDark;
+  private Color pinPadLight;
+  private Color pinPadCorrectDark;
+  private Color pinPadCorrectLight;
+
+  private String pinPadDefaultMessage = "ENTER PIN TO UNLOCK BATTERY STATION";
+  private String pinPadIncorrectMessage = "PIN INCORRECT!";
+  private String pinPadCorrectMessage = "PIN CORRECT! UNLOCKING...";
+  private String pinPadResolvedMessage = "STATION UNLOCKED";
+
+  private boolean pinPadReady;
+  private Timeline resetPinPad;
+  private Timeline resolvePinPad;
 
   private String[] pinHints = {
     "Item 0", "Item 1", "Item 2", "Item 3", "Item 4",
@@ -55,6 +72,74 @@ public class Room3Controller extends GptInteraction {
             + pinHints[pin.charAt(2) - 48]
             + "\n"
             + pinHints[pin.charAt(3) - 48]);
+
+    pinPadReady = true;
+
+    pinPadDark = new Color(0.125, 0.0, 0.03125, 1.0);
+    pinPadLight = new Color(1.0, 0.0, 0.03125, 1.0);
+    pinPadCorrectDark = new Color(0.0, 0.125, 0.03125, 1.0);
+    pinPadCorrectLight = new Color(0.0, 1.0, 0.03125, 1.0);
+
+    pinTextField.setTextFill(pinPadLight);
+    pinTextFieldBackground.setFill(pinPadDark);
+
+    resetPinPad =
+        new Timeline(
+            new KeyFrame(
+                Duration.seconds(0.0),
+                e -> {
+                  pinTextField.setText(pinPadIncorrectMessage);
+                  pinTextFieldBackground.setFill(pinPadLight);
+                  pinTextField.setTextFill(pinPadDark);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.25),
+                e -> {
+                  pinTextFieldBackground.setFill(pinPadDark);
+                  pinTextField.setTextFill(pinPadLight);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.5),
+                e -> {
+                  pinTextFieldBackground.setFill(pinPadLight);
+                  pinTextField.setTextFill(pinPadDark);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.75),
+                e -> {
+                  pinTextFieldBackground.setFill(pinPadDark);
+                  pinTextField.setTextFill(pinPadLight);
+                }),
+            new KeyFrame(
+                Duration.seconds(1.0),
+                e -> {
+                  pinTextFieldBackground.setFill(pinPadLight);
+                  pinTextField.setTextFill(pinPadDark);
+                }),
+            new KeyFrame(
+                Duration.seconds(1.25),
+                e -> {
+                  pinTextFieldBackground.setFill(pinPadDark);
+                  pinTextField.setTextFill(pinPadLight);
+                  pinTextField.setText(pinPadDefaultMessage);
+                  pinPadReady = true;
+                }));
+
+    resolvePinPad =
+        new Timeline(
+            new KeyFrame(
+                Duration.seconds(0.0),
+                e -> {
+                  pinTextField.setText(pinPadCorrectMessage);
+                  pinTextField.setTextFill(pinPadCorrectLight);
+                  pinTextFieldBackground.setFill(pinPadCorrectDark);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.75),
+                e -> {
+                  pinPadUi.setVisible(false);
+                  pinTextField.setText(pinPadResolvedMessage);
+                }));
   }
 
   @FXML
@@ -74,17 +159,22 @@ public class Room3Controller extends GptInteraction {
 
   @FXML
   public void pinDigitClick(MouseEvent event) throws IOException {
-    if ((pinPadReady) && (pinTextField.getLength() < 4)) {
-      Button eventSource = (Button) event.getSource();
-      String pressedDigit = eventSource.getText();
-      pinTextField.appendText(pressedDigit);
+    Button eventSource = (Button) event.getSource();
+    String pressedDigit = eventSource.getText();
+    if ((pinPadReady) && (pinTextField.getText().length() < 4)) {
+      pinTextField.setText(pinTextField.getText() + pressedDigit);
+    } else if ((pinPadReady) && (pinTextField.getText().length() > 4)) {
+      pinTextField.setText(pressedDigit);
     }
   }
 
   @FXML
   public void pinRemoveClick(MouseEvent event) throws IOException {
-    if ((pinPadReady) && (pinTextField.getLength() > 0)) {
-      pinTextField.setText(pinTextField.getText(0, pinTextField.getLength() - 1));
+    int tempPinLen = pinTextField.getText().length();
+    if ((pinPadReady) && (tempPinLen > 1) && (tempPinLen <= 4)) {
+      pinTextField.setText(pinTextField.getText().substring(0, tempPinLen - 1));
+    } else if ((pinPadReady) && (tempPinLen == 1)) {
+      pinTextField.setText(pinPadDefaultMessage);
     }
   }
 
@@ -93,9 +183,9 @@ public class Room3Controller extends GptInteraction {
     if (pinPadReady) {
       pinPadReady = false;
       if (pinTextField.getText().equals(pin)) {
-        pinTextField.setText("Password Correct! Unlocking...");
+        resolvePinPad.playFromStart();
       } else {
-        pinTextField.setText("Password Incorrect!");
+        resetPinPad.playFromStart();
       }
     }
   }
