@@ -206,4 +206,15 @@ public class ChatCompletionRequest {
       throw new ApiProxyException("Problem calling API: " + e.getMessage());
     }
   }
+
+  /**
+   * Sets the messages for the request.
+   *
+   * @param gptInteractionLog the series of ChatMessages to set
+   * @return the current ChatCompletionRequest instance.
+   */
+  public ChatCompletionRequest setMessages(List<ChatMessage> gptInteractionLog) {
+    this.messages.addAll(gptInteractionLog);
+    return this;
+  }
 }
