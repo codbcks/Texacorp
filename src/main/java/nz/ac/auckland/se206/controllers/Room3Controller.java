@@ -4,6 +4,7 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -39,6 +40,7 @@ public class Room3Controller extends GptInteraction {
   @FXML private Button pinRemove;
   @FXML private Button pinSubmit;
   @FXML private Pane pinPadUi;
+  @FXML private SubScene topBar;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -62,6 +64,9 @@ public class Room3Controller extends GptInteraction {
 
   @FXML
   public void initialize() throws ApiProxyException {
+
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
+
     pin = Integer.toString((int) (Math.random() * 9999));
 
     pinHintText.setText(

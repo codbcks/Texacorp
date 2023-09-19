@@ -13,7 +13,8 @@ public class SceneManager {
     CHAT,
     LOCKPICK,
     LOSE,
-    WIN
+    WIN,
+    TOPBAR
   }
 
   // The HashMap that contains all UI 'roots'

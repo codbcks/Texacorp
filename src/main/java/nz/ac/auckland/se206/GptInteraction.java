@@ -23,7 +23,7 @@ public abstract class GptInteraction {
         new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(100);
     modifiedNaming = new HashMap<String, String>();
     // Entering the new names into the HashMap
-    modifiedNaming.put("assistant", "TEXACORP AI");
+    modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
   }
 
@@ -44,7 +44,7 @@ public abstract class GptInteraction {
 
             // The following code leverages the appendChatMessage function which is implemeneted in
             // all children of this class
-            appendChatMessage("Processing...", "assistant");
+            appendChatMessage("[PROCESSING...]", "assistant");
 
             chatCompletionRequest.addMessage(msg);
             try {
@@ -68,7 +68,7 @@ public abstract class GptInteraction {
           }
         };
 
-        // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
+    // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
     Thread runGptThread = new Thread(runGptTask);
 
     runGptThread.start();
