@@ -42,12 +42,12 @@
             <Font size="27.0" />
          </font>
       </Label>
-      <Button fx:id="btnTwoMin" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="514.0" mnemonicParsing="false" onAction="#setTwo" prefHeight="40.0" prefWidth="85.0" text="2 MINS" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnTwoMin" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="514.0" mnemonicParsing="false" onAction="#setTwo" prefHeight="40.0" prefWidth="85.0" text="2 MINS" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <Button fx:id="btnSixMin" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="514.0" mnemonicParsing="false" onAction="#setSix" prefHeight="40.0" prefWidth="85.0" text="6 MINS" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnSixMin" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="514.0" mnemonicParsing="false" onAction="#setSix" prefHeight="40.0" prefWidth="85.0" text="6 MINS" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
