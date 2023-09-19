@@ -66,5 +66,6 @@
             <Font name="Consolas" size="14.0" />
          </font>
       </TextArea>
+      <Rectangle fx:id="moveRoom2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="864.0" layoutY="302.0" onMouseClicked="#clickMoveRoom2" stroke="BLACK" strokeType="INSIDE" width="82.0" />
    </children>
 </Pane>

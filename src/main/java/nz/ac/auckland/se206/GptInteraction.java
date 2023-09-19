@@ -27,7 +27,7 @@ public abstract class GptInteraction {
         new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
     modifiedNaming = new HashMap<String, String>();
     // Entering the new names into the HashMap
-    modifiedNaming.put("assistant", "TEXACORP AI");
+    modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
     provideBackStory(GptPromptEngineering.initializeBackstory());
     switch (GameState.currentDifficulty) {

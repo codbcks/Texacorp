@@ -6,7 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import nz.ac.auckland.se206.controllers.RoomController;
+import nz.ac.auckland.se206.controllers.Room1Controller;
+import nz.ac.auckland.se206.controllers.Room2Controller;
+import nz.ac.auckland.se206.controllers.Room3Controller;
+import nz.ac.auckland.se206.controllers.TopBarController;
 import nz.ac.auckland.se206.speech.TextToSpeech;
 
 /**
@@ -17,7 +20,10 @@ public class App extends Application {
 
   private static Scene scene;
   public static TextToSpeech textToSpeech;
-  public static RoomController mainRoom;
+  public static Room1Controller room1;
+  public static Room2Controller room2;
+  public static Room3Controller room3;
+  public static TopBarController topBarController;
 
   public static void main(final String[] args) {
     textToSpeech = new TextToSpeech();
@@ -48,11 +54,19 @@ public class App extends Application {
    */
   @Override
   public void start(final Stage stage) throws IOException {
+
+    FXMLLoader topBarLoader = new FXMLLoader(App.class.getResource("/fxml/topBar.fxml"));
+    SceneManager.addAppUI(SceneManager.AppUI.TOPBAR, topBarLoader.load());
+    topBarController = topBarLoader.getController();
+
     SceneManager.addAppUI(SceneManager.AppUI.INTRO, loadFxml("intro"));
-    SceneManager.addAppUI(SceneManager.AppUI.ROOM, loadFxml("room"));
+    SceneManager.addAppUI(SceneManager.AppUI.ROOM1, loadFxml("room1"));
+    SceneManager.addAppUI(SceneManager.AppUI.ROOM2, loadFxml("room2"));
+    SceneManager.addAppUI(SceneManager.AppUI.ROOM3, loadFxml("room3"));
     SceneManager.addAppUI(SceneManager.AppUI.LOCKPICK, loadFxml("lockPick"));
     SceneManager.addAppUI(SceneManager.AppUI.LOSE, loadFxml("lose"));
     SceneManager.addAppUI(SceneManager.AppUI.WIN, loadFxml("win"));
+
     Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
 
     scene = new Scene(root, 1200, 640);

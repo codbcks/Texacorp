@@ -7,10 +7,14 @@ import javafx.scene.Parent;
 public class SceneManager {
   public enum AppUI {
     INTRO,
-    ROOM,
+    ROOM1,
+    ROOM2,
+    ROOM3,
+    CHAT,
     LOCKPICK,
     LOSE,
-    WIN
+    WIN,
+    TOPBAR
   }
 
   // The HashMap that contains all UI 'roots'
