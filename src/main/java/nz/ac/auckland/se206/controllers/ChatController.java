@@ -35,8 +35,6 @@ public class ChatController extends GptInteraction {
   public void initialize() throws ApiProxyException {
     chatTextArea.appendText("\n");
 
-    GameState.chatTimerLabel = labelTimer;
-
     // Specifying a list of different words for the player to guess
     wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
     // Splitting the list into an array of individual entries
