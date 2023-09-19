@@ -89,7 +89,6 @@ public class Room1Controller extends GptInteraction {
       laserCheckThread.start();
 
       obstacleLaser.setVisible(true);
-      ChallengeTimer.startTimer();
       moveToInventory(evidence);
 
       // Prompting ChatGPT to tell the player they have 2 minutes to live
