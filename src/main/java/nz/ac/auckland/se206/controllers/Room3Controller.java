@@ -155,6 +155,7 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
+                  App.topBarController.giveItem(TopBarController.Item.SAW_BATTERY);
                 }));
   }
 
@@ -192,8 +193,6 @@ public class Room3Controller {
     } else if ((pinPadReady) && (tempPinLen == 1)) {
       pinTextField.setText(pinPadDefaultMessage);
     }
-
-    App.topBarController.giveItem(TopBarController.Item.SAW_BATTERY); // DELETE ME!
   }
 
   @FXML
@@ -206,7 +205,5 @@ public class Room3Controller {
         resetPinPad.playFromStart();
       }
     }
-
-    App.topBarController.removeItem(TopBarController.Item.SAW_BATTERY); // DELETE ME!
   }
 }
