@@ -58,6 +58,7 @@ public class App extends Application {
     FXMLLoader topBarLoader = new FXMLLoader(App.class.getResource("/fxml/topBar.fxml"));
     SceneManager.addAppUI(SceneManager.AppUI.TOPBAR, topBarLoader.load());
     topBarController = topBarLoader.getController();
+    SceneManager.addAppUI(SceneManager.AppUI.BOTTOMBAR, loadFxml("bottomBar"));
 
     SceneManager.addAppUI(SceneManager.AppUI.INTRO, loadFxml("intro"));
     SceneManager.addAppUI(SceneManager.AppUI.ROOM1, loadFxml("room1"));

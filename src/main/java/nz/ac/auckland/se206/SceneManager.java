@@ -14,7 +14,8 @@ public class SceneManager {
     LOCKPICK,
     LOSE,
     WIN,
-    TOPBAR
+    TOPBAR,
+    BOTTOMBAR
   }
 
   // The HashMap that contains all UI 'roots'
