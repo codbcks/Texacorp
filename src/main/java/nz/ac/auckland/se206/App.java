@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import nz.ac.auckland.se206.controllers.BottomBarController;
 import nz.ac.auckland.se206.controllers.Room1Controller;
 import nz.ac.auckland.se206.controllers.Room2Controller;
 import nz.ac.auckland.se206.controllers.Room3Controller;
@@ -24,6 +25,7 @@ public class App extends Application {
   public static Room2Controller room2;
   public static Room3Controller room3;
   public static TopBarController topBarController;
+  public static BottomBarController bottomBarController;
 
   public static void main(final String[] args) {
     textToSpeech = new TextToSpeech();
@@ -58,7 +60,10 @@ public class App extends Application {
     FXMLLoader topBarLoader = new FXMLLoader(App.class.getResource("/fxml/topBar.fxml"));
     SceneManager.addAppUI(SceneManager.AppUI.TOPBAR, topBarLoader.load());
     topBarController = topBarLoader.getController();
-    SceneManager.addAppUI(SceneManager.AppUI.BOTTOMBAR, loadFxml("bottomBar"));
+
+    FXMLLoader bottomBarLoader = new FXMLLoader(App.class.getResource("/fxml/bottomBar.fxml"));
+    SceneManager.addAppUI(SceneManager.AppUI.BOTTOMBAR, bottomBarLoader.load());
+    bottomBarController = bottomBarLoader.getController();
 
     SceneManager.addAppUI(SceneManager.AppUI.INTRO, loadFxml("intro"));
     SceneManager.addAppUI(SceneManager.AppUI.ROOM1, loadFxml("room1"));

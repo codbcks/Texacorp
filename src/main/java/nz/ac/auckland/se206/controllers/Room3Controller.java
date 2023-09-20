@@ -65,9 +65,6 @@ public class Room3Controller {
   @FXML
   public void initialize() throws ApiProxyException {
 
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
-
     /* >-------- PIN + PIN PAD CREATION -------< */
 
     /* Generating pseudo-random 4 digit pin */
