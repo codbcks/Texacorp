@@ -133,6 +133,8 @@ public class BottomBarController {
    */
   protected void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
 
+    GameState.isGPTRunning = true;
+
     addToLog(msg);
     Task<Void> runGptTask =
         new Task<Void>() {
@@ -151,6 +153,9 @@ public class BottomBarController {
               chatCompletionRequest.addMessage(result.getChatMessage());
               appendChatMessage(
                   result.getChatMessage().getContent(), result.getChatMessage().getRole());
+
+              GameState.isGPTRunning = false;
+
               if (sayAloud) {
                 // say aloud specifies whether the program should access text to speech or not
                 App.textToSpeech.speak(result.getChatMessage().getContent());
