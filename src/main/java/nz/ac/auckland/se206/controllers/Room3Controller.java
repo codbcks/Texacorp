@@ -16,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
+import nz.ac.auckland.se206.controllers.TopBarController.Item;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room3Controller {
@@ -153,7 +154,8 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
-                  App.topBarController.giveItem(TopBarController.Item.SAW_BATTERY);
+                  ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR))
+                      .giveItem(Item.SAW_BATTERY);
                 }));
   }
 
