@@ -39,19 +39,6 @@ public class BottomBarController {
     modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
 
-    provideBackStory(GptPromptEngineering.initializeBackstory());
-    switch (GameState.currentDifficulty) {
-      case EASY:
-        provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
-        break;
-      case MEDIUM:
-        provideBackStory(GptPromptEngineering.setMediumHintDifficulty());
-        break;
-      case HARD:
-        provideBackStory(GptPromptEngineering.setHardHintDifficulty());
-        break;
-    }
-
     /* Setting the enter button key press */
     inputText.setOnKeyPressed(
         event -> {
@@ -67,6 +54,21 @@ public class BottomBarController {
             event.consume();
           }
         });
+  }
+
+  public void giveBackstory() {
+    provideBackStory(GptPromptEngineering.initializeBackstory());
+    switch (GameState.currentDifficulty) {
+      case EASY:
+        provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
+        break;
+      case MEDIUM:
+        provideBackStory(GptPromptEngineering.setMediumHintDifficulty());
+        break;
+      case HARD:
+        provideBackStory(GptPromptEngineering.setHardHintDifficulty());
+        break;
+    }
   }
 
   /**
