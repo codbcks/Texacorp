@@ -4,13 +4,13 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
@@ -159,7 +159,9 @@ public class Room3Controller {
 
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
-    App.setRoot(SceneManager.AppUI.ROOM2);
+    unsetSubScenes();
+    ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1)).setSubScenes();
+    App.setRoot(SceneManager.AppUI.ROOM1);
   }
 
   @FXML
@@ -191,7 +193,6 @@ public class Room3Controller {
     } else if ((pinPadReady) && (tempPinLen == 1)) {
       pinTextField.setText(pinPadDefaultMessage);
     }
-    setBottomBar();
   }
 
   @FXML
@@ -207,7 +208,14 @@ public class Room3Controller {
   }
 
   @FXML
-  public void setBottomBar() throws IOException {
+  public void setSubScenes() {
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
     bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+  }
+
+  @FXML
+  public void unsetSubScenes() {
+    topBar.setRoot(new Region());
+    bottomBar.setRoot(new Region());
   }
 }

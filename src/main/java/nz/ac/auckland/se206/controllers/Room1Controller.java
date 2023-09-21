@@ -23,8 +23,7 @@ public class Room1Controller {
 
   @FXML
   public void initialize() throws ApiProxyException {
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+    setSubScenes();
 
     wordToGuess = getRandomWord();
   }
@@ -56,9 +55,21 @@ public class Room1Controller {
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
 
-    bottomBar.setRoot(new Region());
-    ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3)).setBottomBar();
+    unsetSubScenes();
+    ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM3);
+  }
+
+  @FXML
+  public void setSubScenes() {
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
+    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+  }
+
+  @FXML
+  public void unsetSubScenes() {
+    topBar.setRoot(new Region());
+    bottomBar.setRoot(new Region());
   }
 
   /* ------- NOTE: This is how we will be animating items into the inventory --------
