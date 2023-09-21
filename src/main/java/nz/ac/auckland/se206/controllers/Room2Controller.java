@@ -33,59 +33,19 @@ public class Room2Controller {
 
     lightsOff =
         new Timeline(
-            new KeyFrame(
-                Duration.seconds(0.0),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                }),
-            new KeyFrame(
-                Duration.seconds(0.25),
-                e -> {
-                  lightOverlay.setOpacity(0);
-                }),
-            new KeyFrame(
-                Duration.seconds(0.5),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                }),
-            new KeyFrame(
-                Duration.seconds(0.75),
-                e -> {
-                  lightOverlay.setOpacity(0);
-                }),
-            new KeyFrame(
-                Duration.seconds(1.0),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                }));
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
 
     lightsOn =
         new Timeline(
-            new KeyFrame(
-                Duration.seconds(0.0),
-                e -> {
-                  lightOverlay.setOpacity(0);
-                }),
-            new KeyFrame(
-                Duration.seconds(0.25),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                }),
-            new KeyFrame(
-                Duration.seconds(0.5),
-                e -> {
-                  lightOverlay.setOpacity(0);
-                }),
-            new KeyFrame(
-                Duration.seconds(0.75),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                }),
-            new KeyFrame(
-                Duration.seconds(1.0),
-                e -> {
-                  lightOverlay.setOpacity(0);
-                }));
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
   }
 
   public void lightsOff() {
@@ -126,7 +86,7 @@ public class Room2Controller {
   @FXML
   public void clickSawBody(MouseEvent event) throws IOException {
     if (GameState.isGPTRunning) {
-      // App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
+      App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
       System.out.println("sawbody collected");
     }
   }

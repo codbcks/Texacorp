@@ -26,6 +26,7 @@ public class Room3Controller {
   @FXML private Rectangle pinTextFieldBackground;
   @FXML private Rectangle pinPadClose;
   @FXML private Rectangle pinPadOpen;
+  @FXML private Rectangle lightOverlay;
   @FXML private Label pinTextField;
   @FXML private Label pinHintText;
   @FXML private GridPane pinPad;
@@ -56,6 +57,8 @@ public class Room3Controller {
   private boolean pinPadReady;
   private Timeline resetPinPad;
   private Timeline resolvePinPad;
+  private Timeline lightsOff;
+  private Timeline lightsOn;
 
   private String[] pinHints = {
     "Item 0", "Item 1", "Item 2", "Item 3", "Item 4",
@@ -157,6 +160,30 @@ public class Room3Controller {
                   ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR))
                       .giveItem(Item.SAW_BATTERY);
                 }));
+
+    lightsOff =
+        new Timeline(
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
+
+    lightsOn =
+        new Timeline(
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+  }
+
+  public void lightsOff() {
+    lightsOff.playFromStart();
+  }
+
+  public void lightsOn() {
+    lightsOn.playFromStart();
   }
 
   @FXML
