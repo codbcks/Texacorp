@@ -19,7 +19,7 @@ public class GameState {
 
   public static boolean isGPTRunning = false;
 
-  public static Difficulty currentDifficulty = Difficulty.MEDIUM;
+  public static Difficulty currentDifficulty;
 
   public enum Difficulty {
     EASY,

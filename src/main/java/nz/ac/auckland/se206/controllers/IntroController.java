@@ -26,6 +26,7 @@ public class IntroController {
     btnEasy.setTextFill(Color.GREEN);
     btnSixMin.setTextFill(Color.GREEN);
     GameState.timeSetting = 360000;
+    GameState.currentDifficulty = GameState.Difficulty.EASY;
   }
 
   @FXML
@@ -33,6 +34,7 @@ public class IntroController {
     // This is the entry point for the game
     App.setRoot(SceneManager.AppUI.ROOM1);
     ChallengeTimer.startTimer();
+    App.bottomBarController.giveBackstory();
   }
 
   @FXML
@@ -40,7 +42,7 @@ public class IntroController {
     btnEasy.setTextFill(Color.GREEN);
     btnMedium.setTextFill(Color.BLACK);
     btnHard.setTextFill(Color.BLACK);
-    // TODO
+    GameState.currentDifficulty = GameState.Difficulty.EASY;
   }
 
   @FXML
@@ -48,7 +50,7 @@ public class IntroController {
     btnEasy.setTextFill(Color.BLACK);
     btnMedium.setTextFill(Color.ORANGE);
     btnHard.setTextFill(Color.BLACK);
-    // TODO
+    GameState.currentDifficulty = GameState.Difficulty.MEDIUM;
   }
 
   @FXML
@@ -56,15 +58,15 @@ public class IntroController {
     btnEasy.setTextFill(Color.BLACK);
     btnMedium.setTextFill(Color.BLACK);
     btnHard.setTextFill(Color.RED);
-    // TODO
+    GameState.currentDifficulty = GameState.Difficulty.HARD;
   }
 
   @FXML
-  private void setTwo() throws IOException {
-    btnSixMin.setTextFill(Color.BLACK);
+  private void setSix() throws IOException {
+    btnSixMin.setTextFill(Color.GREEN);
     btnFourMin.setTextFill(Color.BLACK);
-    btnTwoMin.setTextFill(Color.GREEN);
-    GameState.timeSetting = 120000;
+    btnTwoMin.setTextFill(Color.BLACK);
+    GameState.timeSetting = 360000;
   }
 
   @FXML
@@ -76,10 +78,10 @@ public class IntroController {
   }
 
   @FXML
-  private void setSix() throws IOException {
-    btnSixMin.setTextFill(Color.RED);
+  private void setTwo() throws IOException {
+    btnSixMin.setTextFill(Color.BLACK);
     btnFourMin.setTextFill(Color.BLACK);
-    btnTwoMin.setTextFill(Color.BLACK);
-    GameState.timeSetting = 360000;
+    btnTwoMin.setTextFill(Color.RED);
+    GameState.timeSetting = 120000;
   }
 }
