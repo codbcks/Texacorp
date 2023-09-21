@@ -162,8 +162,8 @@ public class Room3Controller {
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
     unsetSubScenes();
-    ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1)).setSubScenes();
-    App.setRoot(SceneManager.AppUI.ROOM1);
+    ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
+    App.setRoot(SceneManager.AppUI.ROOM2);
   }
 
   @FXML
