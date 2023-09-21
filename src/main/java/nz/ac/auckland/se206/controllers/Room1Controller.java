@@ -4,6 +4,7 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.SubScene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
@@ -54,7 +55,10 @@ public class Room1Controller {
 
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
-    App.setRoot(SceneManager.AppUI.ROOM2);
+
+    bottomBar.setRoot(new Region());
+    ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3)).setBottomBar();
+    App.setRoot(SceneManager.AppUI.ROOM3);
   }
 
   /* ------- NOTE: This is how we will be animating items into the inventory --------

@@ -4,6 +4,7 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -63,7 +64,7 @@ public class Room3Controller {
   private String pin;
 
   @FXML
-  public void initialize() throws ApiProxyException {
+  public void initialize() throws ApiProxyException, IOException {
 
     /* >-------- PIN + PIN PAD CREATION -------< */
 
@@ -190,6 +191,7 @@ public class Room3Controller {
     } else if ((pinPadReady) && (tempPinLen == 1)) {
       pinTextField.setText(pinPadDefaultMessage);
     }
+    setBottomBar();
   }
 
   @FXML
@@ -202,5 +204,10 @@ public class Room3Controller {
         resetPinPad.playFromStart();
       }
     }
+  }
+
+  @FXML
+  public void setBottomBar() throws IOException {
+    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
   }
 }

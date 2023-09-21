@@ -57,19 +57,15 @@ public class App extends Application {
   @Override
   public void start(final Stage stage) throws IOException {
 
-    FXMLLoader topBarLoader = new FXMLLoader(App.class.getResource("/fxml/topBar.fxml"));
-    SceneManager.addAppUI(SceneManager.AppUI.TOPBAR, topBarLoader.load());
-    topBarController = topBarLoader.getController();
-
-    FXMLLoader bottomBarLoader = new FXMLLoader(App.class.getResource("/fxml/bottomBar.fxml"));
-    SceneManager.addAppUI(SceneManager.AppUI.BOTTOMBAR, bottomBarLoader.load());
-    bottomBarController = bottomBarLoader.getController();
+    SceneManager.createAppUi(SceneManager.AppUI.BOTTOMBAR, "bottomBar");
+    SceneManager.createAppUi(SceneManager.AppUI.TOPBAR, "topBar");
 
     SceneManager.addAppUI(SceneManager.AppUI.INTRO, loadFxml("intro"));
     SceneManager.addAppUI(SceneManager.AppUI.ROOM1, loadFxml("room1"));
     SceneManager.addAppUI(SceneManager.AppUI.ROOM2, loadFxml("room2"));
-    SceneManager.addAppUI(SceneManager.AppUI.ROOM3, loadFxml("room3"));
-    SceneManager.addAppUI(SceneManager.AppUI.LOCKPICK, loadFxml("lockPick"));
+
+    SceneManager.createAppUi(SceneManager.AppUI.ROOM3, "room3");
+
     SceneManager.addAppUI(SceneManager.AppUI.LOSE, loadFxml("lose"));
     SceneManager.addAppUI(SceneManager.AppUI.WIN, loadFxml("win"));
 
