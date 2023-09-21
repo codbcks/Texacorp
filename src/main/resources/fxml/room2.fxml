@@ -21,6 +21,7 @@
             <Region />
          </root>
       </SubScene>
+
       <ImageView fx:id="sawBody" layoutX="448.0" layoutY="298.0" onMouseClicked="#clickSawBody">
          <image>
             <Image url="@../images/SAW_BODY.png" />

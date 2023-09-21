@@ -5,7 +5,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 
 public class ChallengeTimer {
-  private static final long TIMELIMIT = 120000;
+  private static long TIMELIMIT;
   private static boolean timerActive = false;
   private static long timePassed = 0;
   private static long startTime;
@@ -17,7 +17,7 @@ public class ChallengeTimer {
     // Initializing variables...
     timerActive = true;
     startTime = System.currentTimeMillis();
-
+    TIMELIMIT = GameState.timeSetting;
     /* Multithreading is used so that the timer task doesn't
     cause the GUI to slow down or freeze.
 

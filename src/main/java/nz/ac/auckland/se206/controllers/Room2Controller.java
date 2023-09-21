@@ -28,6 +28,17 @@ public class Room2Controller {
   private Timeline lightsOff;
   private Timeline lightsOn;
 
+  @FXML private SubScene topBar;
+  @FXML private SubScene bottomBar;
+
+  @FXML
+  public void clickMoveRoom1(MouseEvent event) throws IOException {
+
+    unsetSubScenes();
+    ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1)).setSubScenes();
+    App.setRoot(SceneManager.AppUI.ROOM1);
+  }
+
   @FXML
   public void initialize() throws ApiProxyException {
 
@@ -62,6 +73,23 @@ public class Room2Controller {
     unsetSubScenes();
     ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM1);
+
+  public void clickMoveRoom3(MouseEvent event) throws IOException {
+    unsetSubScenes();
+    ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3)).setSubScenes();
+    App.setRoot(SceneManager.AppUI.ROOM3);
+  }
+
+  @FXML
+  public void setSubScenes() {
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
+    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+  }
+
+  @FXML
+  public void unsetSubScenes() {
+    topBar.setRoot(new Region());
+    bottomBar.setRoot(new Region());
   }
 
   @FXML
