@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.TopBarController">
+   <children>
+      <ImageView fitHeight="80.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/topBarBackground.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="topBarTimer" layoutX="431.0" layoutY="19.0" text="02:00" textFill="RED">
+         <font>
+            <Font name="Consolas" size="36.0" />
+         </font>
+      </Label>
+      <HBox fx:id="inventoryContainer" layoutX="8.0" layoutY="8.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="64.0" prefWidth="280.0" spacing="8.0" />
+   </children>
+</Pane>
