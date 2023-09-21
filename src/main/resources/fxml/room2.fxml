@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.SubScene?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.shape.Rectangle?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room2Controller">
    <children>
-      <ImageView fx:id="sawBody" fitHeight="105.0" fitWidth="105.0" layoutX="403.0" layoutY="268.0" onMouseClicked="#clickSawBody">
+      <Rectangle fx:id="moveRoom3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="864.0" layoutY="302.0" onMouseClicked="#clickMoveRoom3" stroke="BLACK" strokeType="INSIDE" width="82.0" />
+      <Rectangle fx:id="moveRoom1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="14.0" layoutY="302.0" onMouseClicked="#clickMoveRoom1" stroke="BLACK" strokeType="INSIDE" width="82.0" />
+      <SubScene fx:id="topBar" height="80.0" width="960.0">
+         <root>
+            <Region />
+         </root>
+      </SubScene>
+      <SubScene fx:id="bottomBar" height="192.0" layoutY="448.0" width="960.0">
+         <root>
+            <Region />
+         </root>
+      </SubScene>
+      <ImageView fx:id="sawBody" layoutX="448.0" layoutY="298.0" onMouseClicked="#clickSawBody">
          <image>
             <Image url="@../images/SAW_BODY.png" />
          </image>
       </ImageView>
-      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="669.0" layoutX="-14.0" layoutY="-15.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="989.0" />
-      <Rectangle fx:id="moveRoom1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="14.0" layoutY="302.0" onMouseClicked="#clickMoveRoom1" stroke="BLACK" strokeType="INSIDE" width="82.0" />
-      <Rectangle fx:id="moveRoom3" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="864.0" layoutY="302.0" onMouseClicked="#clickMoveRoom3" stroke="BLACK" strokeType="INSIDE" width="82.0" />
    </children>
 </Pane>

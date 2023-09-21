@@ -10,11 +10,13 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
+import nz.ac.auckland.se206.controllers.TopBarController.Item;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room3Controller {
@@ -63,7 +65,7 @@ public class Room3Controller {
   private String pin;
 
   @FXML
-  public void initialize() throws ApiProxyException {
+  public void initialize() throws ApiProxyException, IOException {
 
     /* >-------- PIN + PIN PAD CREATION -------< */
 
@@ -152,12 +154,15 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
-                  App.topBarController.giveItem(TopBarController.Item.SAW_BATTERY);
+                  ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR))
+                      .giveItem(Item.SAW_BATTERY);
                 }));
   }
 
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
+    unsetSubScenes();
+    ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM2);
   }
 
@@ -202,5 +207,17 @@ public class Room3Controller {
         resetPinPad.playFromStart();
       }
     }
+  }
+
+  @FXML
+  public void setSubScenes() {
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
+    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+  }
+
+  @FXML
+  public void unsetSubScenes() {
+    topBar.setRoot(new Region());
+    bottomBar.setRoot(new Region());
   }
 }

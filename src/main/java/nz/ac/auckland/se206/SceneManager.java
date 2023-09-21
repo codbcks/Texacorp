@@ -1,6 +1,8 @@
 package nz.ac.auckland.se206;
 
+import java.io.IOException;
 import java.util.HashMap;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 /** SceneManager holds one instance of each scene using a HashMap */
@@ -11,7 +13,6 @@ public class SceneManager {
     ROOM2,
     ROOM3,
     CHAT,
-    LOCKPICK,
     LOSE,
     WIN,
     TOPBAR,
@@ -21,7 +22,19 @@ public class SceneManager {
   // The HashMap that contains all UI 'roots'
   private static HashMap<AppUI, Parent> sceneMap = new HashMap<>();
 
-  // This method adds a new instance of one of the UIs to the HashMap
+  // The HashMap that contains all UI 'roots'
+  private static HashMap<AppUI, FXMLLoader> loaderMap = new HashMap<>();
+
+  public static void createAppUi(AppUI ui, String fxml) throws IOException {
+    loaderMap.put(ui, new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml")));
+    sceneMap.put(ui, loaderMap.get(ui).load());
+  }
+
+  public static Object getController(AppUI ui) {
+    return loaderMap.get(ui).getController();
+  }
+
+  // OBSELETE, REMOVE
   public static void addAppUI(AppUI ui, Parent root) {
     sceneMap.put(ui, root);
   }

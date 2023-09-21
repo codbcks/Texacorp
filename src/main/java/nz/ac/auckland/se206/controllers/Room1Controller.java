@@ -4,10 +4,9 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.SubScene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import nz.ac.auckland.se206.App;
-import nz.ac.auckland.se206.ChallengeTimer;
-import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
@@ -22,11 +21,9 @@ public class Room1Controller {
   private static String wordToGuess;
   private static String wordList;
 
-  /** Initializes labelTimer as the scene's dedicated timer GUI representation. */
   @FXML
   public void initialize() throws ApiProxyException {
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+    setSubScenes();
 
     wordToGuess = getRandomWord();
   }
@@ -46,7 +43,6 @@ public class Room1Controller {
 
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
     try {
       App.bottomBarController.runGpt(
           // runGpt is a method in the parent class, it returns the GPT response for the input.
@@ -58,7 +54,22 @@ public class Room1Controller {
 
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
+
+    unsetSubScenes();
+    ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM2);
+  }
+
+  @FXML
+  public void setSubScenes() {
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
+    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+  }
+
+  @FXML
+  public void unsetSubScenes() {
+    topBar.setRoot(new Region());
+    bottomBar.setRoot(new Region());
   }
 
   /* ------- NOTE: This is how we will be animating items into the inventory --------

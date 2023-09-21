@@ -17,9 +17,9 @@ public class GameState {
   /** Number of hints remaining for medium difficulty */
   public static int hintsRemaining = 5;
 
-  public static Difficulty currentDifficulty = Difficulty.MEDIUM;
-
   public static boolean isGPTRunning = false;
+
+  public static Difficulty currentDifficulty = Difficulty.MEDIUM;
 
   public enum Difficulty {
     EASY,
