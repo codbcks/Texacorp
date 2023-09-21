@@ -78,4 +78,8 @@ public class App extends Application {
     stage.show();
     root.requestFocus();
   }
+
+  public static Scene getCurrentScene() {
+    return scene;
+  }
 }

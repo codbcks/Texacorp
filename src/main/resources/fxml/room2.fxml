@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.SubScene?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.shape.Rectangle?>
@@ -19,5 +21,12 @@
             <Region />
          </root>
       </SubScene>
+
+      <ImageView fx:id="sawBody" layoutX="448.0" layoutY="298.0" onMouseClicked="#clickSawBody">
+         <image>
+            <Image url="@../images/SAW_BODY.png" />
+         </image>
+      </ImageView>
+      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
    </children>
 </Pane>

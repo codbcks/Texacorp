@@ -174,5 +174,6 @@
           <Region />
         </root>
       </SubScene>
+      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
    </children>
 </Pane>
