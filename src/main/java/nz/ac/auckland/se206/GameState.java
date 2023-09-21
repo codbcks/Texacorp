@@ -24,4 +24,9 @@ public class GameState {
     MEDIUM,
     HARD
   }
+
+  /** Points to the relevent chat GUI timer label */
+  public static Label chatTimerLabel;
+
+  public static int timeSetting;
 }
