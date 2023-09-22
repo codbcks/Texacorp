@@ -89,7 +89,7 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    appendChatMessage(inputText.getText(), "user");
+    appendChatMessage(message, "user");
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
