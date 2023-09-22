@@ -21,6 +21,7 @@ public class Room2Controller {
   @FXML private Rectangle moveRoom3;
   @FXML private Rectangle lightOverlay;
   @FXML private ImageView sawBody;
+  @FXML private ImageView laser;
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -33,19 +34,69 @@ public class Room2Controller {
 
     lightsOff =
         new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
+            new KeyFrame(
+                Duration.seconds(0.0),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  laser.setOpacity(0);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.2),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  laser.setOpacity(1);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.4),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  laser.setOpacity(0);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.6),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  laser.setOpacity(1);
+                }),
+            new KeyFrame(
+                Duration.seconds(1.2),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  laser.setOpacity(0);
+                }));
 
     lightsOn =
         new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+            new KeyFrame(
+                Duration.seconds(0.0),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  laser.setOpacity(1);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.2),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  laser.setOpacity(0);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.4),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  laser.setOpacity(1);
+                }),
+            new KeyFrame(
+                Duration.seconds(0.6),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  laser.setOpacity(0);
+                }),
+            new KeyFrame(
+                Duration.seconds(1.2),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  laser.setOpacity(1);
+                }));
   }
 
   public void lightsOff() {

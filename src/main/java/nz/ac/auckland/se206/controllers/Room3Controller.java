@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -42,6 +43,7 @@ public class Room3Controller {
   @FXML private Button pinDigit9;
   @FXML private Button pinRemove;
   @FXML private Button pinSubmit;
+  @FXML private ImageView battery;
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -159,6 +161,7 @@ public class Room3Controller {
                   pinTextField.setText(pinPadResolvedMessage);
                   ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR))
                       .giveItem(Item.SAW_BATTERY);
+                  battery.setOpacity(0);
                 }));
 
     lightsOff =
@@ -230,6 +233,7 @@ public class Room3Controller {
       pinPadReady = false;
       if (pinTextField.getText().equals(pin)) {
         resolvePinPad.playFromStart();
+
       } else {
         resetPinPad.playFromStart();
       }
