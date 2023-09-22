@@ -25,6 +25,7 @@ public class Room1Controller {
   @FXML private Rectangle triggerConsole;
   @FXML private Rectangle moveRoom2;
   @FXML private Rectangle lightOverlay;
+  @FXML private Rectangle printerPromptTrigger;
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -186,4 +187,11 @@ public class Room1Controller {
     translate.play();
 
   */
+
+  @FXML
+  public void printerPrompt(MouseEvent event) throws ApiProxyException {
+    SceneManager.appendChatMessage(
+        "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw blade.",
+        "user");
+  }
 }

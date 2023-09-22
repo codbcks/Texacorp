@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import nz.ac.auckland.se206.controllers.BottomBarController;
 
 /** SceneManager holds one instance of each scene using a HashMap */
 public class SceneManager {
@@ -42,5 +43,9 @@ public class SceneManager {
   // This method returns the UI instance corrisponding with the requested UI.
   public static Parent getUI(AppUI ui) {
     return sceneMap.get(ui);
+  }
+
+  public static void appendChatMessage(String chatMessage, String role) {
+    ((BottomBarController) getController(AppUI.BOTTOMBAR)).appendChatMessage(chatMessage, role);
   }
 }
