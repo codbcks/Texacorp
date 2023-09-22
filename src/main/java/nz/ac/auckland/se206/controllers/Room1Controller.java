@@ -148,7 +148,6 @@ public class Room1Controller {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
       App.bottomBarController.appendChatMessage("Success!", "user");
-      App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
       hideTerminal();
       GameState.isPasswordObtained = true;
     } else {
