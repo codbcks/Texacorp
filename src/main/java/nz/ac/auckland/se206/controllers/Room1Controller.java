@@ -105,7 +105,6 @@ public class Room1Controller {
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
-      showTerminal();
       try {
         App.bottomBarController.runGpt(
             // runGpt is a method in the parent class, it returns the GPT response for the input.
