@@ -74,6 +74,7 @@ public class Room3Controller {
 
     /* Generating pseudo-random 4 digit pin */
     pin = Integer.toString((int) (Math.random() * 9999));
+    pin = pin + "0000";
 
     /* Setting text relating to 4 objects that can help the player guess the pin */
     pinHintText.setText(
