@@ -118,10 +118,8 @@ public class Room1Controller {
 
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
-    ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
-        .appendChatMessage(
-            "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw"
-                + " blade.",
-            "user");
+    SceneManager.appendChatMessage(
+        "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw blade.",
+        "user");
   }
 }

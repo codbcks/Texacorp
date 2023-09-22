@@ -112,7 +112,7 @@ public class BottomBarController {
    *
    * @param msg the chat message to append
    */
-  protected void appendChatMessage(String chatMessage, String role) {
+  public void appendChatMessage(String chatMessage, String role) {
     // GUI changes are added to the GUI queue
     Platform.runLater(
         () -> {

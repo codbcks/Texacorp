@@ -44,6 +44,9 @@ public class Room3Controller {
   @FXML private Button pinRemove;
   @FXML private Button pinSubmit;
   @FXML private ImageView battery;
+  @FXML private Rectangle shelvesPromptTrigger1;
+  @FXML private Rectangle shelvesPromptTrigger2;
+  @FXML private Rectangle whiteboardPromptTrigger;
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -252,5 +255,18 @@ public class Room3Controller {
   public void unsetSubScenes() {
     topBar.setRoot(new Region());
     bottomBar.setRoot(new Region());
+  }
+
+  @FXML
+  public void shelvesPrompt(MouseEvent event) throws IOException {
+    SceneManager.appendChatMessage("Huh, nothing of use in any of these five shelves...", "user");
+  }
+
+  @FXML
+  public void whiteboardPrompt(MouseEvent event) throws IOException {
+    SceneManager.appendChatMessage(
+        "Oh thank god, the escape drill class forgot to wipe down this whiteboard... Find saw"
+            + " battery... Find saw motor... Create saw blade. Got it.",
+        "user");
   }
 }
