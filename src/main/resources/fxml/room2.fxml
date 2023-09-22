@@ -48,5 +48,7 @@
             <Image url="@../images/arrowLeft.png" />
          </image>
       </ImageView>
+      <Rectangle fx:id="clockPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="29.0" layoutX="289.0" layoutY="113.0" onMouseClicked="#clockPrompt" stroke="TRANSPARENT" strokeType="INSIDE" width="70.0" />
+      <Rectangle fx:id="notesPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="125.0" layoutX="591.0" layoutY="144.0" onMouseClicked="#notesPrompt" stroke="TRANSPARENT" strokeType="INSIDE" width="52.0" />
    </children>
 </Pane>
