@@ -34,6 +34,15 @@ public class IntroController {
     // This is the entry point for the game
     App.setRoot(SceneManager.AppUI.ROOM1);
     ChallengeTimer.startTimer();
+
+    if (GameState.currentDifficulty == GameState.Difficulty.EASY) {
+      ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
+          .removeHintCounter();
+    } else if (GameState.currentDifficulty == GameState.Difficulty.HARD) {
+      ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
+          .setHintCounter(0);
+    }
+
     App.bottomBarController.giveBackstory();
   }
 

@@ -10,6 +10,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
@@ -24,6 +26,7 @@ public class BottomBarController {
   @FXML private TextArea chatTextArea;
   @FXML private Button sendButton;
   @FXML private TextArea inputText;
+  @FXML private ImageView hintCounter;
 
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
@@ -240,5 +243,13 @@ public class BottomBarController {
     App.room1.lightsOn();
     App.room2.lightsOn();
     App.room3.lightsOn();
+  }
+
+  public void removeHintCounter() {
+    hintCounter.setImage(new Image("/images/countHintsUnlimited.png"));
+  }
+
+  public void setHintCounter(int remainingHints) {
+    hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
   }
 }
