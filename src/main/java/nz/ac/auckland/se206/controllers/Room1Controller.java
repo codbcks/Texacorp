@@ -33,7 +33,6 @@ public class Room1Controller {
   private static String wordToGuess;
   private static String wordList;
 
-  /** Initializes labelTimer as the scene's dedicated timer GUI representation. */
   @FXML
   public void initialize() throws ApiProxyException {
     topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
@@ -74,21 +73,28 @@ public class Room1Controller {
 
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
-    if (GameState.isFirstTime) {
-      try {
-        App.bottomBarController.runGpt(
-            // runGpt is a method in the parent class, it returns the GPT response for the input.
-            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
-            false);
-      } catch (ApiProxyException e) {
-        e.printStackTrace();
+    try {
+      App.bottomBarController.runGpt(
+          // runGpt is a method in the parent class, it returns the GPT response for the input.
+          new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)), false);
+    } catch (ApiProxyException e1) {
+      e1.printStackTrace();
+      ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
+      if (GameState.isFirstTime) {
+        try {
+          App.bottomBarController.runGpt(
+              // runGpt is a method in the parent class, it returns the GPT response for the input.
+              new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+              false);
+        } catch (ApiProxyException e2) {
+          e2.printStackTrace();
+        }
+        GameState.isFirstTime = false;
+      } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+        showTerminal();
+      } else {
+        return;
       }
-      GameState.isFirstTime = false;
-    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
-      showTerminal();
-    } else {
-      return;
     }
   }
 
