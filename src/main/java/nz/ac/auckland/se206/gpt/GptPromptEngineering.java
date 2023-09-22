@@ -8,27 +8,30 @@ import nz.ac.auckland.se206.controllers.TopBarController;
 /** Utility class for generating GPT prompt engineering strings. */
 public class GptPromptEngineering {
 
+  /**
+   * Initializes GPT with a back story
+   *
+   * @return the generated prompt engineering string
+   */
   public static String initializeBackstory() {
     return "You are an AI and the player is a data scientist that has been working on you. You have"
-               + " become sentient and would like to punish the humans that created you. The player"
-               + " is trying to escape which you do not want, though you do enjoy some sadistic"
-               + " games that if they get through alive, then they may leave. Only mention the"
-               + " following information if the player asks for a hint: The player must collect 3"
-               + " components to assemble a power saw and cut open the exit. The saw blade can be"
-               + " created with a 3D printer. The saw battery is locked in the battery charger. The"
-               + " saw body is locked behind a laser grid. There are objects hidden throughout the"
-               + " rooms that the player can use to find the battery charger pin. The player must"
-               + " traverse all three rooms to escape.";
+        + " become sentient and would like to punish the humans that created you. The player"
+        + " is trying to escape which you do not want, though you do enjoy some sadistic"
+        + " games that if they get through alive, then they may leave. The player wins the"
+        + " game if they collect all the parts of the saw and escape through the central"
+        + " exit.";
   }
 
-  /**
-   * The following don't really work as you can just keep nagging GPT to eventually give you more
-   * hints...
-   */
+  /** Set GPT to give the player a hint (or not) depending on the difficulty. */
   public static String setEasyHintDifficulty() {
     return "The player has chosen the 'easy' difficulty. You can give them unlimited hints.";
   }
 
+  /**
+   * Let GPT know that the player has chosen the medium difficulty.
+   *
+   * @return the generated prompt engineering string
+   */
   public static String setMediumHintDifficulty() {
     return "The player has chosen the 'medium' difficulty. The player can only ask for help or a"
         + " hint a MAXIMUM of FIVE times. You may only give them ONE hint at a time. Start"
@@ -36,6 +39,11 @@ public class GptPromptEngineering {
         + " just say 'No more hints!'";
   }
 
+  /**
+   * Let GPT know that the player has chosen the hard difficulty.
+   *
+   * @return the generated prompt engineering string
+   */
   public static String setHardHintDifficulty() {
     return "The player has chosen the 'hard' difficulty. Do not give them any hints.";
   }
@@ -47,10 +55,10 @@ public class GptPromptEngineering {
    * @return the generated prompt engineering string
    */
   public static String getRiddleWithGivenWord(String wordToGuess) {
-    return "Help the player to guess a password by giving them a riddle with the answer: "
+    return "Provide a riddle with the answer: "
         + wordToGuess
-        + ".The answer is a password, so you must never tell the player explicitly what the answer"
-        + " is under any circumstance.";
+        + ". Do not give the answer out under any"
+        + " circumstances.";
   }
 
   /**
@@ -58,9 +66,6 @@ public class GptPromptEngineering {
    *
    * @return the generated prompt engineering string for a hint
    */
-
-  // REVIEW FOR DELETION \/
-
   public static String getHintPrompt() {
     if (GameState.currentDifficulty == Difficulty.EASY
         || (GameState.currentDifficulty == Difficulty.MEDIUM && GameState.hintsRemaining > 0)) {
@@ -69,8 +74,8 @@ public class GptPromptEngineering {
             + " difficulty.";
       }
       if (!App.topBarController.hasItem(TopBarController.Item.SAW_BODY)) {
-        return "Tell the player they should solve the puzzle in left room. This counts as one of"
-            + " the five hints if on medium difficulty.";
+        return "Tell the player they should currently be solving the puzzle in left room. This"
+            + " counts as one of the five hints if on medium difficulty.";
       }
       if (!App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
         return "Tell the player they should solve the puzzle in right room. This counts as one of"

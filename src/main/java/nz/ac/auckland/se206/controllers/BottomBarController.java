@@ -33,8 +33,10 @@ public class BottomBarController {
   protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
 
   public void initialize() throws ApiProxyException {
+    // initialise css style classes
     inputText.getStyleClass().add("terminal-text-area");
 
+    // initialise GPT
     chatCompletionRequest =
         new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
 
@@ -42,7 +44,7 @@ public class BottomBarController {
     modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
 
-    /* Setting the enter button key press */
+    /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
         event -> {
           if (event.getCode() == KeyCode.ENTER) {
@@ -59,6 +61,10 @@ public class BottomBarController {
         });
   }
 
+  /**
+   * Method that provides GPT with its backstory for the game. A different story is provided
+   * depending on the difficulty.
+   */
   public void giveBackstory() {
     provideBackStory(GptPromptEngineering.initializeBackstory());
     switch (GameState.currentDifficulty) {

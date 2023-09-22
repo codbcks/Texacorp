@@ -45,12 +45,14 @@ public class Room1Controller {
   public void initialize() throws ApiProxyException {
     setSubScenes();
 
+    // initialise css style classes
     riddleAnswerEntry.getStyleClass().add("riddle-answer-entry");
     terminalInstructionsLabel.getStyleClass().add("terminal-label");
     terminalLabel.getStyleClass().add("terminal-label");
 
     wordToGuess = getRandomWord();
 
+    // Clicking outside the terminal will hide it
     terminalWrapperPane.setOnMouseClicked(
         event -> {
           double x = event.getX();
@@ -64,6 +66,7 @@ public class Room1Controller {
           }
         });
 
+    // triggers the lights off animation
     lightsOff =
         new Timeline(
             new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
@@ -72,6 +75,7 @@ public class Room1Controller {
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
 
+    // triggers the lights on animation
     lightsOn =
         new Timeline(
             new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
@@ -81,14 +85,21 @@ public class Room1Controller {
             new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
   }
 
+  /** Turns the lights off in the room. */
   public void lightsOff() {
     lightsOff.playFromStart();
   }
 
+  /** Turns the lights on in the room. */
   public void lightsOn() {
     lightsOn.playFromStart();
   }
 
+  /**
+   * Generates a random word from a list of words to be used in the riddle.
+   *
+   * @return a random word from the list
+   */
   private String getRandomWord() {
     wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
     // Splitting the list into an array of individual entries
@@ -102,6 +113,12 @@ public class Room1Controller {
     App.bottomBarController.appendChatMessage(riddle, "assistant");
   }
 
+  /**
+   * Clicking the console will trigger the GPT to generate a riddle.
+   *
+   * @param event the mouse event
+   * @throws IOException if there is an I/O error
+   */
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
@@ -121,6 +138,7 @@ public class Room1Controller {
     }
   }
 
+  /** Hides the terminal for password entry. */
   @FXML
   private void hideTerminal() {
     terminalWrapperPane.setVisible(false);
@@ -131,6 +149,7 @@ public class Room1Controller {
     terminalPane.setTranslateY(0);
   }
 
+  /** Shows the terminal for password entry. */
   @FXML
   private void showTerminal() {
     terminalWrapperPane.setVisible(true);
@@ -143,6 +162,11 @@ public class Room1Controller {
     riddleAnswerEntry.requestFocus();
   }
 
+  /**
+   * Submits the password guess and tells player if guess was successful or not.
+   *
+   * @param event the action event
+   */
   @FXML
   private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
@@ -157,6 +181,12 @@ public class Room1Controller {
     }
   }
 
+  /**
+   * Clicking this will move the player to the next room.
+   *
+   * @param event the mouse event
+   * @throws IOException if there is an I/O error
+   */
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
 
@@ -165,12 +195,14 @@ public class Room1Controller {
     App.setRoot(SceneManager.AppUI.ROOM2);
   }
 
+  /** Sets the subscenes. */
   @FXML
   public void setSubScenes() {
     topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
     bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
   }
 
+  /** Unsets the subscenes. */
   @FXML
   public void unsetSubScenes() {
     topBar.setRoot(new Region());
@@ -188,6 +220,12 @@ public class Room1Controller {
 
   */
 
+  /**
+   * Clicking this will prompt the player to pick up the 3D printer.
+   *
+   * @param event the mouse event
+   * @throws ApiProxyException if there is an error communicating with the API proxy
+   */
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
     SceneManager.appendChatMessage(
