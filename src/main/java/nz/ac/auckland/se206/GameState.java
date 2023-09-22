@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 /** Represents the state of the game. */
 public class GameState {
 
-  /** Indicates whether the lased haszard is active. */
+  /** Indicates what stage the game is at. */
   public static boolean isLaserActive = false;
 
   public static boolean isFirstTime = true;
