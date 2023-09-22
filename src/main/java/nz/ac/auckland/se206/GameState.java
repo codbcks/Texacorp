@@ -23,11 +23,18 @@ public class GameState {
   /** Number of hints remaining for medium difficulty */
   public static int hintsRemaining = 5;
 
-  public static Difficulty currentDifficulty = Difficulty.MEDIUM;
+  public static boolean isGPTRunning = false;
+
+  public static Difficulty currentDifficulty;
 
   public enum Difficulty {
     EASY,
     MEDIUM,
     HARD
   }
+
+  /** Points to the relevent chat GUI timer label */
+  public static Label chatTimerLabel;
+
+  public static int timeSetting;
 }

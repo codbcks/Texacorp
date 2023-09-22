@@ -7,14 +7,17 @@ import javafx.fxml.FXML;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
+import nz.ac.auckland.se206.controllers.TopBarController.Item;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room3Controller {
@@ -24,6 +27,7 @@ public class Room3Controller {
   @FXML private Rectangle pinTextFieldBackground;
   @FXML private Rectangle pinPadClose;
   @FXML private Rectangle pinPadOpen;
+  @FXML private Rectangle lightOverlay;
   @FXML private Label pinTextField;
   @FXML private Label pinHintText;
   @FXML private GridPane pinPad;
@@ -39,6 +43,7 @@ public class Room3Controller {
   @FXML private Button pinDigit9;
   @FXML private Button pinRemove;
   @FXML private Button pinSubmit;
+  @FXML private ImageView battery;
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -54,21 +59,25 @@ public class Room3Controller {
   private boolean pinPadReady;
   private Timeline resetPinPad;
   private Timeline resolvePinPad;
+  private Timeline lightsOff;
+  private Timeline lightsOn;
 
   private String[] pinHints = {
-    "Item 0", "Item 1", "Item 2", "Item 3", "Item 4",
-    "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"
+    "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
+    "Shelves", "Sticky Note", "Lasers", "AI Version Number", "(3 ^ 3) - 18"
   };
 
   private String pin;
 
   @FXML
-  public void initialize() throws ApiProxyException {
+  public void initialize() throws ApiProxyException, IOException {
 
     /* >-------- PIN + PIN PAD CREATION -------< */
 
     /* Generating pseudo-random 4 digit pin */
-    pin = Integer.toString((int) (Math.random() * 9999));
+    int tempPin = (int) (Math.random() * 9999);
+    pin = String.format("%04d", tempPin);
+    System.out.println(pin);
 
     /* Setting text relating to 4 objects that can help the player guess the pin */
     pinHintText.setText(
@@ -152,12 +161,40 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
-                  App.topBarController.giveItem(TopBarController.Item.SAW_BATTERY);
+                  ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR))
+                      .giveItem(Item.SAW_BATTERY);
+                  battery.setOpacity(0);
                 }));
+
+    lightsOff =
+        new Timeline(
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
+
+    lightsOn =
+        new Timeline(
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+  }
+
+  public void lightsOff() {
+    lightsOff.playFromStart();
+  }
+
+  public void lightsOn() {
+    lightsOn.playFromStart();
   }
 
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
+    unsetSubScenes();
+    ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM2);
   }
 
@@ -198,9 +235,22 @@ public class Room3Controller {
       pinPadReady = false;
       if (pinTextField.getText().equals(pin)) {
         resolvePinPad.playFromStart();
+
       } else {
         resetPinPad.playFromStart();
       }
     }
+  }
+
+  @FXML
+  public void setSubScenes() {
+    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
+    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
+  }
+
+  @FXML
+  public void unsetSubScenes() {
+    topBar.setRoot(new Region());
+    bottomBar.setRoot(new Region());
   }
 }
