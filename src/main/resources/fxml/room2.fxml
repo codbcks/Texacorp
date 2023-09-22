@@ -37,6 +37,7 @@
             <Image url="@../images/middleRoomLaserOverlay.png" />
          </image>
       </ImageView>
+      <Rectangle fx:id="exit" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="133.0" layoutX="416.0" layoutY="106.0" onMouseClicked="#clickExit" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
    </children>
 </Pane>

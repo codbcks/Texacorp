@@ -15,7 +15,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
-import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -104,28 +103,21 @@ public class Room1Controller {
 
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    try {
-      App.bottomBarController.runGpt(
-          // runGpt is a method in the parent class, it returns the GPT response for the input.
-          new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)), false);
-    } catch (ApiProxyException e1) {
-      e1.printStackTrace();
-      ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
-      if (GameState.isFirstTime) {
-        try {
-          App.bottomBarController.runGpt(
-              // runGpt is a method in the parent class, it returns the GPT response for the input.
-              new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
-              false);
-        } catch (ApiProxyException e2) {
-          e2.printStackTrace();
-        }
-        GameState.isFirstTime = false;
-      } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
-        showTerminal();
-      } else {
-        return;
+    // ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
+    if (GameState.isFirstTime) {
+      try {
+        App.bottomBarController.runGpt(
+            // runGpt is a method in the parent class, it returns the GPT response for the input.
+            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+            false);
+      } catch (ApiProxyException e) {
+        e.printStackTrace();
       }
+      GameState.isFirstTime = false;
+    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+      showTerminal();
+    } else {
+      return;
     }
   }
 
@@ -153,6 +145,7 @@ public class Room1Controller {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
       App.bottomBarController.appendChatMessage("Success!", "user");
+      App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
       hideTerminal();
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
