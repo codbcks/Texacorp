@@ -139,6 +139,7 @@ public class Room2Controller {
   public void clickSawBody(MouseEvent event) throws IOException {
     if (GameState.isGPTRunning) {
       App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
+      sawBody.setVisible(false);
     } else {
       SceneManager.appendChatMessage(
           "I'm pretty sure that 7 deadly lasers is above the recommended daily allowance.", "user");
