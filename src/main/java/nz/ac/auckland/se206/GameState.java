@@ -10,6 +10,8 @@ public class GameState {
 
   public static boolean isFirstTime = true;
 
+  public static boolean isRiddleSolved;
+
   public static boolean isPasswordObtained = false;
 
   /** Indicates how much time the player had when they finished */

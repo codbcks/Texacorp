@@ -1,7 +1,9 @@
 package nz.ac.auckland.se206.gpt;
 
+import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.GameState.Difficulty;
+import nz.ac.auckland.se206.controllers.TopBarController;
 
 /** Utility class for generating GPT prompt engineering strings. */
 public class GptPromptEngineering {
@@ -53,11 +55,24 @@ public class GptPromptEngineering {
   public static String getHintPrompt() {
     if (GameState.currentDifficulty == Difficulty.EASY
         || (GameState.currentDifficulty == Difficulty.MEDIUM && GameState.hintsRemaining > 0)) {
-
-      if (GameState.isFirstTime) {
-        return "Tell the player they can enter their answer to the riddle in the console.";
+      if (!GameState.isRiddleSolved) {
+        return "Give a hint for the riddle. This counts as one of the five hints if on medium"
+            + " difficulty.";
       }
+      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BODY)) {
+        return "Tell the player they should solve the puzzle in left room. This counts as one of"
+            + " the five hints if on medium difficulty.";
+      }
+      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
+        return "Tell the player they should solve the puzzle in right room. This counts as one of"
+            + " the five hints if on medium difficulty.";
+      }
+      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)) {
+        return "Tell the player they should solve the riddle in the middle room. This counts as one"
+            + " of the five hints if on medium difficulty.";
+      }
+      return "Tell the player: no more hints!";
     }
-    return "Tell the player: no hints!";
+    return "Tell the player: no more hints!";
   }
 }

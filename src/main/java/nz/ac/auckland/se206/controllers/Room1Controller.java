@@ -109,17 +109,14 @@ public class Room1Controller {
     translateTransition.setByY(-120);
     translateTransition.play();
     riddleAnswerEntry.requestFocus();
-    // terminalPane.requestFocus();
   }
 
   @FXML
   private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
-      GameState.isPasswordObtained = true;
       App.bottomBarController.appendChatMessage("Success!", "user");
       hideTerminal();
-      GameState.isLaserActive = false;
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();
