@@ -86,7 +86,15 @@ public class Room2Controller {
   public void clickSawBody(MouseEvent event) throws IOException {
     if (GameState.isGPTRunning) {
       App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
-      System.out.println("sawbody collected");
+    }
+  }
+
+  @FXML
+  public void clickExit(MouseEvent event) throws IOException {
+    if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)
+        && App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)
+        && App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
+      App.setRoot(SceneManager.AppUI.WIN);
     }
   }
 }
