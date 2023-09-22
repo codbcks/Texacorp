@@ -63,8 +63,8 @@ public class Room3Controller {
   private Timeline lightsOn;
 
   private String[] pinHints = {
-    "Item 0", "Item 1", "Item 2", "Item 3", "Item 4",
-    "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"
+    "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
+    "Shelves", "Sticky Note", "Lasers", "AI Version Number", "(3 ^ 3) - 18"
   };
 
   private String pin;
@@ -75,8 +75,9 @@ public class Room3Controller {
     /* >-------- PIN + PIN PAD CREATION -------< */
 
     /* Generating pseudo-random 4 digit pin */
-    pin = Integer.toString((int) (Math.random() * 9999));
-    pin = pin + "0000";
+    int tempPin = (int) (Math.random() * 9999);
+    pin = String.format("%04d", tempPin);
+    System.out.println(pin);
 
     /* Setting text relating to 4 objects that can help the player guess the pin */
     pinHintText.setText(
