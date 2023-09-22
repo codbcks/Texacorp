@@ -187,5 +187,7 @@
          </image>
       </ImageView>
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
+      <Rectangle fx:id="shelvesPromptTrigger1" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="343.0" layoutX="427.0" layoutY="105.0" onMouseClicked="#shelvesPrompt" stroke="BLACK" strokeType="INSIDE" width="446.0" />
+      <Rectangle fx:id="shelvesPromptTrigger2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="150.0" layoutX="227.0" layoutY="298.0" onMouseClicked="#shelvesPrompt" stroke="BLACK" strokeType="INSIDE" width="200.0" />
    </children>
 </Pane>

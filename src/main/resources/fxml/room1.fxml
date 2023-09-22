@@ -27,5 +27,6 @@
          </root>
       </SubScene>
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
+      <Rectangle fx:id="printerPromptTrigger" fill="#15ff0000" height="167.0" layoutX="110.0" layoutY="202.0" onMouseClicked="#printerPrompt" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="323.0" />
    </children>
 </Pane>
