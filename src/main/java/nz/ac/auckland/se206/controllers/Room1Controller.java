@@ -103,8 +103,8 @@ public class Room1Controller {
 
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    // ChallengeTimer.setCurrentLabelTimer(GameState.roomTimerLabel);
     if (GameState.isFirstTime) {
+      showTerminal();
       try {
         App.bottomBarController.runGpt(
             // runGpt is a method in the parent class, it returns the GPT response for the input.
@@ -125,6 +125,9 @@ public class Room1Controller {
   private void hideTerminal() {
     terminalWrapperPane.setVisible(false);
     terminalPane.setVisible(false);
+    TranslateTransition translateTransition =
+        new TranslateTransition(Duration.millis(1000), terminalPane);
+    translateTransition.setByY(120);
     terminalPane.setTranslateY(0);
   }
 
@@ -147,6 +150,7 @@ public class Room1Controller {
       App.bottomBarController.appendChatMessage("Success!", "user");
       App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
       hideTerminal();
+      GameState.isPasswordObtained = true;
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();
