@@ -197,6 +197,7 @@ public class Room3Controller {
   @FXML
   public void clickMoveRoom2(MouseEvent event) throws IOException {
     unsetSubScenes();
+    // changes root to room2 and sets subscenes
     ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM2);
   }
@@ -213,8 +214,11 @@ public class Room3Controller {
 
   @FXML
   public void pinDigitClick(MouseEvent event) throws IOException {
+    // Get the button that was clicked
     Button eventSource = (Button) event.getSource();
+    // Get the text of the button that was clicked
     String pressedDigit = eventSource.getText();
+    // If the pin pad is ready and the text field is not full, add the pressed digit to the text
     if ((pinPadReady) && (pinTextField.getText().length() < 4)) {
       pinTextField.setText(pinTextField.getText() + pressedDigit);
     } else if ((pinPadReady) && (pinTextField.getText().length() > 4)) {
@@ -224,6 +228,7 @@ public class Room3Controller {
 
   @FXML
   public void pinRemoveClick(MouseEvent event) throws IOException {
+    // If the pin pad is ready and the text field is not empty, remove the last digit from the text
     int tempPinLen = pinTextField.getText().length();
     if ((pinPadReady) && (tempPinLen > 1) && (tempPinLen <= 4)) {
       pinTextField.setText(pinTextField.getText().substring(0, tempPinLen - 1));
@@ -234,6 +239,7 @@ public class Room3Controller {
 
   @FXML
   public void pinSubmitClick(MouseEvent event) throws IOException {
+    // If the pin pad is ready, check if the pin is correct
     if (pinPadReady) {
       pinPadReady = false;
       if (pinTextField.getText().equals(pin)) {
@@ -247,12 +253,14 @@ public class Room3Controller {
 
   @FXML
   public void setSubScenes() {
+    // sets subscenes
     topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
     bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
   }
 
   @FXML
   public void unsetSubScenes() {
+    // unsets subscenes
     topBar.setRoot(new Region());
     bottomBar.setRoot(new Region());
   }
