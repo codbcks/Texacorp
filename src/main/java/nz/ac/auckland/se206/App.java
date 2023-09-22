@@ -71,7 +71,7 @@ public class App extends Application {
 
     Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
 
-    scene = new Scene(root, 1200, 640);
+    scene = new Scene(root, 960, 640);
 
     scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
     stage.setScene(scene);
