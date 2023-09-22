@@ -83,18 +83,7 @@ public class BottomBarController {
     if (message == null || message.trim().isEmpty()) {
       // If message is empty, don't do anything.
       return;
-    } else if (message.toLowerCase().contains("hint")
-        || message.toLowerCase().contains("another")
-        || message.toLowerCase().contains("help")) {
-      if (GameState.hintsRemaining > 0) {
-        GameState.hintsRemaining--;
-        appendChatMessage(provideHint(), "assistant");
-      } else {
-        appendChatMessage("No more hints!", "assistant");
-        return;
-      }
     }
-
     appendChatMessage(inputText.getText(), "user");
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry

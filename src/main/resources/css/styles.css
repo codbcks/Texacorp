@@ -8,3 +8,26 @@
     -fx-border-color: black;
     -fx-prompt-text-fill: #00FF00;
 }
+
+.dialogue-text-area {
+    -fx-background-color: rgb(80, 8, 8);
+    -fx-text-fill: rgb(250, 50, 50);
+    -fx-control-inner-background: rgb(80, 8, 8);
+    -fx-highlight-fill: rgb(250, 50, 50);
+    -fx-highlight-text-fill: rgb(80, 8, 8);
+    -fx-cursor-color: rgb(250, 50, 50);
+    -fx-border-color: rgb(80, 8, 8);
+    -fx-prompt-text-fill: rgb(250, 50, 50);
+}
+
+.riddle-answer-entry {
+    -fx-background-color: transparent;
+    -fx-text-fill: lime;
+    -fx-prompt-text-fill: lime;
+}
+
+.terminal-label {
+    -fx-background-color: transparent;
+    -fx-text-fill: lime;
+    -fx-prompt-text-fill: lime;
+}

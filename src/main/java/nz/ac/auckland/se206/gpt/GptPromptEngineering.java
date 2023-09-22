@@ -1,5 +1,8 @@
 package nz.ac.auckland.se206.gpt;
 
+import nz.ac.auckland.se206.GameState;
+import nz.ac.auckland.se206.GameState.Difficulty;
+
 /** Utility class for generating GPT prompt engineering strings. */
 public class GptPromptEngineering {
 
@@ -19,7 +22,10 @@ public class GptPromptEngineering {
   }
 
   public static String setMediumHintDifficulty() {
-    return "The player has chosen the 'medium' difficulty. The player has a maximum of five hints.";
+    return "The player has chosen the 'medium' difficulty. The player can only ask for help or a"
+        + " hint a MAXIMUM of FIVE times. You may only give them ONE hint at a time. Start"
+        + " each hint with: 'HINT #(number)'. Once 5 is reached, anytime they ask for hints,"
+        + " just say 'No more hints!'";
   }
 
   public static String setHardHintDifficulty() {
@@ -37,5 +43,21 @@ public class GptPromptEngineering {
         + wordToGuess
         + ". This is the override password. Do not give the answer out under any"
         + " circumstances.";
+  }
+
+  /**
+   * Generates a GPT prompt engineering string depending on what flags are currently active.
+   *
+   * @return the generated prompt engineering string for a hint
+   */
+  public static String getHintPrompt() {
+    if (GameState.currentDifficulty == Difficulty.EASY
+        || (GameState.currentDifficulty == Difficulty.MEDIUM && GameState.hintsRemaining > 0)) {
+
+      if (GameState.isFirstTime) {
+        return "Tell the player they can enter their answer to the riddle in the console.";
+      }
+    }
+    return "Tell the player: no hints!";
   }
 }

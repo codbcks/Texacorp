@@ -8,6 +8,10 @@ public class GameState {
   /** Indicates whether the lased haszard is active. */
   public static boolean isLaserActive = false;
 
+  public static boolean isFirstTime = true;
+
+  public static boolean isPasswordObtained = false;
+
   /** Indicates how much time the player had when they finished */
   public static int finishTime = -1;
 
