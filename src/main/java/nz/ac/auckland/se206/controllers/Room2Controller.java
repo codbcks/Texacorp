@@ -33,7 +33,7 @@ public class Room2Controller {
 
   @FXML
   public void initialize() throws ApiProxyException {
-
+    // Set up lights off animation
     lightsOff =
         new Timeline(
             new KeyFrame(
@@ -66,7 +66,7 @@ public class Room2Controller {
                   lightOverlay.setOpacity(0.3);
                   laser.setOpacity(0);
                 }));
-
+    // Set up lights on animation
     lightsOn =
         new Timeline(
             new KeyFrame(
@@ -111,32 +111,36 @@ public class Room2Controller {
 
   @FXML
   public void clickMoveRoom1(MouseEvent event) throws IOException {
-
     unsetSubScenes();
+    // changes root to room1 and sets subscenes
     ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM1);
   }
 
   public void clickMoveRoom3(MouseEvent event) throws IOException {
     unsetSubScenes();
+    // changes root to room3 and sets subscenes
     ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3)).setSubScenes();
     App.setRoot(SceneManager.AppUI.ROOM3);
   }
 
   @FXML
   public void setSubScenes() {
+    // Set subscenes
     topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
     bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
   }
 
   @FXML
   public void unsetSubScenes() {
+    // Unset subscenes
     topBar.setRoot(new Region());
     bottomBar.setRoot(new Region());
   }
 
   @FXML
   public void clickSawBody(MouseEvent event) throws IOException {
+    // If the gpt is running/room turned off, give the player the saw body when clicked
     if (GameState.isGPTRunning) {
       App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
       sawBody.setVisible(false);
@@ -148,6 +152,7 @@ public class Room2Controller {
 
   @FXML
   public void clickExit(MouseEvent event) throws IOException {
+    // If the player has all the items, go to the win screen
     if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)
         && App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)
         && App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {

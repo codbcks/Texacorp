@@ -23,8 +23,10 @@ public class GameState {
   /** Number of hints remaining for medium difficulty */
   public static int hintsRemaining = 5;
 
+  /** Indicates whether gpt is running */
   public static boolean isGPTRunning = false;
 
+  /** Indicates which difficulty the player has clicked */
   public static Difficulty currentDifficulty;
 
   public enum Difficulty {
