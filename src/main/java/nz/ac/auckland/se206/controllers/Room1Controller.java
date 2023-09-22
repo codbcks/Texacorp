@@ -105,6 +105,7 @@ public class Room1Controller {
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
       try {
+        showTerminal();
         App.bottomBarController.runGpt(
             // runGpt is a method in the parent class, it returns the GPT response for the input.
             new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
@@ -148,6 +149,7 @@ public class Room1Controller {
     if (guess.equalsIgnoreCase(wordToGuess)) {
       App.bottomBarController.appendChatMessage("Success!", "user");
       hideTerminal();
+      GameState.isPasswordObtained = true;
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();
