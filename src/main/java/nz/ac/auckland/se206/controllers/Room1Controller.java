@@ -151,6 +151,7 @@ public class Room1Controller {
       App.bottomBarController.appendChatMessage("Success!", "user");
       hideTerminal();
       GameState.isPasswordObtained = true;
+      App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();

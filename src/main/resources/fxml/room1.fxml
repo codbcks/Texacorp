@@ -19,16 +19,6 @@
       </ImageView>
       <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="80.0" layoutX="767.0" layoutY="165.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="31.0" />
       <Rectangle fx:id="moveRoom2" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="56.0" layoutX="864.0" layoutY="302.0" onMouseClicked="#clickMoveRoom2" stroke="BLACK" strokeType="INSIDE" width="82.0" />
-      <SubScene fx:id="bottomBar" height="192.0" layoutY="448.0" width="960.0">
-        <root>
-          <Region />
-        </root>
-      </SubScene>
-      <SubScene fx:id="topBar" height="80.0" width="960.0">
-         <root>
-            <Region />
-         </root>
-      </SubScene>
       <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
       <Pane fx:id="terminalPane" layoutX="239.0" layoutY="147.0" prefHeight="341.0" prefWidth="450.0" visible="false">
          <children>
@@ -55,5 +45,15 @@
          </children>
       </Pane>
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
+      <SubScene fx:id="bottomBar" height="192.0" layoutY="448.0" width="960.0">
+        <root>
+          <Region />
+        </root>
+      </SubScene>
+      <SubScene fx:id="topBar" height="80.0" width="960.0">
+         <root>
+            <Region />
+         </root>
+      </SubScene>
    </children>
 </Pane>
