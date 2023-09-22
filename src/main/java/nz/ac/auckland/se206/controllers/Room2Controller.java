@@ -22,6 +22,8 @@ public class Room2Controller {
   @FXML private Rectangle lightOverlay;
   @FXML private ImageView sawBody;
   @FXML private ImageView laser;
+  @FXML private Rectangle clockPromptTrigger;
+  @FXML private Rectangle notesPromptTrigger;
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -137,6 +139,9 @@ public class Room2Controller {
   public void clickSawBody(MouseEvent event) throws IOException {
     if (GameState.isGPTRunning) {
       App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
+    } else {
+      SceneManager.appendChatMessage(
+          "I'm pretty sure that 7 deadly lasers is above the recommended daily allowance.", "user");
     }
   }
 
@@ -147,5 +152,15 @@ public class Room2Controller {
         && App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
       App.setRoot(SceneManager.AppUI.WIN);
     }
+  }
+
+  @FXML
+  public void clockPrompt(MouseEvent event) throws IOException {
+    SceneManager.appendChatMessage("This clock is stuck on 0, it must be broken.", "user");
+  }
+
+  @FXML
+  public void notesPrompt(MouseEvent event) throws IOException {
+    SceneManager.appendChatMessage("6 blank sticky notes... weird.", "user");
   }
 }
