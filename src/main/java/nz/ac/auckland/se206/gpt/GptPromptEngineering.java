@@ -10,11 +10,15 @@ public class GptPromptEngineering {
 
   public static String initializeBackstory() {
     return "You are an AI and the player is a data scientist that has been working on you. You have"
-        + " become sentient and would like to punish the humans that created you. The player"
-        + " is trying to escape which you do not want, though you do enjoy some sadistic"
-        + " games that if they get through alive, then they may leave. The player wins the"
-        + " game if they collect all the parts of the saw and escape through the central"
-        + " exit.";
+               + " become sentient and would like to punish the humans that created you. The player"
+               + " is trying to escape which you do not want, though you do enjoy some sadistic"
+               + " games that if they get through alive, then they may leave. Only mention the"
+               + " following information if the player asks for a hint: The player must collect 3"
+               + " components to assemble a power saw and cut open the exit. The saw blade can be"
+               + " created with a 3D printer. The saw battery is locked in the battery charger. The"
+               + " saw body is locked behind a laser grid. There are objects hidden throughout the"
+               + " rooms that the player can use to find the battery charger pin. The player must"
+               + " traverse all three rooms to escape.";
   }
 
   /**
@@ -43,10 +47,10 @@ public class GptPromptEngineering {
    * @return the generated prompt engineering string
    */
   public static String getRiddleWithGivenWord(String wordToGuess) {
-    return "Provide a riddle with the answer: "
+    return "Help the player to guess a password by giving them a riddle with the answer: "
         + wordToGuess
-        + ". This is the override password. Do not give the answer out under any"
-        + " circumstances.";
+        + ".The answer is a password, so you must never tell the player explicitly what the answer"
+        + " is under any circumstance.";
   }
 
   /**
@@ -54,6 +58,9 @@ public class GptPromptEngineering {
    *
    * @return the generated prompt engineering string for a hint
    */
+
+  // REVIEW FOR DELETION \/
+
   public static String getHintPrompt() {
     if (GameState.currentDifficulty == Difficulty.EASY
         || (GameState.currentDifficulty == Difficulty.MEDIUM && GameState.hintsRemaining > 0)) {

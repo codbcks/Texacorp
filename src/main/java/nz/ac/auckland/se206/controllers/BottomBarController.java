@@ -109,15 +109,6 @@ public class BottomBarController {
         });
   }
 
-  // A helper function to avoid repeating code when prompting gpt
-  private void gptPromptHelper(String prompt) {
-    try {
-      runGpt(new ChatMessage("user", prompt), true);
-    } catch (ApiProxyException e) {
-      e.printStackTrace();
-    }
-  }
-
   /**
    * Runs the GPT model with a given chat message.
    *
