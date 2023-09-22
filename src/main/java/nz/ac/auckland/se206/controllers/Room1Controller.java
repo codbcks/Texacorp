@@ -3,13 +3,19 @@ package nz.ac.auckland.se206.controllers;
 import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.SubScene;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
@@ -23,6 +29,11 @@ public class Room1Controller {
 
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
+  @FXML private Label terminalInstructionsLabel;
+  @FXML private Label terminalLabel;
+  @FXML private Pane terminalPane;
+  @FXML private Pane terminalWrapperPane;
+  @FXML private PasswordField riddleAnswerEntry;
 
   private Timeline lightsOff;
   private Timeline lightsOn;
@@ -34,7 +45,24 @@ public class Room1Controller {
   public void initialize() throws ApiProxyException {
     setSubScenes();
 
+    riddleAnswerEntry.getStyleClass().add("riddle-answer-entry");
+    terminalInstructionsLabel.getStyleClass().add("terminal-label");
+    terminalLabel.getStyleClass().add("terminal-label");
+
     wordToGuess = getRandomWord();
+
+    terminalWrapperPane.setOnMouseClicked(
+        event -> {
+          double x = event.getX();
+          double y = event.getY();
+
+          if (x < terminalPane.getLayoutX()
+              || x > terminalPane.getLayoutX() + terminalPane.getWidth()
+              || y < terminalPane.getLayoutY()
+              || y > terminalPane.getLayoutY() + terminalPane.getHeight()) {
+            hideTerminal();
+          }
+        });
 
     lightsOff =
         new Timeline(
@@ -76,12 +104,56 @@ public class Room1Controller {
 
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    try {
-      App.bottomBarController.runGpt(
-          // runGpt is a method in the parent class, it returns the GPT response for the input.
-          new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)), false);
-    } catch (ApiProxyException e) {
-      e.printStackTrace();
+    if (GameState.isFirstTime) {
+      showTerminal();
+      try {
+        App.bottomBarController.runGpt(
+            // runGpt is a method in the parent class, it returns the GPT response for the input.
+            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+            false);
+      } catch (ApiProxyException e) {
+        e.printStackTrace();
+      }
+      GameState.isFirstTime = false;
+    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+      showTerminal();
+    } else {
+      return;
+    }
+  }
+
+  @FXML
+  private void hideTerminal() {
+    terminalWrapperPane.setVisible(false);
+    terminalPane.setVisible(false);
+    TranslateTransition translateTransition =
+        new TranslateTransition(Duration.millis(1000), terminalPane);
+    translateTransition.setByY(120);
+    terminalPane.setTranslateY(0);
+  }
+
+  @FXML
+  private void showTerminal() {
+    terminalWrapperPane.setVisible(true);
+    terminalPane.setVisible(true);
+    App.textToSpeech.speak("The... password... is...");
+    TranslateTransition translateTransition =
+        new TranslateTransition(Duration.millis(1000), terminalPane);
+    translateTransition.setByY(-120);
+    translateTransition.play();
+    riddleAnswerEntry.requestFocus();
+  }
+
+  @FXML
+  private void submitGuess(ActionEvent event) {
+    String guess = riddleAnswerEntry.getText();
+    if (guess.equalsIgnoreCase(wordToGuess)) {
+      App.bottomBarController.appendChatMessage("Success!", "user");
+      hideTerminal();
+      GameState.isPasswordObtained = true;
+    } else {
+      App.bottomBarController.appendChatMessage("Declined!", "assistant");
+      riddleAnswerEntry.clear();
     }
   }
 
