@@ -44,14 +44,10 @@ public class App extends Application {
   @Override
   public void start(final Stage stage) throws IOException {
 
-    SceneManager.createAppUi(SceneManager.AppUI.BOTTOMBAR, "bottomBar");
-    SceneManager.createAppUi(SceneManager.AppUI.TOPBAR, "topBar");
-    SceneManager.createAppUi(SceneManager.AppUI.ROOM1, "room1");
-    SceneManager.createAppUi(SceneManager.AppUI.ROOM2, "room2");
-    SceneManager.createAppUi(SceneManager.AppUI.ROOM3, "room3");
     SceneManager.createAppUi(SceneManager.AppUI.INTRO, "intro");
     SceneManager.createAppUi(SceneManager.AppUI.WIN, "win");
     SceneManager.createAppUi(SceneManager.AppUI.LOSE, "lose");
+    resetGame();
 
     room1 =
         (Room1Controller)
@@ -77,6 +73,14 @@ public class App extends Application {
     stage.setScene(scene);
     stage.show();
     root.requestFocus();
+  }
+
+  public static void resetGame() throws IOException {
+    SceneManager.createAppUi(SceneManager.AppUI.BOTTOMBAR, "bottomBar");
+    SceneManager.createAppUi(SceneManager.AppUI.TOPBAR, "topBar");
+    SceneManager.createAppUi(SceneManager.AppUI.ROOM1, "room1");
+    SceneManager.createAppUi(SceneManager.AppUI.ROOM2, "room2");
+    SceneManager.createAppUi(SceneManager.AppUI.ROOM3, "room3");
   }
 
   public static Scene getCurrentScene() {

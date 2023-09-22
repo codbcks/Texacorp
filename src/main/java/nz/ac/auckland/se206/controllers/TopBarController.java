@@ -1,15 +1,21 @@
 package nz.ac.auckland.se206.controllers;
 
+import java.io.IOException;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.ChallengeTimer;
+import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class TopBarController {
   @FXML private Label topBarTimer;
   @FXML private HBox inventoryContainer;
+  @FXML private Button forfeitButton;
 
   public enum Item {
     SAW_BODY,
@@ -75,5 +81,11 @@ public class TopBarController {
     for (int i = 0; i < invLength; i++) {
       System.out.println("| " + i + ": " + inventory[i]);
     }
+  }
+
+  @FXML
+  private void clickToMenu(MouseEvent event) throws IOException {
+    App.setRoot(SceneManager.AppUI.INTRO);
+    App.resetGame();
   }
 }
