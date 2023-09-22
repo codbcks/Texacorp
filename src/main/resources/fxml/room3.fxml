@@ -42,6 +42,11 @@
                </stops>
             </RadialGradient>
          </fill></Rectangle>
+      <ImageView fx:id="battery" fitHeight="640.0" fitWidth="960.0">
+         <image>
+            <Image url="@../images/rightRoomBatteryOverlay.png" />
+         </image>
+      </ImageView>
       <Pane fx:id="pinPadUi" layoutX="240.0" layoutY="96.0" prefHeight="336.0" prefWidth="480.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" fill="#9e9e9e" height="336.0" stroke="#848484" strokeType="INSIDE" strokeWidth="4.0" width="160.0" />
@@ -181,11 +186,6 @@
           <Region />
         </root>
       </SubScene>
-      <ImageView fx:id="battery" fitHeight="640.0" fitWidth="960.0">
-         <image>
-            <Image url="@../images/rightRoomBatteryOverlay.png" />
-         </image>
-      </ImageView>
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
    </children>
 </Pane>
