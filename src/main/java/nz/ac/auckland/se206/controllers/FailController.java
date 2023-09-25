@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 
 public class FailController {
@@ -15,5 +16,6 @@ public class FailController {
   public void menu(MouseEvent event) throws IOException {
     App.setRoot(SceneManager.AppUI.INTRO);
     App.resetGame();
+    GameState.resetGameVariables();
   }
 }

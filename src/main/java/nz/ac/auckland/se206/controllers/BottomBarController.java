@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
+import nz.ac.auckland.se206.HintSystem;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -31,6 +32,11 @@ public class BottomBarController {
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
   protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
+  private final HintSystem hintSystem = new HintSystem(HintSystem.Difficulty.MEDIUM);
+
+  private int hintCount = 0;
+  private static final int MAX_HINTS_HARD = 0;
+  private static final int MAX_HINTS_MED = 5;
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -141,19 +147,26 @@ public class BottomBarController {
               // Try catch for accessing ChatGPT
               ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
               Choice result = chatCompletionResult.getChoices().iterator().next();
-              chatCompletionRequest.addMessage(result.getChatMessage());
-              appendChatMessage(
-                  result.getChatMessage().getContent(), result.getChatMessage().getRole());
+              String gptResponse = result.getChatMessage().getContent();
+              if (gptResponse.startsWith("HINT #")) {
+                int maxHints = determineMaxHintsBasedOnDifficulty();
+                if (hintCount > maxHints) {
+                  Platform.runLater(() -> appendChatMessage("No more hints!", "assistant"));
+                  if (sayAloud) App.textToSpeech.speak("No more hints!");
+                  return null;
+                } else {
+                  Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+                }
+              } else {
+                Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+              }
+              hintCount++;
 
               turnOnLights();
 
               GameState.isGPTRunning = false;
               App.room2.lightsOn();
 
-              if (sayAloud) {
-                // say aloud specifies whether the program should access text to speech or not
-                App.textToSpeech.speak(result.getChatMessage().getContent());
-              }
             } catch (ApiProxyException e) {
               // Exception handling
               System.out.println("ERROR: Exception in GptInteraction.runGpt!");
@@ -168,6 +181,18 @@ public class BottomBarController {
     Thread runGptThread = new Thread(runGptTask);
 
     runGptThread.start();
+  }
+
+  protected int determineMaxHintsBasedOnDifficulty() {
+    switch (GameState.currentDifficulty) {
+      case HARD:
+        return MAX_HINTS_HARD;
+      case MEDIUM:
+        return MAX_HINTS_MED;
+        // Return a default number for EASY or undefined difficulties
+      default:
+        return Integer.MAX_VALUE;
+    }
   }
 
   /**
@@ -195,28 +220,6 @@ public class BottomBarController {
     addToLog(new ChatMessage("assistant", story));
   }
 
-  /**
-   * Method that gets GPT to provide a hint to the player.
-   *
-   * @return the hint
-   */
-  public String provideHint() {
-    try {
-      if (chatCompletionRequest == null) {
-        chatCompletionRequest =
-            new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
-      }
-      chatCompletionRequest.addMessage(new ChatMessage("user", "Can you provide a hint?"));
-      ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
-      Choice result = chatCompletionResult.getChoices().iterator().next();
-      return result.getChatMessage().getContent();
-    } catch (ApiProxyException e) {
-      System.out.println("Exception in GptInteraction.provideHint()");
-      e.printStackTrace();
-      return "An error has occurred. Please try again.";
-    }
-  }
-
   private void turnOffLights() {
     GameState.isGPTRunning = true;
     App.room1.lightsOff();
@@ -237,5 +240,9 @@ public class BottomBarController {
 
   public void setHintCounter(int remainingHints) {
     hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
+  }
+
+  public List<ChatMessage> getGptInteractionlog() {
+    return gptInteractionLog;
   }
 }

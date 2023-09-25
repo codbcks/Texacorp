@@ -14,6 +14,13 @@ public class GameState {
 
   public static boolean isPasswordObtained = false;
 
+  public static void resetGameVariables() {
+    isLaserActive = false;
+    isFirstTime = true;
+    isRiddleSolved = false;
+    isPasswordObtained = false;
+  }
+
   /** Indicates how much time the player had when they finished */
   public static int finishTime = -1;
 
@@ -21,7 +28,7 @@ public class GameState {
   public static Label roomTimerLabel;
 
   /** Number of hints remaining for medium difficulty */
-  public static int hintsRemaining = 5;
+  public static int hintsRemaining = 0;
 
   /** Indicates whether gpt is running */
   public static boolean isGPTRunning = false;
