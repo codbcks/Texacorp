@@ -11,7 +11,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room1Controller">
    <children>
-      <ImageView fitHeight="368.0" fitWidth="960.0">
+      <ImageView fitHeight="368.0" fitWidth="960.0" smooth="false">
          <image>
             <Image url="@../images/leftRoomBackground.png" />
          </image>

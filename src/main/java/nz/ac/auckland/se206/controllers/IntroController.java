@@ -40,9 +40,14 @@ public class IntroController {
    */
   @FXML
   private void startGame() throws IOException {
-    // This is the entry point for the game
-    App.setRoot(SceneManager.AppUI.IN_GAME);
+
+    /* Set challenge timer */
+    ChallengeTimer.setCurrentLabelTimer(
+        App.topBarController.getTimerLabel(), GameState.timeSetting);
     ChallengeTimer.startTimer();
+
+    /* This is the entry point for the game */
+    App.setRoot(SceneManager.AppUI.IN_GAME);
 
     if (GameState.currentDifficulty == GameState.Difficulty.EASY) {
       ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
