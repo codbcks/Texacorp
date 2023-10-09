@@ -39,7 +39,7 @@
             </SubScene>
          </children>
       </Pane>
-      <ImageView fitHeight="96.0" fitWidth="96.0" layoutY="256.0" onMouseClicked="#moveLeft" pickOnBounds="true" preserveRatio="true" smooth="false">
+      <ImageView fx:id="leftArrow" fitHeight="96.0" fitWidth="96.0" layoutY="256.0" onMouseClicked="#moveLeft" pickOnBounds="true" preserveRatio="true" smooth="false">
          <image>
             <Image url="@../images/arrowLeft.png" />
          </image>
@@ -47,7 +47,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="864.0" layoutY="256.0" onMouseClicked="#moveRight" pickOnBounds="true" preserveRatio="true" smooth="false">
+      <ImageView fx:id="rightArrow" fitHeight="96.0" fitWidth="96.0" layoutX="864.0" layoutY="256.0" onMouseClicked="#moveRight" pickOnBounds="true" preserveRatio="true" smooth="false">
          <image>
             <Image url="@../images/arrowRight.png" />
          </image>

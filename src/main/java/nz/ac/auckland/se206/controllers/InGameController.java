@@ -1,9 +1,12 @@
 package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.SubScene;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
@@ -18,8 +21,11 @@ public class InGameController {
   @FXML private SubScene room2;
   @FXML private SubScene room3;
   @FXML private Pane roomSlider;
+  @FXML private ImageView leftArrow;
+  @FXML private ImageView rightArrow;
 
   Boolean moveEnabled = true;
+  int currentRoom = 1;
 
   @FXML
   public void initialize() throws ApiProxyException {
@@ -32,20 +38,46 @@ public class InGameController {
 
   @FXML
   public void moveLeft(MouseEvent event) throws IOException {
-    moveRoomSlider(App.ROOM_WIDTH);
+    if (currentRoom != 1) {
+      currentRoom--;
+      moveRoomSlider(-App.ROOM_WIDTH);
+    }
   }
 
   @FXML
   public void moveRight(MouseEvent event) throws IOException {
-    moveRoomSlider(-App.ROOM_WIDTH);
+    if (currentRoom != 3) {
+      currentRoom++;
+      moveRoomSlider(-App.ROOM_WIDTH);
+    }
   }
 
   public void moveRoomSlider(int distance) {
     if (moveEnabled) {
-      moveEnabled = false;
-      TranslateTransition moveRooms = new TranslateTransition(Duration.millis(600), roomSlider);
-      moveRooms.setByX(distance);
+      setMoveEnable(false);
+      TranslateTransition slide = new TranslateTransition(Duration.millis(400), roomSlider);
+      slide.setByX(distance);
+
+      Timeline moveRooms =
+          new Timeline(
+              new KeyFrame(
+                  Duration.seconds(0.0),
+                  e -> {
+                    slide.play();
+                  }),
+              new KeyFrame(
+                  Duration.seconds(0.4),
+                  e -> {
+                    setMoveEnable(true);
+                  }));
+
       moveRooms.play();
     }
+  }
+
+  private void setMoveEnable(boolean condition) {
+    moveEnabled = condition;
+    leftArrow.setVisible(condition);
+    rightArrow.setVisible(condition);
   }
 }
