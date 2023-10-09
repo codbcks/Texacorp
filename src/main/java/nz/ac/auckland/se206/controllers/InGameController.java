@@ -40,7 +40,7 @@ public class InGameController {
   public void moveLeft(MouseEvent event) throws IOException {
     if (currentRoom != 1) {
       currentRoom--;
-      moveRoomSlider(-App.ROOM_WIDTH);
+      moveRoomSlider(App.ROOM_WIDTH);
     }
   }
 
@@ -77,7 +77,17 @@ public class InGameController {
 
   private void setMoveEnable(boolean condition) {
     moveEnabled = condition;
-    leftArrow.setVisible(condition);
-    rightArrow.setVisible(condition);
+
+    if (!condition) {
+      leftArrow.setVisible(false);
+      rightArrow.setVisible(false);
+    } else {
+      if (currentRoom != 1) {
+        leftArrow.setVisible(true);
+      }
+      if (currentRoom != 3) {
+        rightArrow.setVisible(true);
+      }
+    }
   }
 }
