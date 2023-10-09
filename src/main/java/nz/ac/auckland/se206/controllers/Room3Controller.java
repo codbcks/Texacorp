@@ -4,18 +4,15 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.controllers.TopBarController.Item;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -23,7 +20,6 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 public class Room3Controller {
 
   @FXML private Pane pinPadUi;
-  @FXML private Rectangle moveRoom2;
   @FXML private Rectangle pinTextFieldBackground;
   @FXML private Rectangle pinPadClose;
   @FXML private Rectangle pinPadOpen;
@@ -47,9 +43,6 @@ public class Room3Controller {
   @FXML private Rectangle shelvesPromptTrigger1;
   @FXML private Rectangle shelvesPromptTrigger2;
   @FXML private Rectangle whiteboardPromptTrigger;
-
-  @FXML private SubScene topBar;
-  @FXML private SubScene bottomBar;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -195,14 +188,6 @@ public class Room3Controller {
   }
 
   @FXML
-  public void clickMoveRoom2(MouseEvent event) throws IOException {
-    unsetSubScenes();
-    // changes root to room2 and sets subscenes
-    ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
-    App.setRoot(SceneManager.AppUI.ROOM2);
-  }
-
-  @FXML
   public void clickPinPadOpen(MouseEvent event) throws IOException {
     pinPadUi.setVisible(true);
   }
@@ -249,20 +234,6 @@ public class Room3Controller {
         resetPinPad.playFromStart();
       }
     }
-  }
-
-  @FXML
-  public void setSubScenes() {
-    // sets subscenes
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
-  }
-
-  @FXML
-  public void unsetSubScenes() {
-    // unsets subscenes
-    topBar.setRoot(new Region());
-    bottomBar.setRoot(new Region());
   }
 
   @FXML

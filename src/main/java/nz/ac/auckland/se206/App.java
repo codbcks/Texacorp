@@ -48,22 +48,14 @@ public class App extends Application {
     SceneManager.createAppUi(SceneManager.AppUI.WIN, "win");
     SceneManager.createAppUi(SceneManager.AppUI.LOSE, "lose");
     resetGame();
+    SceneManager.createAppUi(SceneManager.AppUI.IN_GAME, "inGame");
 
-    room1 =
-        (Room1Controller)
-            SceneManager.getController(SceneManager.AppUI.ROOM1); // <==== Obsolete, remove.
-    room2 =
-        (Room2Controller)
-            SceneManager.getController(SceneManager.AppUI.ROOM2); // <==== Obsolete, remove.
-    room3 =
-        (Room3Controller)
-            SceneManager.getController(SceneManager.AppUI.ROOM3); // <==== Obsolete, remove.
-    topBarController =
-        (TopBarController)
-            SceneManager.getController(SceneManager.AppUI.TOPBAR); // <==== Obsolete, remove.
+    room1 = ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1));
+    room2 = ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2));
+    room3 = ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3));
+    topBarController = ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR));
     bottomBarController =
-        (BottomBarController)
-            SceneManager.getController(SceneManager.AppUI.BOTTOMBAR); // <==== Obsolete, remove.
+        ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR));
 
     Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
 

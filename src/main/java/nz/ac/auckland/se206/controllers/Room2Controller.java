@@ -4,10 +4,8 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.SubScene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
@@ -17,16 +15,11 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room2Controller {
 
-  @FXML private Rectangle moveRoom1;
-  @FXML private Rectangle moveRoom3;
   @FXML private Rectangle lightOverlay;
   @FXML private ImageView sawBody;
   @FXML private ImageView laser;
   @FXML private Rectangle clockPromptTrigger;
   @FXML private Rectangle notesPromptTrigger;
-
-  @FXML private SubScene topBar;
-  @FXML private SubScene bottomBar;
 
   private Timeline lightsOff;
   private Timeline lightsOn;
@@ -107,35 +100,6 @@ public class Room2Controller {
 
   public void lightsOn() {
     lightsOn.playFromStart();
-  }
-
-  @FXML
-  public void clickMoveRoom1(MouseEvent event) throws IOException {
-    unsetSubScenes();
-    // changes root to room1 and sets subscenes
-    ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1)).setSubScenes();
-    App.setRoot(SceneManager.AppUI.ROOM1);
-  }
-
-  public void clickMoveRoom3(MouseEvent event) throws IOException {
-    unsetSubScenes();
-    // changes root to room3 and sets subscenes
-    ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3)).setSubScenes();
-    App.setRoot(SceneManager.AppUI.ROOM3);
-  }
-
-  @FXML
-  public void setSubScenes() {
-    // Set subscenes
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
-  }
-
-  @FXML
-  public void unsetSubScenes() {
-    // Unset subscenes
-    topBar.setRoot(new Region());
-    bottomBar.setRoot(new Region());
   }
 
   @FXML

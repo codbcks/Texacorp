@@ -86,6 +86,7 @@ public class TopBarController {
   @FXML
   private void clickToMenu(MouseEvent event) throws IOException {
     App.setRoot(SceneManager.AppUI.INTRO);
+    ChallengeTimer.cancelTimer();
     App.resetGame();
   }
 }

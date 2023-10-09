@@ -6,12 +6,10 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.SubScene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
@@ -23,12 +21,9 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room1Controller {
   @FXML private Rectangle triggerConsole;
-  @FXML private Rectangle moveRoom2;
   @FXML private Rectangle lightOverlay;
   @FXML private Rectangle printerPromptTrigger;
 
-  @FXML private SubScene topBar;
-  @FXML private SubScene bottomBar;
   @FXML private Label terminalInstructionsLabel;
   @FXML private Label terminalLabel;
   @FXML private Pane terminalPane;
@@ -43,7 +38,6 @@ public class Room1Controller {
 
   @FXML
   public void initialize() throws ApiProxyException {
-    setSubScenes();
 
     // initialise css style classes
     riddleAnswerEntry.getStyleClass().add("riddle-answer-entry");
@@ -179,34 +173,6 @@ public class Room1Controller {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();
     }
-  }
-
-  /**
-   * Clicking this will move the player to the next room.
-   *
-   * @param event the mouse event
-   * @throws IOException if there is an I/O error
-   */
-  @FXML
-  public void clickMoveRoom2(MouseEvent event) throws IOException {
-
-    unsetSubScenes();
-    ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2)).setSubScenes();
-    App.setRoot(SceneManager.AppUI.ROOM2);
-  }
-
-  /** Sets the subscenes. */
-  @FXML
-  public void setSubScenes() {
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
-  }
-
-  /** Unsets the subscenes. */
-  @FXML
-  public void unsetSubScenes() {
-    topBar.setRoot(new Region());
-    bottomBar.setRoot(new Region());
   }
 
   /* ------- NOTE: This is how we will be animating items into the inventory --------
