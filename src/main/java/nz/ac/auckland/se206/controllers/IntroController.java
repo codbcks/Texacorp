@@ -13,7 +13,6 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 public class IntroController {
 
   @FXML private Button btnStart;
-
   @FXML private Button btnEasy;
   @FXML private Button btnMedium;
   @FXML private Button btnHard;
@@ -42,7 +41,7 @@ public class IntroController {
   @FXML
   private void startGame() throws IOException {
     // This is the entry point for the game
-    App.setRoot(SceneManager.AppUI.ROOM1);
+    App.setRoot(SceneManager.AppUI.IN_GAME);
     ChallengeTimer.startTimer();
 
     if (GameState.currentDifficulty == GameState.Difficulty.EASY) {
