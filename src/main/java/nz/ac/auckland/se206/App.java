@@ -50,18 +50,11 @@ public class App extends Application {
     SceneManager.createAppUi(SceneManager.AppUI.WIN, "win");
     SceneManager.createAppUi(SceneManager.AppUI.LOSE, "lose");
     resetGame();
-    SceneManager.createAppUi(SceneManager.AppUI.IN_GAME, "inGame");
-
-    room1 = ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1));
-    room2 = ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2));
-    room3 = ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3));
-    topBarController = ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR));
-    bottomBarController =
-        ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR));
 
     Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
 
     scene = new Scene(root, 960, 640);
+    stage.setResizable(false);
 
     scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
     stage.setScene(scene);
@@ -70,11 +63,21 @@ public class App extends Application {
   }
 
   public static void resetGame() throws IOException {
-    SceneManager.createAppUi(SceneManager.AppUI.BOTTOMBAR, "bottomBar");
-    SceneManager.createAppUi(SceneManager.AppUI.TOPBAR, "topBar");
+
     SceneManager.createAppUi(SceneManager.AppUI.ROOM1, "room1");
     SceneManager.createAppUi(SceneManager.AppUI.ROOM2, "room2");
     SceneManager.createAppUi(SceneManager.AppUI.ROOM3, "room3");
+    SceneManager.createAppUi(SceneManager.AppUI.BOTTOMBAR, "bottomBar");
+    SceneManager.createAppUi(SceneManager.AppUI.TOPBAR, "topBar");
+
+    room1 = ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1));
+    room2 = ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2));
+    room3 = ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3));
+    topBarController = ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR));
+    bottomBarController =
+        ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR));
+
+    SceneManager.createAppUi(SceneManager.AppUI.IN_GAME, "inGame");
   }
 
   public static Scene getCurrentScene() {

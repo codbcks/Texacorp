@@ -25,7 +25,7 @@ public class InGameController {
   @FXML private ImageView rightArrow;
 
   Boolean moveEnabled = true;
-  int currentRoom = 1;
+  int currentRoom = 2;
 
   @FXML
   public void initialize() throws ApiProxyException {

@@ -28,13 +28,13 @@ public class TopBarController {
   private static int nextIndex = 0;
 
   public void initialize() throws ApiProxyException {
-    /* Set challenge timer */
-    ChallengeTimer.setCurrentLabelTimer(topBarTimer);
-    ChallengeTimer.startTimer();
-
     /* Initialize inventory */
     invLength = Item.values().length;
     inventory = new Item[invLength];
+  }
+
+  public Label getTimerLabel() {
+    return topBarTimer;
   }
 
   public int getItem(Item item) {

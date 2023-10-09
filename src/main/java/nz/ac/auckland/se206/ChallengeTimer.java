@@ -5,7 +5,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 
 public class ChallengeTimer {
-  private static long TIMELIMIT;
+  private static long timeLimit;
   private static boolean timerActive = false;
   private static long timePassed = 0;
   private static long startTime;
@@ -17,7 +17,7 @@ public class ChallengeTimer {
     // Initializing variables...
     timerActive = true;
     startTime = System.currentTimeMillis();
-    TIMELIMIT = GameState.timeSetting;
+    timeLimit = GameState.timeSetting;
     /* Multithreading is used so that the timer task doesn't
     cause the GUI to slow down or freeze.
 
@@ -29,7 +29,7 @@ public class ChallengeTimer {
 
           @Override
           protected Void call() throws Exception {
-            while ((timePassed < TIMELIMIT) && (timerActive)) {
+            while ((timePassed < timeLimit) && (timerActive)) {
               timePassed = (System.currentTimeMillis() - startTime);
               // Adding GUI updates to GUI queue.
               Platform.runLater(
@@ -38,8 +38,8 @@ public class ChallengeTimer {
                         // Calculating time formatting
                         String.format(
                             "%02d:%02d",
-                            (((TIMELIMIT - timePassed) / 1000) / 60),
-                            (((TIMELIMIT - timePassed) / 1000) % 60)));
+                            (((timeLimit - timePassed) / 1000) / 60),
+                            (((timeLimit - timePassed) / 1000) % 60)));
                   });
               // Thread sleeps to conserve resources while the timer is not incrementing
               try {
@@ -73,24 +73,24 @@ public class ChallengeTimer {
   // This method resets the timer
   public static void cancelTimer() {
     // Game state finish time represents how much time was left on the clock when the player wins.
-    GameState.finishTime = (int) (TIMELIMIT - (System.currentTimeMillis() - startTime)) / 1000;
+    GameState.finishTime = (int) (timeLimit - (System.currentTimeMillis() - startTime)) / 1000;
     System.out.println(GameState.finishTime);
     // TimerActive = false breaks the timer loop
     timerActive = false;
     timePassed = 0;
-    // Reset GUI label
-    initializeLabel();
   }
 
   // getRemainingTime returns how long is left on the clock.
   public static long getRemainingTime() {
     // Calculating remaining time on clock.
-    return TIMELIMIT - timePassed;
+    return timeLimit - timePassed;
   }
 
-  public static void setCurrentLabelTimer(Label newLabelTimer) {
+  public static void setCurrentLabelTimer(Label newLabelTimer, long newTimeLimit) {
     // Setting the timer GUI element and initializing it with 0.
+    System.out.println("Setting timer label.");
     currentLabelTimer = newLabelTimer;
+    timeLimit = newTimeLimit;
     initializeLabel();
   }
 
@@ -99,15 +99,15 @@ public class ChallengeTimer {
   }
 
   private static void initializeLabel() {
+    System.out.println("Initializing timer label.");
+
     // The following code adds the timer GUI reset to the GUI queue
     Platform.runLater(
         () -> {
           currentLabelTimer.setText(
               String.format(
                   // Formatting time limit
-                  "%02d:%02d",
-                  (((TIMELIMIT - timePassed) / 1000) / 60),
-                  (((TIMELIMIT - timePassed) / 1000) % 60)));
+                  "%02d:%02d", (((timeLimit) / 1000) / 60), (((timeLimit) / 1000) % 60)));
         });
   }
 }

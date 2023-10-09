@@ -20,7 +20,7 @@
             <Region />
          </root>
       </SubScene>
-      <Pane fx:id="roomSlider" layoutY="80.0" prefHeight="368.0" prefWidth="2880.0">
+      <Pane fx:id="roomSlider" layoutX="-960.0" layoutY="80.0" prefHeight="368.0" prefWidth="2880.0">
          <children>
             <SubScene fx:id="room1" height="368.0" width="960.0">
               <root>
@@ -39,7 +39,7 @@
             </SubScene>
          </children>
       </Pane>
-      <ImageView fx:id="leftArrow" fitHeight="96.0" fitWidth="96.0" layoutY="256.0" onMouseClicked="#moveLeft" pickOnBounds="true" preserveRatio="true" smooth="false" visible="false">
+      <ImageView fx:id="leftArrow" fitHeight="96.0" fitWidth="96.0" layoutY="256.0" onMouseClicked="#moveLeft" pickOnBounds="true" preserveRatio="true" smooth="false">
          <image>
             <Image url="@../images/arrowLeft.png" />
          </image>
