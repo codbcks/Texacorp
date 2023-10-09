@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.SubScene?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 
@@ -36,5 +39,21 @@
             </SubScene>
          </children>
       </Pane>
+      <ImageView fitHeight="96.0" fitWidth="96.0" layoutY="256.0" onMouseClicked="#moveLeft" pickOnBounds="true" preserveRatio="true" smooth="false">
+         <image>
+            <Image url="@../images/arrowLeft.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="864.0" layoutY="256.0" onMouseClicked="#moveRight" pickOnBounds="true" preserveRatio="true" smooth="false">
+         <image>
+            <Image url="@../images/arrowRight.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
    </children>
 </Pane>
