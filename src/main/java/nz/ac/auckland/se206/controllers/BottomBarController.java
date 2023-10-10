@@ -15,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
-import nz.ac.auckland.se206.HintSystem;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -28,15 +27,11 @@ public class BottomBarController {
   @FXML private Button sendButton;
   @FXML private TextArea inputText;
   @FXML private ImageView hintCounter;
+  @FXML private Button hintButton;
 
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
   protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
-  private final HintSystem hintSystem = new HintSystem(HintSystem.Difficulty.MEDIUM);
-
-  private int hintCount = 0;
-  private static final int MAX_HINTS_HARD = 0;
-  private static final int MAX_HINTS_MED = 5;
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -68,12 +63,64 @@ public class BottomBarController {
   }
 
   /**
+   * Method for the hint button. A different hint is provided depending on the stage of the game.
+   *
+   * @throws ApiProxyException
+   */
+  public void onRequestHint(ActionEvent event) throws ApiProxyException {
+    runGptForHint(new ChatMessage("user", GptPromptEngineering.getHint()));
+  }
+
+  private void runGptForHint(ChatMessage chatMessage) {
+    addToLog(chatMessage);
+    Task<Void> runGptTask =
+        new Task<Void>() {
+
+          @Override
+          protected Void call() throws Exception {
+            // The following code leverages the appendChatMessage function which is implemeneted in
+            // all children of this class
+            Platform.runLater(
+                () -> {
+                  appendChatMessage("Processing...", "assistant");
+                });
+            chatCompletionRequest.addMessage(chatMessage);
+            try {
+              // Try catch for accessing ChatGPT
+              ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+              Choice result = chatCompletionResult.getChoices().iterator().next();
+              chatCompletionRequest.addMessage(result.getChatMessage());
+              Platform.runLater(
+                  () -> {
+                    appendChatMessage(
+                        result.getChatMessage().getContent(), result.getChatMessage().getRole());
+                  });
+              if (GameState.isTextToSpeechOn) {
+                // say aloud specifies whether the program should access text to speech or not
+                App.textToSpeech.speak(result.getChatMessage().getContent());
+              }
+            } catch (ApiProxyException e) {
+              // Exception handling
+              System.out.println("ERROR: Exception in GptInteraction.runGpt!");
+              e.printStackTrace();
+            }
+            return null;
+          }
+        };
+
+    // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
+    Thread runGptThread = new Thread(runGptTask);
+    runGptThread.start();
+  }
+
+  /**
    * Method that provides GPT with its backstory for the game. A different story is provided
    * depending on the difficulty.
    */
   public void giveBackstory() {
     provideBackStory(GptPromptEngineering.initializeBackstory());
-    switch (GameState.currentDifficulty) {
+    GameState.Difficulty difficulty = GameState.getCurrentDifficulty();
+    switch (difficulty) {
       case EASY:
         provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
         break;
@@ -105,7 +152,7 @@ public class BottomBarController {
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
-    runGpt(msg, true);
+    runGpt(msg);
   }
 
   /**
@@ -128,71 +175,62 @@ public class BottomBarController {
    * @return the response chat message
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
-  protected void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
-
+  protected void runGpt(ChatMessage msg) throws ApiProxyException {
     turnOffLights();
-
     addToLog(msg);
-    Task<Void> runGptTask =
-        new Task<Void>() {
-
-          @Override
-          protected Void call() throws Exception {
-
-            // The following code leverages the appendChatMessage function which is implemeneted in
-            // all children of this class
-            appendChatMessage("Processing...", "assistant");
-            chatCompletionRequest.setMessages(gptInteractionLog);
-            try {
-              // Try catch for accessing ChatGPT
-              ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
-              Choice result = chatCompletionResult.getChoices().iterator().next();
-              String gptResponse = result.getChatMessage().getContent();
-              if (gptResponse.startsWith("HINT #")) {
-                int maxHints = determineMaxHintsBasedOnDifficulty();
-                if (hintCount > maxHints) {
-                  Platform.runLater(() -> appendChatMessage("No more hints!", "assistant"));
-                  if (sayAloud) App.textToSpeech.speak("No more hints!");
-                  return null;
-                } else {
-                  Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
-                }
-              } else {
-                Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
-              }
-              hintCount++;
-
-              turnOnLights();
-
-              GameState.isGPTRunning = false;
-              App.room2.lightsOn();
-
-            } catch (ApiProxyException e) {
-              // Exception handling
-              System.out.println("ERROR: Exception in GptInteraction.runGpt!");
-              e.printStackTrace();
-            }
-
-            return null;
-          }
-        };
-
-    // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
+    Task<Void> runGptTask = createRunGptTask();
     Thread runGptThread = new Thread(runGptTask);
-
     runGptThread.start();
   }
 
-  protected int determineMaxHintsBasedOnDifficulty() {
-    switch (GameState.currentDifficulty) {
-      case HARD:
-        return MAX_HINTS_HARD;
-      case MEDIUM:
-        return MAX_HINTS_MED;
-        // Return a default number for EASY or undefined difficulties
-      default:
-        return Integer.MAX_VALUE;
+  private Task<Void> createRunGptTask() {
+    return new Task<Void>() {
+      @Override
+      protected Void call() throws Exception {
+        processGptResponse();
+        return null;
+      }
+    };
+  }
+
+  private void processGptResponse() {
+    appendChatMessage("Processing...", "assistant");
+    try {
+      String gptResponse = getGptResponse();
+      handleGptResponse(gptResponse);
+    } catch (ApiProxyException e) {
+      handleGptError(e);
+    } finally {
+      turnOnLights();
     }
+  }
+
+  private String getGptResponse() throws ApiProxyException {
+    chatCompletionRequest.setMessages(gptInteractionLog);
+    ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+    Choice result = chatCompletionResult.getChoices().iterator().next();
+    return result.getChatMessage().getContent();
+  }
+
+  private void handleGptResponse(String gptResponse) {
+    if (gptResponse.startsWith("HINT #") || gptResponse.contains("hint")) {
+      handleHintResponse(gptResponse);
+    } else {
+      Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+    }
+  }
+
+  private void handleHintResponse(String gptResponse) {
+    Platform.runLater(
+        () -> appendChatMessage("Hints are not given through the chat!", "assistant"));
+    if (GameState.isTextToSpeechOn) {
+      App.textToSpeech.speak("Hints are not given through the chat!");
+    }
+  }
+
+  private void handleGptError(ApiProxyException e) {
+    System.out.println("Error. Exception in GptInteraction.runGpt");
+    e.printStackTrace();
   }
 
   /**

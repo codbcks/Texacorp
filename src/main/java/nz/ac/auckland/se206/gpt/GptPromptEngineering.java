@@ -2,8 +2,6 @@ package nz.ac.auckland.se206.gpt;
 
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
-import nz.ac.auckland.se206.GameState.Difficulty;
-import nz.ac.auckland.se206.controllers.TopBarController;
 
 /** Utility class for generating GPT prompt engineering strings. */
 public class GptPromptEngineering {
@@ -66,27 +64,34 @@ public class GptPromptEngineering {
    *
    * @return the generated prompt engineering string for a hint
    */
-  public static String getHintPrompt() {
-    if (GameState.currentDifficulty == Difficulty.EASY
-        || (GameState.currentDifficulty == Difficulty.MEDIUM && GameState.hintsRemaining > 0)) {
-      if (!GameState.isRiddleSolved) {
-        return "Give a hint for the riddle. This counts as one of the five hints if on medium"
-            + " difficulty.";
+  public static String getHint() {
+    // If on hard mode, then no hints are available
+    if (GameState.hintsRemaining > 0) {
+      // if the player is currently solving the riddle
+      GameState.hintsRemaining--;
+      if (GameState.isRiddleActive) {
+        return "Give the player a hint regarding the riddle for "
+            + App.room1.getWordToGuess()
+            + ". Do not reveal the answer!";
       }
-      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BODY)) {
-        return "Tell the player they should currently be solving the puzzle in left room. This"
-            + " counts as one of the five hints if on medium difficulty.";
+      if (GameState.isRoom1Solved == false) {
+        return "Tell the player to examine the 3D printing terminal.";
       }
-      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
-        return "Tell the player they should solve the puzzle in right room. This counts as one of"
-            + " the five hints if on medium difficulty.";
+      if (GameState.isRoom1Solved == true && GameState.isRoom2Solved == false) {
+        return "Tell the player the AI drains power from the lasers when thinking.";
       }
-      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)) {
-        return "Tell the player they should solve the riddle in the middle room. This counts as one"
-            + " of the five hints if on medium difficulty.";
+      if (GameState.isRoom1Solved == true
+          && GameState.isRoom2Solved == true
+          && GameState.isRoom3Solved == false) {
+        return "Tell the player the combination requires careful examination of objects in the"
+            + " game.";
       }
-      return "Tell the player: no more hints!";
+      if (GameState.isRoom1Solved && GameState.isRoom2Solved && GameState.isRoom3Solved) {
+        return "Tell the player there is an exit in the middle room.";
+      }
+    } else {
+      return "Tell the player: No hints are available!";
     }
-    return "Tell the player: no more hints!";
+    return "Tell the player: No hints are available!";
   }
 }

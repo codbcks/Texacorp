@@ -15,6 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.GameScore;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -98,12 +99,21 @@ public class Room1Controller {
   /**
    * Generates a random word from a list of words to be used in the riddle.
    *
-   * @return a random word from the list
+   * @return a random word from the list.
    */
-  private String getRandomWord() {
+  public String getRandomWord() {
     wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
     // Splitting the list into an array of individual entries
-    return wordList.split(",")[(int) (Math.random() * 5)];
+    return wordList.split(",")[(int) (Math.random() * 10)];
+  }
+
+  /**
+   * Getter method for the word to guess for the riddle for this round.
+   *
+   * @return the word to guess.
+   */
+  public String getWordToGuess() {
+    return wordToGuess;
   }
 
   // Generate a riddle using GPT and set the word to guess
@@ -122,17 +132,18 @@ public class Room1Controller {
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
+      GameScore.setStartTimeRoom1();
       showTerminal();
       try {
+        GameState.isRiddleActive = true;
         App.bottomBarController.runGpt(
             // runGpt is a method in the parent class, it returns the GPT response for the input.
-            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
-            false);
+            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)));
       } catch (ApiProxyException e) {
         e.printStackTrace();
       }
       GameState.isFirstTime = false;
-    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+    } else if (!GameState.isFirstTime && !GameState.isRoom1Solved) {
       showTerminal();
     } else {
       return;
@@ -156,7 +167,9 @@ public class Room1Controller {
   private void showTerminal() {
     terminalWrapperPane.setVisible(true);
     terminalPane.setVisible(true);
-    App.textToSpeech.speak("The... password... is...");
+    if (GameState.isTextToSpeechOn) {
+      App.textToSpeech.speak("The... password... is...");
+    }
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
     translateTransition.setByY(-120);
@@ -175,8 +188,11 @@ public class Room1Controller {
     if (guess.equalsIgnoreCase(wordToGuess)) {
       App.bottomBarController.appendChatMessage("Success!", "user");
       hideTerminal();
-      GameState.isPasswordObtained = true;
+      GameState.isRiddleActive = false;
+      GameState.isRoom1Solved = true;
       App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
+      GameScore.setFinishTimeRoom1();
+      System.out.println(GameScore.getScore1());
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();
@@ -231,7 +247,8 @@ public class Room1Controller {
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
     SceneManager.appendChatMessage(
-        "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw blade.",
+        "Two 3D printers loaded with high-tensile steel. Perfect for producing a durable saw"
+            + " blade.",
         "user");
   }
 }
