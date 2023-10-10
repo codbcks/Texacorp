@@ -10,7 +10,9 @@ public class GameState {
 
   public static boolean isFirstTime = true;
 
-  public static boolean isRiddleSolved;
+  public static boolean isRiddleSolved = false;
+
+  public static boolean isRiddleActive = false;
 
   public static boolean isPasswordObtained = false;
 

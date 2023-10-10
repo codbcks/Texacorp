@@ -116,16 +116,18 @@ public class Room1Controller {
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
+      showTerminal();
       try {
+        GameState.isRiddleActive = true;
         App.bottomBarController.runGpt(
             // runGpt is a method in the parent class, it returns the GPT response for the input.
             new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
-            false);
+            true);
       } catch (ApiProxyException e) {
         e.printStackTrace();
       }
       GameState.isFirstTime = false;
-    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+    } else if (!GameState.isFirstTime && GameState.isRiddleActive) {
       showTerminal();
     } else {
       return;
@@ -168,6 +170,7 @@ public class Room1Controller {
       App.bottomBarController.appendChatMessage("Success!", "user");
       hideTerminal();
       GameState.isPasswordObtained = true;
+      GameState.isRiddleActive = false;
       App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
