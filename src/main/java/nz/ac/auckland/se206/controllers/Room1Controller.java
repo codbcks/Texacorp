@@ -15,7 +15,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
-import nz.ac.auckland.se206.GameScore;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -132,7 +131,6 @@ public class Room1Controller {
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
-      GameScore.setStartTimeRoom1();
       showTerminal();
       try {
         GameState.isRiddleActive = true;
@@ -191,8 +189,6 @@ public class Room1Controller {
       GameState.isRiddleActive = false;
       GameState.isRoom1Solved = true;
       App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
-      GameScore.setFinishTimeRoom1();
-      System.out.println(GameScore.getScore1());
     } else {
       App.bottomBarController.appendChatMessage("Declined!", "assistant");
       riddleAnswerEntry.clear();
