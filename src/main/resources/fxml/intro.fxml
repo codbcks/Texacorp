@@ -57,7 +57,7 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label fx:id="playLabel" layoutX="440.0" layoutY="413.0" onMouseClicked="#startGame" text="PLAY" textFill="WHITE">
+            <Label fx:id="playLabel" layoutX="428.0" layoutY="410.0" onMouseClicked="#startGame" text="PLAY" textFill="WHITE">
                <font>
                   <Font size="36.0" />
                </font>

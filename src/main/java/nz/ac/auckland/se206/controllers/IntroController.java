@@ -2,6 +2,7 @@ package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
@@ -59,6 +60,18 @@ public class IntroController {
     setUpLabel(twoMinLabel, true);
     setUpLabel(fourMinLabel, true);
     setUpLabel(sixMinLabel, true);
+
+    playLabel.setOnMouseEntered(
+        e -> {
+          playLabel.getStyleClass().add("hovered-heading-intro-label");
+          playLabel.setCursor(Cursor.HAND);
+        });
+
+    playLabel.setOnMouseExited(
+        e -> {
+          playLabel.getStyleClass().remove("hovered-heading-intro-label");
+          playLabel.setCursor(Cursor.DEFAULT);
+        });
   }
 
   private void setUpLabel(Label label, boolean isTimeLabel) {
@@ -66,12 +79,14 @@ public class IntroController {
     label.setOnMouseEntered(
         e -> {
           label.getStyleClass().add("hovered-intro-screen-label");
+          label.setCursor(Cursor.HAND);
         });
 
     label.setOnMouseExited(
         e -> {
           if (label != (isTimeLabel ? currentSelectedTime : currentSelectedDifficulty)) {
             label.getStyleClass().remove("hovered-intro-screen-label");
+            label.setCursor(Cursor.DEFAULT);
           }
         });
 

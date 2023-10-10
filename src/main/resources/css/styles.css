@@ -48,6 +48,10 @@
     -fx-font-size: 36px;
 }
 
+.hovered-heading-intro-label {
+    -fx-font-size: 48px;
+}
+
 .title-intro-screen-label {
     -fx-font-size: 70px;
 }
