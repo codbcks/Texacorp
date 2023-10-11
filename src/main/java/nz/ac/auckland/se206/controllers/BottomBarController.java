@@ -3,12 +3,14 @@ package nz.ac.auckland.se206.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,10 +29,16 @@ public class BottomBarController {
   @FXML private Button sendButton;
   @FXML private TextArea inputText;
   @FXML private ImageView hintCounter;
+  @FXML private Label chatHistoryLabel;
+  @FXML private Button forwardButton;
+  @FXML private Button backwardButton;
 
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
   protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
+
+  private LinkedList<ChatMessage> conversationHistory = new LinkedList<>();
+  private int currentIndex = -1;
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -43,6 +51,9 @@ public class BottomBarController {
     modifiedNaming = new HashMap<String, String>();
     modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
+
+    currentIndex = -1;
+    updateChatDisplay();
 
     /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
@@ -123,27 +134,23 @@ public class BottomBarController {
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
   protected void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
-
     turnOffLights();
 
     addToLog(msg);
     Task<Void> runGptTask =
         new Task<Void>() {
-
           @Override
           protected Void call() throws Exception {
-
-            // The following code leverages the appendChatMessage function which is implemeneted in
+            // The following code leverages the appendChatMessage function which is implemented in
             // all children of this class
             appendChatMessage("Processing...", "assistant");
-            chatCompletionRequest.setMessages(gptInteractionLog);
+
+            chatCompletionRequest.setMessages(
+                conversationHistory); // Set entire conversation history
             try {
-              // Try catch for accessing ChatGPT
               ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
               Choice result = chatCompletionResult.getChoices().iterator().next();
-              chatCompletionRequest.addMessage(result.getChatMessage());
-              appendChatMessage(
-                  result.getChatMessage().getContent(), result.getChatMessage().getRole());
+              addToLog(result.getChatMessage());
 
               turnOnLights();
 
@@ -151,22 +158,17 @@ public class BottomBarController {
               App.room2.lightsOn();
 
               if (sayAloud) {
-                // say aloud specifies whether the program should access text to speech or not
                 App.textToSpeech.speak(result.getChatMessage().getContent());
               }
             } catch (ApiProxyException e) {
-              // Exception handling
               System.out.println("ERROR: Exception in GptInteraction.runGpt!");
               e.printStackTrace();
             }
-
             return null;
           }
         };
 
-    // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
     Thread runGptThread = new Thread(runGptTask);
-
     runGptThread.start();
   }
 
@@ -175,8 +177,13 @@ public class BottomBarController {
    *
    * @param msg the chat message to add
    */
-  protected void addToLog(ChatMessage msg) {
-    gptInteractionLog.add(msg);
+  private void addToLog(ChatMessage msg) {
+    Platform.runLater(
+        () -> {
+          conversationHistory.add(msg);
+          currentIndex = conversationHistory.size() - 1;
+          updateChatDisplay();
+        });
   }
 
   /**
@@ -192,6 +199,7 @@ public class BottomBarController {
    * @param story
    */
   public void provideBackStory(String story) {
+    // Send the backstory to GPT without appending it to the history
     addToLog(new ChatMessage("assistant", story));
   }
 
@@ -237,5 +245,42 @@ public class BottomBarController {
 
   public void setHintCounter(int remainingHints) {
     hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
+  }
+
+  @FXML
+  private void onForwardHistory(ActionEvent event) {
+    if (currentIndex < conversationHistory.size() - 1) {
+      currentIndex++;
+      updateChatDisplay();
+    }
+  }
+
+  @FXML
+  private void onBackwardHistory(ActionEvent event) {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateChatDisplay();
+    }
+  }
+
+  private void updateChatDisplay() {
+    Platform.runLater(
+        () -> {
+          if (currentIndex >= 0 && currentIndex < conversationHistory.size()) {
+            // Update your UI components based on the current chat message
+            ChatMessage message = conversationHistory.get(currentIndex);
+            chatTextArea.setText(
+                modifiedNaming.get(message.getRole()) + " -> " + message.getContent());
+
+            // Update the chat history label with the current position in the conversation
+            int currentPosition = currentIndex + 1;
+            int totalMessages = conversationHistory.size();
+            chatHistoryLabel.setText(currentPosition + " / " + totalMessages);
+          } else {
+            // Clear the chat display and history label if there are no messages
+            chatTextArea.clear();
+            chatHistoryLabel.setText("0 / 0");
+          }
+        });
   }
 }
