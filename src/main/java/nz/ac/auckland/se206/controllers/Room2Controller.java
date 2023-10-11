@@ -4,6 +4,8 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
@@ -26,6 +28,12 @@ public class Room2Controller {
 
   @FXML
   public void initialize() throws ApiProxyException {
+
+    mouseInteract(clockPromptTrigger);
+    mouseInteract(notesPromptTrigger);
+    mouseInteract(sawBody);
+    mouseInteract(laser);
+
     // Set up lights off animation
     lightsOff =
         new Timeline(
@@ -100,6 +108,24 @@ public class Room2Controller {
 
   public void lightsOn() {
     lightsOn.playFromStart();
+  }
+
+  /**
+   * Helper method for changing cursor appearance for interactable objects.
+   *
+   * @param node The interactable object.
+   */
+  @FXML
+  private void mouseInteract(Node node) {
+    node.setOnMouseEntered(
+        e -> {
+          node.setCursor(Cursor.HAND);
+        });
+
+    node.setOnMouseExited(
+        e -> {
+          node.setCursor(Cursor.DEFAULT);
+        });
   }
 
   @FXML

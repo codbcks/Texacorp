@@ -6,6 +6,8 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.input.MouseEvent;
@@ -45,6 +47,9 @@ public class Room1Controller {
     terminalLabel.getStyleClass().add("terminal-label");
 
     wordToGuess = getRandomWord();
+
+    mouseInteract(triggerConsole);
+    mouseInteract(printerPromptTrigger);
 
     // Clicking outside the terminal will hide it
     terminalWrapperPane.setOnMouseClicked(
@@ -87,6 +92,24 @@ public class Room1Controller {
   /** Turns the lights on in the room. */
   public void lightsOn() {
     lightsOn.playFromStart();
+  }
+
+  /**
+   * Helper method for changing cursor appearance for interactable objects.
+   *
+   * @param node The interactable object.
+   */
+  @FXML
+  private void mouseInteract(Node node) {
+    node.setOnMouseEntered(
+        e -> {
+          node.setCursor(Cursor.HAND);
+        });
+
+    node.setOnMouseExited(
+        e -> {
+          node.setCursor(Cursor.DEFAULT);
+        });
   }
 
   /**

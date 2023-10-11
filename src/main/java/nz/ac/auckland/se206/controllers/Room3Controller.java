@@ -4,6 +4,8 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -68,6 +70,10 @@ public class Room3Controller {
   @FXML
   public void initialize() throws ApiProxyException, IOException {
 
+    mouseInteract(whiteboardPromptTrigger);
+    mouseInteract(shelvesPromptTrigger1);
+    mouseInteract(shelvesPromptTrigger2);
+    mouseInteract(pinPadOpen);
     /* >-------- PIN + PIN PAD CREATION -------< */
 
     /* Generating pseudo-random 4 digit pin */
@@ -177,6 +183,24 @@ public class Room3Controller {
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+  }
+
+  /**
+   * Helper method for changing cursor appearance for interactable objects.
+   *
+   * @param node The interactable object.
+   */
+  @FXML
+  private void mouseInteract(Node node) {
+    node.setOnMouseEntered(
+        e -> {
+          node.setCursor(Cursor.HAND);
+        });
+
+    node.setOnMouseExited(
+        e -> {
+          node.setCursor(Cursor.DEFAULT);
+        });
   }
 
   public void lightsOff() {
