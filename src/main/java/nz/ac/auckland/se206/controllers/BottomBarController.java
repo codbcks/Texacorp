@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -13,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -62,6 +65,35 @@ public class BottomBarController {
   }
 
   /**
+   * typeText prints text (message) to a textarea. The printing effect is similar to a typewriter.
+   * The speed of this effect can be altered by manipulating the durations in the appropriate lines.
+   * The first "Duration.millis" specifies the delay for the text to appear and the second specifies
+   * the delay for each character printed.
+   *
+   * @param textArea the text area to print the text to.
+   * @param message the text to print.
+   */
+  public static void typeText(TextArea textArea, String message) {
+    Timeline typewriterTimeline = new Timeline();
+    Duration duration = Duration.millis(15);
+    final StringBuilder text = new StringBuilder();
+
+    for (char character : message.toCharArray()) {
+      KeyFrame keyFrame =
+          new KeyFrame(
+              duration,
+              event -> {
+                text.append(character);
+                textArea.setText(text.toString());
+              });
+
+      typewriterTimeline.getKeyFrames().add(keyFrame);
+      duration = duration.add(Duration.millis(35));
+    }
+    typewriterTimeline.play();
+  }
+
+  /**
    * Method that provides GPT with its backstory for the game. A different story is provided
    * depending on the difficulty.
    */
@@ -95,7 +127,7 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    appendChatMessage(message, "user");
+    // appendChatMessage(message, "user");
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
@@ -111,7 +143,8 @@ public class BottomBarController {
     // GUI changes are added to the GUI queue
     Platform.runLater(
         () -> {
-          chatTextArea.appendText("\n" + modifiedNaming.get(role) + " -> " + chatMessage);
+          // chatTextArea.appendText("\n" + modifiedNaming.get(role) + " -> " + chatMessage);
+          typeText(chatTextArea, chatMessage);
         });
   }
 
