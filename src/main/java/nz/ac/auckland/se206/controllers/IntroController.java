@@ -32,6 +32,13 @@ public class IntroController {
   @FXML
   public void initialize() throws ApiProxyException {
 
+    // Initialises some default settings
+    GameState.timeSetting = 360000;
+    GameState.setDifficulty(Difficulty.EASY);
+
+    /*
+     * Set up fonts and css style classes
+     */
     Font.loadFont(getClass().getResourceAsStream("/fonts/orbitron/Orbitron-Regular.ttf"), 20);
     easyLabel.getStyleClass().addAll("intro-screen-label", "regular-intro-screen-label");
     mediumLabel.getStyleClass().addAll("intro-screen-label", "regular-intro-screen-label");
@@ -44,22 +51,16 @@ public class IntroController {
     timeLabel.getStyleClass().addAll("intro-screen-label", "heading-intro-screen-label");
     texacorpLabel.getStyleClass().addAll("intro-screen-label", "title-intro-screen-label");
 
-    GameState.timeSetting = 360000;
-    GameState.setDifficulty(Difficulty.EASY);
-
-    textToSpeechCheckbox
-        .selectedProperty()
-        .addListener(
-            (observable, oldValue, newValue) -> {
-              GameState.isTextToSpeechOn = newValue;
-            });
-
     setUpLabel(easyLabel, false);
     setUpLabel(mediumLabel, false);
     setUpLabel(hardLabel, false);
     setUpLabel(twoMinLabel, true);
     setUpLabel(fourMinLabel, true);
     setUpLabel(sixMinLabel, true);
+
+    /*
+     * Set up hover effects for the 'PLAY' label
+     */
 
     playLabel.setOnMouseEntered(
         e -> {
@@ -72,8 +73,23 @@ public class IntroController {
           playLabel.getStyleClass().remove("hovered-heading-intro-label");
           playLabel.setCursor(Cursor.DEFAULT);
         });
+
+    // Set up text to speech checkbox to detect changes in whether it is checked or not
+    textToSpeechCheckbox
+        .selectedProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              GameState.isTextToSpeechOn = newValue;
+            });
   }
 
+  /**
+   * This method sets up the label to show that it is clickable and also handles what happens when a
+   * label is clicked.
+   *
+   * @param label The label to be set up or is clicked.
+   * @param isTimeLabel Whether the label is a time label or not.
+   */
   private void setUpLabel(Label label, boolean isTimeLabel) {
 
     label.setOnMouseEntered(
@@ -102,6 +118,7 @@ public class IntroController {
 
           label.getStyleClass().add("hovered-intro-screen-label");
 
+          // Set the difficulty or time setting based on the label that was clicked
           switch (label.getId()) {
             case "easyLabel":
               GameState.setDifficulty(GameState.Difficulty.EASY);
@@ -128,12 +145,14 @@ public class IntroController {
         });
   }
 
+  /** Helper method to reset the state of the difficulty labels. */
   private void resetDifficultyLabels() {
     easyLabel.getStyleClass().remove("hovered-intro-screen-label");
     mediumLabel.getStyleClass().remove("hovered-intro-screen-label");
     hardLabel.getStyleClass().remove("hovered-intro-screen-label");
   }
 
+  /** Helper method to reset the state of the time labels. */
   private void resetTimeLabels() {
     twoMinLabel.getStyleClass().remove("hovered-intro-screen-label");
     fourMinLabel.getStyleClass().remove("hovered-intro-screen-label");
@@ -157,9 +176,8 @@ public class IntroController {
           .removeHintCounter();
     } else if (difficulty == GameState.Difficulty.HARD) {
       ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
-          .setHintCounter(0);
+          .setHintCounter();
     }
-
     App.bottomBarController.giveBackstory();
   }
 }

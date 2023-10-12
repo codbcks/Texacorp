@@ -131,6 +131,7 @@ public class Room1Controller {
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
     if (GameState.isFirstTime) {
+      GameState.isFirstTime = false;
       showTerminal();
       try {
         GameState.isRiddleActive = true;
@@ -140,7 +141,7 @@ public class Room1Controller {
       } catch (ApiProxyException e) {
         e.printStackTrace();
       }
-      GameState.isFirstTime = false;
+      GameState.isRiddleGiven = true;
     } else if (!GameState.isFirstTime && !GameState.isRoom1Solved) {
       showTerminal();
     } else {
