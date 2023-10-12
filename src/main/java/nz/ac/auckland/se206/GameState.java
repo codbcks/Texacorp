@@ -22,13 +22,13 @@ public class GameState {
 
   /**
    * The next two variables are used to determine whether the riddle is active and whether it has
-   * been given to the player. isRiddleGiven is only used when the player checks the 3D printing
+   * been given to the player. isRiddleExpected is only used when the player checks the 3D printing
    * terminal the first time and is simply because GPT is slightly erratic in giving (or attempting
    * to give) a hint instead of a riddle.
    */
   public static boolean isRiddleActive = false;
 
-  public static boolean isRiddleGiven = false;
+  public static boolean isRiddleExpected = false;
 
   /**
    * Method to reset all game variables to their default values. This is called when the player
@@ -37,7 +37,7 @@ public class GameState {
   public static void resetGameVariables() {
     isFirstTime = true;
     isRiddleActive = false;
-    isRiddleGiven = false;
+    isRiddleExpected = false;
     isRoom1Solved = false;
     isRoom2Solved = false;
     isRoom3Solved = false;

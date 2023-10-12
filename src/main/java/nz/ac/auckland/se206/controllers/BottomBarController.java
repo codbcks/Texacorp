@@ -74,7 +74,9 @@ public class BottomBarController {
    * @throws ApiProxyException
    */
   public void onRequestHint(ActionEvent event) throws ApiProxyException {
+    hintButton.setDisable(true);
     runGptForHint(new ChatMessage("user", GptPromptEngineering.getHint()));
+    hintButton.setDisable(false);
   }
 
   /**
@@ -85,6 +87,7 @@ public class BottomBarController {
    * @see #runGpt(ChatMessage)
    */
   private void runGptForHint(ChatMessage chatMessage) {
+
     addToLog(chatMessage);
     Task<Void> runGptHintTask =
         new Task<Void>() {
@@ -263,8 +266,9 @@ public class BottomBarController {
    * @param gptResponse the response for GPT.
    */
   private void handleGptResponse(String gptResponse) {
-    if (!GameState.isRiddleGiven) {
+    if (GameState.isRiddleExpected) {
       Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+      GameState.isRiddleExpected = false;
     } else {
       if ((gptResponse.startsWith("HINT:") || gptResponse.contains("hint"))) {
         handleHintResponse(gptResponse);
