@@ -88,7 +88,7 @@ public class App extends Application {
     return scene;
   }
 
-  public static KeyFrame createTranslateKeyFrame(
+  public static KeyFrame getTranslateKeyFrame(
       double xDist, double yDist, Node nodeToMove, double durationMillis, double startDelayMillis) {
     return new KeyFrame(
         Duration.millis(startDelayMillis),

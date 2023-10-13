@@ -45,7 +45,7 @@ public class ChallengeTimer {
               try {
                 Thread.sleep(64);
               } catch (Exception e) {
-                System.out.println("ERROR: Exception in TimedScenario.startTimer!");
+                System.err.println("ERROR: Exception in TimedScenario.startTimer!");
                 e.printStackTrace();
               }
             }
