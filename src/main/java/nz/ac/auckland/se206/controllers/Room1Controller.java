@@ -4,12 +4,15 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -32,11 +35,22 @@ public class Room1Controller {
   @FXML private Pane terminalWrapperPane;
   @FXML private PasswordField riddleAnswerEntry;
 
+  @FXML private ImageView imgMachineMoveY;
+  @FXML private ImageView imgConveyorSaw;
+  @FXML private Pane paneMachineMoveY;
+  @FXML private Pane paneConveyorDropBox;
+  @FXML private Rectangle triggerDropSaw;
+  @FXML private ImageView imgConveyor;
+
   private Timeline lightsOff;
   private Timeline lightsOn;
+  private Timeline takeBrokenSaw;
+  private long conveyorFrameRate = 10;
 
   private static String wordToGuess;
   private static String wordList;
+
+  private boolean conveyorMoving = false;
 
   @FXML
   public void initialize() throws ApiProxyException {
@@ -82,6 +96,20 @@ public class Room1Controller {
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+
+    // triggers conveyor motion when saw is dropped
+    takeBrokenSaw =
+        new Timeline(
+            App.createTranslateKeyFrame(0, -52, paneConveyorDropBox, 52 * conveyorFrameRate, 0),
+            App.createTranslateKeyFrame(
+                -228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 52 * conveyorFrameRate),
+            App.createTranslateKeyFrame(
+                0, 116, paneConveyorDropBox, 116 * conveyorFrameRate, 280 * conveyorFrameRate),
+            new KeyFrame(
+                Duration.millis(396 * conveyorFrameRate),
+                e -> {
+                  conveyorMoving = false;
+                }));
   }
 
   /** Turns the lights off in the room. */
@@ -92,6 +120,46 @@ public class Room1Controller {
   /** Turns the lights on in the room. */
   public void lightsOn() {
     lightsOn.playFromStart();
+  }
+
+  @FXML
+  private void dropSaw(MouseEvent event) throws IOException {
+
+    if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)) {
+      imgConveyorSaw.setVisible(true);
+      takeBrokenSaw.play();
+
+      Task<Void> conveyorMovementTask =
+          new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+
+              int conveyorFrame = 1;
+              conveyorMoving = true;
+
+              while (conveyorMoving) {
+                if (conveyorFrame == 5) {
+                  conveyorFrame = 1;
+                }
+
+                imgConveyor.setImage(
+                    new Image("/images/leftRoomBelt-Frame" + conveyorFrame + ".png"));
+
+                try {
+                  Thread.sleep(conveyorFrameRate);
+                } catch (Exception e) {
+                }
+
+                conveyorFrame++;
+              }
+              return null;
+            }
+          };
+
+      Thread conveyorMovementThread = new Thread(conveyorMovementTask);
+      conveyorMovementThread.start();
+    }
   }
 
   /**
