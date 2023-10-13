@@ -3,10 +3,8 @@ package nz.ac.auckland.se206.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -36,9 +34,7 @@ public class BottomBarController {
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
   protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
-
-  private LinkedList<ChatMessage> conversationHistory = new LinkedList<>();
-  private int currentIndex = -1;
+  private int logIndex;
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -52,8 +48,8 @@ public class BottomBarController {
     modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
 
-    currentIndex = -1;
-    updateChatDisplay();
+    logIndex = 0;
+    chatHistoryLabel.setText(logIndex + "/0");
 
     /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
@@ -77,16 +73,16 @@ public class BottomBarController {
    * depending on the difficulty.
    */
   public void giveBackstory() {
-    provideBackStory(GptPromptEngineering.initializeBackstory());
+    addToLog(new ChatMessage("assistant", GptPromptEngineering.initializeBackstory()));
     switch (GameState.currentDifficulty) {
       case EASY:
-        provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setEasyHintDifficulty()));
         break;
       case MEDIUM:
-        provideBackStory(GptPromptEngineering.setMediumHintDifficulty());
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setMediumHintDifficulty()));
         break;
       case HARD:
-        provideBackStory(GptPromptEngineering.setHardHintDifficulty());
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setHardHintDifficulty()));
         break;
     }
   }
@@ -106,7 +102,7 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    appendChatMessage(message, "user");
+    // appendChatMessage(message, "user");
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
@@ -133,43 +129,42 @@ public class BottomBarController {
    * @return the response chat message
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
-  protected void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
+  void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
     turnOffLights();
-
     addToLog(msg);
-    Task<Void> runGptTask =
-        new Task<Void>() {
-          @Override
-          protected Void call() throws Exception {
-            // The following code leverages the appendChatMessage function which is implemented in
-            // all children of this class
-            appendChatMessage("Processing...", "assistant");
+    logIndex++;
+    updateChat();
 
-            chatCompletionRequest.setMessages(
-                conversationHistory); // Set entire conversation history
-            try {
-              ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
-              Choice result = chatCompletionResult.getChoices().iterator().next();
-              addToLog(result.getChatMessage());
+    Thread gptThread =
+        new Thread(
+            () -> {
+              try {
+                chatCompletionRequest.setMessages(gptInteractionLog);
+                ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+                Choice result = chatCompletionResult.getChoices().iterator().next();
 
-              turnOnLights();
+                addToLog(result.getChatMessage());
+                logIndex++;
+                turnOnLights();
 
-              GameState.isGPTRunning = false;
-              App.room2.lightsOn();
+                Platform.runLater(
+                    () -> {
+                      updateChat();
+                    });
 
-              if (sayAloud) {
-                App.textToSpeech.speak(result.getChatMessage().getContent());
+              } catch (ApiProxyException e) {
+                Platform.runLater(
+                    () -> {
+                      System.out.println("ERROR: Exception in GptInteraction.runGpt!");
+                      e.printStackTrace();
+                    });
               }
-            } catch (ApiProxyException e) {
-              System.out.println("ERROR: Exception in GptInteraction.runGpt!");
-              e.printStackTrace();
-            }
-            return null;
-          }
-        };
+            });
 
-    Thread runGptThread = new Thread(runGptTask);
-    runGptThread.start();
+    gptThread.start();
+    // if (sayAloud) {
+    //   App.textToSpeech.speak(getRecentLogMessage());
+    // }
   }
 
   /**
@@ -177,30 +172,12 @@ public class BottomBarController {
    *
    * @param msg the chat message to add
    */
-  private void addToLog(ChatMessage msg) {
-    Platform.runLater(
-        () -> {
-          conversationHistory.add(msg);
-          currentIndex = conversationHistory.size() - 1;
-          updateChatDisplay();
-        });
+  protected void addToLog(ChatMessage msg) {
+    gptInteractionLog.add(msg);
   }
 
-  /**
-   * Clears the GPT interaction log. Initial thinking was that this would help moderate token use.
-   */
-  public void clearLog() {
-    gptInteractionLog.clear();
-  }
-
-  /**
-   * Method that provides GPT with its backstory for the game.
-   *
-   * @param story
-   */
-  public void provideBackStory(String story) {
-    // Send the backstory to GPT without appending it to the history
-    addToLog(new ChatMessage("assistant", story));
+  protected String getRecentLogMessage() {
+    return gptInteractionLog.get(logIndex + 1).getContent();
   }
 
   /**
@@ -247,40 +224,30 @@ public class BottomBarController {
     hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
   }
 
+  private void updateChat() {
+    chatHistoryLabel.setText(
+        String.valueOf(logIndex) + "/" + String.valueOf(gptInteractionLog.size() - 2));
+    chatTextArea.clear();
+
+    ChatMessage msg = gptInteractionLog.get(logIndex + 1);
+    chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
+  }
+
   @FXML
   private void onForwardHistory(ActionEvent event) {
-    if (currentIndex < conversationHistory.size() - 1) {
-      currentIndex++;
-      updateChatDisplay();
+    if (logIndex == gptInteractionLog.size() - 2) {
+      return;
     }
+    logIndex++;
+    updateChat();
   }
 
   @FXML
   private void onBackwardHistory(ActionEvent event) {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updateChatDisplay();
+    if (logIndex == 1) {
+      return;
     }
-  }
-
-  private void updateChatDisplay() {
-    Platform.runLater(
-        () -> {
-          if (currentIndex >= 0 && currentIndex < conversationHistory.size()) {
-            // Update your UI components based on the current chat message
-            ChatMessage message = conversationHistory.get(currentIndex);
-            chatTextArea.setText(
-                modifiedNaming.get(message.getRole()) + " -> " + message.getContent());
-
-            // Update the chat history label with the current position in the conversation
-            int currentPosition = currentIndex + 1;
-            int totalMessages = conversationHistory.size();
-            chatHistoryLabel.setText(currentPosition + " / " + totalMessages);
-          } else {
-            // Clear the chat display and history label if there are no messages
-            chatTextArea.clear();
-            chatHistoryLabel.setText("0 / 0");
-          }
-        });
+    logIndex--;
+    updateChat();
   }
 }
