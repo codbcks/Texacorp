@@ -104,7 +104,6 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    // appendChatMessage(message, "user");
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
@@ -153,6 +152,10 @@ public class BottomBarController {
                       updateChat();
                     });
 
+                if (sayAloud) {
+                  App.textToSpeech.speak(getRecentLogMessage());
+                }
+
               } catch (ApiProxyException e) {
                 Platform.runLater(
                     () -> {
@@ -163,9 +166,13 @@ public class BottomBarController {
             });
 
     gptThread.start();
-    // if (sayAloud) {
-    //   App.textToSpeech.speak(getRecentLogMessage());
-    // }
+  }
+
+  private String getRecentLogMessage() {
+    return orderedGptInteractionLog
+        .get(orderedGptInteractionLog.size() - 1)
+        .get(orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).size() - 1)
+        .getContent();
   }
 
   /**
