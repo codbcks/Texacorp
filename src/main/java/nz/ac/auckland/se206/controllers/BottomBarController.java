@@ -33,8 +33,9 @@ public class BottomBarController {
 
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
-  protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
   private int logIndex;
+  private String previousMessageRole;
+  protected List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -50,6 +51,7 @@ public class BottomBarController {
 
     logIndex = 0;
     chatHistoryLabel.setText(logIndex + "/0");
+    previousMessageRole = null;
 
     /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
@@ -132,19 +134,18 @@ public class BottomBarController {
   void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
     turnOffLights();
     addToLog(msg);
-    logIndex++;
     updateChat();
 
     Thread gptThread =
         new Thread(
             () -> {
               try {
-                chatCompletionRequest.setMessages(gptInteractionLog);
+                chatCompletionRequest.setMessages(
+                    orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1));
                 ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
                 Choice result = chatCompletionResult.getChoices().iterator().next();
 
                 addToLog(result.getChatMessage());
-                logIndex++;
                 turnOnLights();
 
                 Platform.runLater(
@@ -173,11 +174,18 @@ public class BottomBarController {
    * @param msg the chat message to add
    */
   protected void addToLog(ChatMessage msg) {
-    gptInteractionLog.add(msg);
-  }
 
-  protected String getRecentLogMessage() {
-    return gptInteractionLog.get(logIndex + 1).getContent();
+    if (previousMessageRole == "user") {
+      // save to same list
+      orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
+    } else {
+      // save to new list
+      orderedGptInteractionLog.add(new ArrayList<ChatMessage>());
+      orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
+      logIndex++;
+    }
+
+    previousMessageRole = msg.getRole();
   }
 
   /**
@@ -226,16 +234,17 @@ public class BottomBarController {
 
   private void updateChat() {
     chatHistoryLabel.setText(
-        String.valueOf(logIndex) + "/" + String.valueOf(gptInteractionLog.size() - 2));
+        String.valueOf(logIndex - 2) + "/" + String.valueOf(orderedGptInteractionLog.size() - 2));
     chatTextArea.clear();
 
-    ChatMessage msg = gptInteractionLog.get(logIndex + 1);
-    chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
+    for (ChatMessage msg : orderedGptInteractionLog.get(logIndex - 1)) {
+      chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
+    }
   }
 
   @FXML
   private void onForwardHistory(ActionEvent event) {
-    if (logIndex == gptInteractionLog.size() - 2) {
+    if (logIndex == orderedGptInteractionLog.size()) {
       return;
     }
     logIndex++;
@@ -244,7 +253,7 @@ public class BottomBarController {
 
   @FXML
   private void onBackwardHistory(ActionEvent event) {
-    if (logIndex == 1) {
+    if (logIndex == 3) {
       return;
     }
     logIndex--;
