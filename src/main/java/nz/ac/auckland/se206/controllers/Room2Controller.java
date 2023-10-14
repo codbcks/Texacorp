@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
+import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room2Controller {
@@ -135,8 +136,11 @@ public class Room2Controller {
       App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
       sawBody.setVisible(false);
     } else {
-      SceneManager.appendChatMessage(
-          "I'm pretty sure that 7 deadly lasers is above the recommended daily allowance.", "user");
+      SceneManager.addToLogEnviroClick(
+          new ChatMessage(
+              "user",
+              "I'm pretty sure that 7 deadly lasers is above the recommended daily allowance."));
+      SceneManager.updateChat();
     }
   }
 
@@ -152,11 +156,14 @@ public class Room2Controller {
 
   @FXML
   public void clockPrompt(MouseEvent event) throws IOException {
-    SceneManager.appendChatMessage("This clock is stuck on 0, it must be broken.", "user");
+    SceneManager.addToLogEnviroClick(
+        new ChatMessage("user", "This clock is stuck on 0, it must be broken."));
+    SceneManager.updateChat();
   }
 
   @FXML
   public void notesPrompt(MouseEvent event) throws IOException {
-    SceneManager.appendChatMessage("6 blank sticky notes... weird.", "user");
+    SceneManager.addToLogEnviroClick(new ChatMessage("user", "6 blank sticky notes... weird."));
+    SceneManager.updateChat();
   }
 }

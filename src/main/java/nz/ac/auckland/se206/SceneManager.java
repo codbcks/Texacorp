@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import nz.ac.auckland.se206.controllers.BottomBarController;
+import nz.ac.auckland.se206.gpt.ChatMessage;
 
 /** SceneManager holds one instance of each scene using a HashMap */
 public class SceneManager {
@@ -46,7 +47,12 @@ public class SceneManager {
     return sceneMap.get(ui);
   }
 
-  public static void appendChatMessage(String chatMessage, String role) {
-    ((BottomBarController) getController(AppUI.BOTTOMBAR)).appendChatMessage(chatMessage, role);
+  public static void addToLogEnviroClick(ChatMessage chatMessage) {
+    ((BottomBarController) getController(AppUI.BOTTOMBAR)).addToLog(chatMessage, true);
+  }
+
+  public static void updateChat() {
+    ((BottomBarController) getController(AppUI.BOTTOMBAR)).updateChat();
+    ;
   }
 }

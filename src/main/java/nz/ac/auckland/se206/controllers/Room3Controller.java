@@ -17,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.controllers.TopBarController.Item;
+import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room3Controller {
@@ -262,14 +263,18 @@ public class Room3Controller {
 
   @FXML
   public void shelvesPrompt(MouseEvent event) throws IOException {
-    SceneManager.appendChatMessage("Huh, nothing of use in any of these five shelves...", "user");
+    SceneManager.addToLogEnviroClick(
+        new ChatMessage("user", "Huh, nothing of use in any of these five shelves..."));
+    SceneManager.updateChat();
   }
 
   @FXML
   public void whiteboardPrompt(MouseEvent event) throws IOException {
-    SceneManager.appendChatMessage(
-        "Oh thank god, the escape drill class forgot to wipe down this whiteboard... Find saw"
-            + " battery... Find saw motor... Create saw blade. Got it.",
-        "user");
+    SceneManager.addToLogEnviroClick(
+        new ChatMessage(
+            "user",
+            "Oh thank god, the escape drill class forgot to wipe down this whiteboard... Find"
+                + " saw battery... Find saw motor... Create saw blade. Got it."));
+    SceneManager.updateChat();
   }
 }

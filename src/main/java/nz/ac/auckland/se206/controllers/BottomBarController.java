@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,10 +27,16 @@ public class BottomBarController {
   @FXML private Button sendButton;
   @FXML private TextArea inputText;
   @FXML private ImageView hintCounter;
+  @FXML private Label chatHistoryLabel;
+  @FXML private Button forwardButton;
+  @FXML private Button backwardButton;
 
   protected ChatCompletionRequest chatCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
-  protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
+  private int logIndex;
+  private String previousMessageRole;
+  private boolean previousEnivroClick;
+  protected List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -43,6 +49,11 @@ public class BottomBarController {
     modifiedNaming = new HashMap<String, String>();
     modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
+
+    logIndex = 0;
+    chatHistoryLabel.setText(logIndex + "/0");
+    previousMessageRole = "assistant";
+    previousEnivroClick = false;
 
     /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
@@ -66,16 +77,17 @@ public class BottomBarController {
    * depending on the difficulty.
    */
   public void giveBackstory() {
-    provideBackStory(GptPromptEngineering.initializeBackstory());
+    addToLog(new ChatMessage("assistant", GptPromptEngineering.initializeBackstory()), false);
     switch (GameState.currentDifficulty) {
       case EASY:
-        provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setEasyHintDifficulty()), false);
         break;
       case MEDIUM:
-        provideBackStory(GptPromptEngineering.setMediumHintDifficulty());
+        addToLog(
+            new ChatMessage("assistant", GptPromptEngineering.setMediumHintDifficulty()), false);
         break;
       case HARD:
-        provideBackStory(GptPromptEngineering.setHardHintDifficulty());
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setHardHintDifficulty()), false);
         break;
     }
   }
@@ -95,24 +107,10 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    appendChatMessage(message, "user");
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
     runGpt(msg, true);
-  }
-
-  /**
-   * Appends a chat message to the chat text area.
-   *
-   * @param msg the chat message to append
-   */
-  public void appendChatMessage(String chatMessage, String role) {
-    // GUI changes are added to the GUI queue
-    Platform.runLater(
-        () -> {
-          chatTextArea.appendText("\n" + modifiedNaming.get(role) + " -> " + chatMessage);
-        });
   }
 
   /**
@@ -122,52 +120,49 @@ public class BottomBarController {
    * @return the response chat message
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
-  protected void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
-
+  void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
     turnOffLights();
+    addToLog(msg, false);
+    updateChat();
 
-    addToLog(msg);
-    Task<Void> runGptTask =
-        new Task<Void>() {
+    Thread gptThread =
+        new Thread(
+            () -> {
+              try {
+                chatCompletionRequest.setMessages(
+                    orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1));
+                ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+                Choice result = chatCompletionResult.getChoices().iterator().next();
 
-          @Override
-          protected Void call() throws Exception {
+                addToLog(result.getChatMessage(), false);
+                turnOnLights();
 
-            // The following code leverages the appendChatMessage function which is implemeneted in
-            // all children of this class
-            appendChatMessage("Processing...", "assistant");
-            chatCompletionRequest.setMessages(gptInteractionLog);
-            try {
-              // Try catch for accessing ChatGPT
-              ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
-              Choice result = chatCompletionResult.getChoices().iterator().next();
-              chatCompletionRequest.addMessage(result.getChatMessage());
-              appendChatMessage(
-                  result.getChatMessage().getContent(), result.getChatMessage().getRole());
+                Platform.runLater(
+                    () -> {
+                      updateChat();
+                    });
 
-              turnOnLights();
+                if (sayAloud) {
+                  App.textToSpeech.speak(getRecentLogMessage());
+                }
 
-              GameState.isGPTRunning = false;
-              App.room2.lightsOn();
-
-              if (sayAloud) {
-                // say aloud specifies whether the program should access text to speech or not
-                App.textToSpeech.speak(result.getChatMessage().getContent());
+              } catch (ApiProxyException e) {
+                Platform.runLater(
+                    () -> {
+                      System.out.println("ERROR: Exception in GptInteraction.runGpt!");
+                      e.printStackTrace();
+                    });
               }
-            } catch (ApiProxyException e) {
-              // Exception handling
-              System.out.println("ERROR: Exception in GptInteraction.runGpt!");
-              e.printStackTrace();
-            }
+            });
 
-            return null;
-          }
-        };
+    gptThread.start();
+  }
 
-    // The GPT thread runnable is a Task so that it can be bound to a GUI element later on
-    Thread runGptThread = new Thread(runGptTask);
-
-    runGptThread.start();
+  private String getRecentLogMessage() {
+    return orderedGptInteractionLog
+        .get(orderedGptInteractionLog.size() - 1)
+        .get(orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).size() - 1)
+        .getContent();
   }
 
   /**
@@ -175,24 +170,23 @@ public class BottomBarController {
    *
    * @param msg the chat message to add
    */
-  protected void addToLog(ChatMessage msg) {
-    gptInteractionLog.add(msg);
-  }
+  public void addToLog(ChatMessage msg, boolean enviroClick) {
 
-  /**
-   * Clears the GPT interaction log. Initial thinking was that this would help moderate token use.
-   */
-  public void clearLog() {
-    gptInteractionLog.clear();
-  }
+    if (msg.getRole().equals("assistant")
+        && previousMessageRole.equals("user")
+        && !enviroClick
+        && !previousEnivroClick) {
+      // save to same list
+      orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
+    } else {
+      // save to new list
+      orderedGptInteractionLog.add(new ArrayList<ChatMessage>());
+      orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
+      logIndex = orderedGptInteractionLog.size();
+    }
 
-  /**
-   * Method that provides GPT with its backstory for the game.
-   *
-   * @param story
-   */
-  public void provideBackStory(String story) {
-    addToLog(new ChatMessage("assistant", story));
+    previousMessageRole = msg.getRole();
+    previousEnivroClick = enviroClick;
   }
 
   /**
@@ -237,5 +231,33 @@ public class BottomBarController {
 
   public void setHintCounter(int remainingHints) {
     hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
+  }
+
+  public void updateChat() {
+    chatHistoryLabel.setText(
+        String.valueOf(logIndex - 2) + "/" + String.valueOf(orderedGptInteractionLog.size() - 2));
+    chatTextArea.clear();
+
+    for (ChatMessage msg : orderedGptInteractionLog.get(logIndex - 1)) {
+      chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
+    }
+  }
+
+  @FXML
+  private void onForwardHistory(ActionEvent event) {
+    if (logIndex >= orderedGptInteractionLog.size()) {
+      return;
+    }
+    logIndex++;
+    updateChat();
+  }
+
+  @FXML
+  private void onBackwardHistory(ActionEvent event) {
+    if (logIndex <= 3) {
+      return;
+    }
+    logIndex--;
+    updateChat();
   }
 }
