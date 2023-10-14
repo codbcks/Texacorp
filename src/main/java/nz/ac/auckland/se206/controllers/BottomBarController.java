@@ -35,6 +35,7 @@ public class BottomBarController {
   protected static HashMap<String, String> modifiedNaming;
   private int logIndex;
   private String previousMessageRole;
+  private boolean previousEnivroClick;
   protected List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
 
   public void initialize() throws ApiProxyException {
@@ -51,7 +52,8 @@ public class BottomBarController {
 
     logIndex = 0;
     chatHistoryLabel.setText(logIndex + "/0");
-    previousMessageRole = null;
+    previousMessageRole = "assistant";
+    previousEnivroClick = false;
 
     /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
@@ -75,16 +77,17 @@ public class BottomBarController {
    * depending on the difficulty.
    */
   public void giveBackstory() {
-    addToLog(new ChatMessage("assistant", GptPromptEngineering.initializeBackstory()));
+    addToLog(new ChatMessage("assistant", GptPromptEngineering.initializeBackstory()), false);
     switch (GameState.currentDifficulty) {
       case EASY:
-        addToLog(new ChatMessage("assistant", GptPromptEngineering.setEasyHintDifficulty()));
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setEasyHintDifficulty()), false);
         break;
       case MEDIUM:
-        addToLog(new ChatMessage("assistant", GptPromptEngineering.setMediumHintDifficulty()));
+        addToLog(
+            new ChatMessage("assistant", GptPromptEngineering.setMediumHintDifficulty()), false);
         break;
       case HARD:
-        addToLog(new ChatMessage("assistant", GptPromptEngineering.setHardHintDifficulty()));
+        addToLog(new ChatMessage("assistant", GptPromptEngineering.setHardHintDifficulty()), false);
         break;
     }
   }
@@ -111,19 +114,6 @@ public class BottomBarController {
   }
 
   /**
-   * Appends a chat message to the chat text area.
-   *
-   * @param msg the chat message to append
-   */
-  public void appendChatMessage(String chatMessage, String role) {
-    // GUI changes are added to the GUI queue
-    Platform.runLater(
-        () -> {
-          chatTextArea.appendText("\n" + modifiedNaming.get(role) + " -> " + chatMessage);
-        });
-  }
-
-  /**
    * Runs the GPT model with a given chat message.
    *
    * @param msg the chat message to process
@@ -132,7 +122,7 @@ public class BottomBarController {
    */
   void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
     turnOffLights();
-    addToLog(msg);
+    addToLog(msg, false);
     updateChat();
 
     Thread gptThread =
@@ -144,7 +134,7 @@ public class BottomBarController {
                 ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
                 Choice result = chatCompletionResult.getChoices().iterator().next();
 
-                addToLog(result.getChatMessage());
+                addToLog(result.getChatMessage(), false);
                 turnOnLights();
 
                 Platform.runLater(
@@ -180,19 +170,23 @@ public class BottomBarController {
    *
    * @param msg the chat message to add
    */
-  protected void addToLog(ChatMessage msg) {
+  public void addToLog(ChatMessage msg, boolean enviroClick) {
 
-    if (previousMessageRole == "user") {
+    if (msg.getRole().equals("assistant")
+        && previousMessageRole.equals("user")
+        && !enviroClick
+        && !previousEnivroClick) {
       // save to same list
       orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
     } else {
       // save to new list
       orderedGptInteractionLog.add(new ArrayList<ChatMessage>());
       orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
-      logIndex++;
+      logIndex = orderedGptInteractionLog.size();
     }
 
     previousMessageRole = msg.getRole();
+    previousEnivroClick = enviroClick;
   }
 
   /**
@@ -239,7 +233,7 @@ public class BottomBarController {
     hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
   }
 
-  private void updateChat() {
+  public void updateChat() {
     chatHistoryLabel.setText(
         String.valueOf(logIndex - 2) + "/" + String.valueOf(orderedGptInteractionLog.size() - 2));
     chatTextArea.clear();
@@ -251,7 +245,7 @@ public class BottomBarController {
 
   @FXML
   private void onForwardHistory(ActionEvent event) {
-    if (logIndex == orderedGptInteractionLog.size()) {
+    if (logIndex >= orderedGptInteractionLog.size()) {
       return;
     }
     logIndex++;
@@ -260,7 +254,7 @@ public class BottomBarController {
 
   @FXML
   private void onBackwardHistory(ActionEvent event) {
-    if (logIndex == 3) {
+    if (logIndex <= 3) {
       return;
     }
     logIndex--;
