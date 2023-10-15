@@ -23,7 +23,7 @@
             <Image url="@../images/middleRoomLaserOverlay.png" />
          </image>
       </ImageView>
-      <Rectangle fx:id="exit" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="133.0" layoutX="416.0" layoutY="26.0" onMouseClicked="#clickExit" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
+      <Rectangle fx:id="exit" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="126.0" layoutX="416.0" layoutY="10.0" onMouseClicked="#clickExit" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
       <Rectangle fx:id="clockPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="29.0" layoutX="289.0" layoutY="33.0" onMouseClicked="#clockPrompt" stroke="TRANSPARENT" strokeType="INSIDE" width="70.0" />
       <Rectangle fx:id="notesPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="125.0" layoutX="591.0" layoutY="64.0" onMouseClicked="#notesPrompt" stroke="TRANSPARENT" strokeType="INSIDE" width="52.0" />

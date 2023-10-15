@@ -20,7 +20,9 @@ public class TopBarController {
   public enum Item {
     SAW_BODY,
     SAW_BLADE,
-    SAW_BATTERY
+    SAW_BATTERY,
+    SAW_BROKEN,
+    SAW_FIXED
   }
 
   private static int invLength;

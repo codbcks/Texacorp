@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -146,6 +147,7 @@ public class Room2Controller {
     if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)
         && App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)
         && App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
+      ChallengeTimer.cancelTimer();
       App.setRoot(SceneManager.AppUI.WIN);
     }
   }

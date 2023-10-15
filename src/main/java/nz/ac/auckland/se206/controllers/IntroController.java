@@ -42,9 +42,7 @@ public class IntroController {
   private void startGame() throws IOException {
 
     /* Set challenge timer */
-    ChallengeTimer.setCurrentLabelTimer(
-        App.topBarController.getTimerLabel(), GameState.timeSetting);
-    ChallengeTimer.startTimer();
+    ChallengeTimer.startTimer(GameState.timeSetting, App.topBarController.getTimerLabel());
 
     /* This is the entry point for the game */
     App.setRoot(SceneManager.AppUI.IN_GAME);
@@ -135,6 +133,6 @@ public class IntroController {
     btnSixMin.setTextFill(Color.BLACK);
     btnFourMin.setTextFill(Color.BLACK);
     btnTwoMin.setTextFill(Color.RED);
-    GameState.timeSetting = 120000;
+    GameState.timeSetting = 10000;
   }
 }

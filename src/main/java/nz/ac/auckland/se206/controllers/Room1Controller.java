@@ -55,6 +55,7 @@ public class Room1Controller {
   private boolean conveyorIsActive = false;
   private boolean sawDeposited = false;
   private boolean materialDeposited = true; // <--- CHANGE TO FALSE
+  private boolean repairComplete = false;
 
   @FXML
   public void initialize() throws ApiProxyException {
@@ -129,6 +130,8 @@ public class Room1Controller {
                 Duration.millis(396 * conveyorFrameRate),
                 e -> {
                   conveyorIsActive = false;
+                  repairComplete = true;
+                  triggerDropSaw.setCursor(Cursor.HAND);
                 }));
   }
 
@@ -144,12 +147,16 @@ public class Room1Controller {
 
   @FXML
   private void dropSaw(MouseEvent event) throws IOException {
-
-    if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)) {
-      App.topBarController.removeItem(TopBarController.Item.SAW_BODY);
+    if (repairComplete) {
+      imgConveyorSaw.setVisible(false);
+      App.topBarController.giveItem(TopBarController.Item.SAW_FIXED);
+      triggerDropSaw.setCursor(Cursor.DEFAULT);
+    } else if (App.topBarController.hasItem(TopBarController.Item.SAW_BROKEN)) {
+      App.topBarController.removeItem(TopBarController.Item.SAW_BROKEN);
       imgConveyorSaw.setVisible(true);
       takeBrokenSaw.play();
       activateConveyor(false);
+      triggerDropSaw.setCursor(Cursor.DEFAULT);
     }
   }
 
@@ -211,6 +218,11 @@ public class Room1Controller {
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 40 * repairBayFrameRate),
               App.getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 50 * repairBayFrameRate),
+              new KeyFrame(
+                  Duration.millis(50 * repairBayFrameRate),
+                  e -> {
+                    imgConveyorSaw.setImage(new Image("/images/SAW_FIXED.png"));
+                  }),
               App.getTranslateKeyFrame(
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 60 * repairBayFrameRate),
               App.getTranslateKeyFrame(
