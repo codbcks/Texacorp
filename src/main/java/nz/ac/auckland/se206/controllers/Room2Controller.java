@@ -144,9 +144,7 @@ public class Room2Controller {
   @FXML
   public void clickExit(MouseEvent event) throws IOException {
     // If the player has all the items, go to the win screen
-    if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)
-        && App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)
-        && App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
+    if (App.topBarController.hasItem(TopBarController.Item.SAW_FIXED)) {
       ChallengeTimer.cancelTimer();
       App.setRoot(SceneManager.AppUI.WIN);
     }

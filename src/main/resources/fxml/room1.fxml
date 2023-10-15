@@ -35,6 +35,11 @@
             <Image url="@../images/leftRoomForeground.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="imgMachineResin" fitHeight="48.0" fitWidth="48.0" layoutX="495.0" layoutY="145.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../images/RESIN.png" />
+         </image>
+      </ImageView>
       <Pane fx:id="paneMachineMoveY" layoutX="168.0" layoutY="210.0" prefHeight="23.0" prefWidth="114.0">
          <children>
             <ImageView fitHeight="23.0" fitWidth="114.0" pickOnBounds="true" preserveRatio="true">
@@ -49,7 +54,7 @@
             </ImageView>
          </children>
       </Pane>
-      <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="200.0" layoutX="104.0" layoutY="96.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="358.0">
+      <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="56.0" layoutX="366.0" layoutY="292.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="258.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -59,6 +64,11 @@
             <Cursor fx:constant="HAND" />
          </cursor></Rectangle>
       <Rectangle fx:id="triggerDropSaw" fill="#00ff0000" height="190.0" layoutX="424.0" layoutY="54.0" onMouseClicked="#dropSaw" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="56.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Rectangle>
+      <Rectangle fx:id="triggerDropResin" fill="#00ff0000" height="190.0" layoutX="491.0" layoutY="53.0" onMouseClicked="#dropResin" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="56.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

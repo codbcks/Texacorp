@@ -41,6 +41,7 @@ public class Room1Controller {
   @FXML private Pane paneConveyorDropBox;
   @FXML private Rectangle triggerDropSaw;
   @FXML private ImageView imgConveyor;
+  @FXML private ImageView imgMachineResin;
 
   private Timeline lightsOff;
   private Timeline lightsOn;
@@ -54,7 +55,7 @@ public class Room1Controller {
 
   private boolean conveyorIsActive = false;
   private boolean sawDeposited = false;
-  private boolean materialDeposited = true; // <--- CHANGE TO FALSE
+  private boolean materialDeposited = false;
   private boolean repairComplete = false;
 
   @FXML
@@ -157,6 +158,16 @@ public class Room1Controller {
       takeBrokenSaw.play();
       activateConveyor(false);
       triggerDropSaw.setCursor(Cursor.DEFAULT);
+    }
+  }
+
+  @FXML
+  private void dropResin(MouseEvent event) throws IOException {
+    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
+      App.topBarController.removeItem(TopBarController.Item.RESIN);
+      imgMachineResin.setVisible(true);
+      materialDeposited = true;
+      checkForMachineStart();
     }
   }
 
