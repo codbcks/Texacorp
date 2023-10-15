@@ -7,10 +7,21 @@ import javafx.scene.input.MouseEvent;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 
+/**
+ * This class is the controller for the fail screen. It contains a method to return to the main
+ * menu.
+ */
 public class FailController {
 
   @FXML private Button menuBtn;
 
+  /**
+   * This method is called when the user clicks the "Menu" button on the fail screen. It returns the
+   * user to the main menu and resets the game.
+   *
+   * @param event The mouse event that triggered this method.
+   * @throws IOException If there is an error loading the main menu.
+   */
   @FXML
   public void menu(MouseEvent event) throws IOException {
     App.setRoot(SceneManager.AppUI.INTRO);

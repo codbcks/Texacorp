@@ -12,11 +12,18 @@ import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/**
+ * This class represents the controller for the top bar in the game. It contains methods for
+ * managing the inventory, giving and removing items, and printing the inventory. It also has a
+ * method for returning the timer label and a method for returning the index of a specific item in
+ * the inventory.
+ */
 public class TopBarController {
   @FXML private Label topBarTimer;
   @FXML private HBox inventoryContainer;
   @FXML private Button forfeitButton;
 
+  /** An enumeration of all the items that can be in the inventory. */
   public enum Item {
     SAW_BODY,
     SAW_BLADE,
@@ -30,16 +37,32 @@ public class TopBarController {
   private static Item[] inventory;
   private static int nextIndex = 0;
 
+  /**
+   * Initializes the inventory.
+   *
+   * @throws ApiProxyException if there is an error with the API proxy.
+   */
   public void initialize() throws ApiProxyException {
     /* Initialize inventory */
     invLength = Item.values().length;
     inventory = new Item[invLength];
   }
 
+  /**
+   * Returns the timer label.
+   *
+   * @return the timer label.
+   */
   public Label getTimerLabel() {
     return topBarTimer;
   }
 
+  /**
+   * Returns the index of a specific item in the inventory.
+   *
+   * @param item the item to search for.
+   * @return the index of the item in the inventory, or -1 if the item is not in the inventory.
+   */
   public int getItem(Item item) {
     for (int i = 0; i < invLength; i++) {
       if (inventory[i] == item) {
@@ -50,6 +73,12 @@ public class TopBarController {
     return -1;
   }
 
+  /**
+   * Checks if the inventory contains a specific item.
+   *
+   * @param item the item to check for.
+   * @return true if the inventory contains the item, false otherwise.
+   */
   public boolean hasItem(Item item) {
     if (getItem(item) == -1) {
       return false;
@@ -58,6 +87,11 @@ public class TopBarController {
     }
   }
 
+  /**
+   * Adds an item to the inventory.
+   *
+   * @param item the item to add.
+   */
   public void giveItem(Item item) {
     if (!hasItem(item)) {
       inventory[nextIndex] = item;
@@ -66,6 +100,11 @@ public class TopBarController {
     }
   }
 
+  /**
+   * Removes an item from the inventory.
+   *
+   * @param item the item to remove.
+   */
   public void removeItem(Item item) {
     int tempIndex = getItem(item);
 
@@ -79,6 +118,7 @@ public class TopBarController {
     }
   }
 
+  /** Prints out the inventory to the console. */
   public void testPrintOut() {
     System.out.println("+-- INVENTORY --+");
     for (int i = 0; i < invLength; i++) {
@@ -86,6 +126,12 @@ public class TopBarController {
     }
   }
 
+  /**
+   * Returns to the main menu when the forfeit button is clicked.
+   *
+   * @param event the mouse event that triggered the method.
+   * @throws IOException if there is an error with the input/output.
+   */
   @FXML
   private void clickToMenu(MouseEvent event) throws IOException {
     App.setRoot(SceneManager.AppUI.INTRO);

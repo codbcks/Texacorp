@@ -22,6 +22,12 @@ import nz.ac.auckland.se206.gpt.openai.ChatCompletionRequest;
 import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult;
 import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult.Choice;
 
+/**
+ * This class represents the controller for the bottom bar of the game UI. It handles user input and
+ * communication with the GPT-3 API for generating responses to the user's messages. It also
+ * maintains a log of the conversation history and provides methods for adding messages to the log
+ * and updating the UI to display the conversation history.
+ */
 public class BottomBarController {
   @FXML private TextArea chatTextArea;
   @FXML private Button sendButton;
@@ -31,12 +37,12 @@ public class BottomBarController {
   @FXML private Button forwardButton;
   @FXML private Button backwardButton;
 
-  protected ChatCompletionRequest chatCompletionRequest;
-  protected static HashMap<String, String> modifiedNaming;
+  private ChatCompletionRequest chatCompletionRequest;
+  private static HashMap<String, String> modifiedNaming;
   private int logIndex;
   private String previousMessageRole;
   private boolean previousEnivroClick;
-  protected List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
+  private List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
 
   public void initialize() throws ApiProxyException {
     // initialise css style classes
@@ -143,7 +149,7 @@ public class BottomBarController {
                     });
 
                 if (sayAloud) {
-                  App.textToSpeech.speak(getRecentLogMessage());
+                  App.getTextToSpeech().speak(getRecentLogMessage());
                 }
 
               } catch (ApiProxyException e) {
@@ -213,16 +219,16 @@ public class BottomBarController {
 
   private void turnOffLights() {
     GameState.isGPTRunning = true;
-    App.room1.lightsOff();
-    App.room2.lightsOff();
-    App.room3.lightsOff();
+    App.getRoom1().lightsOff();
+    App.getRoom2().lightsOff();
+    App.getRoom3().lightsOff();
   }
 
   private void turnOnLights() {
     GameState.isGPTRunning = false;
-    App.room1.lightsOn();
-    App.room2.lightsOn();
-    App.room3.lightsOn();
+    App.getRoom1().lightsOn();
+    App.getRoom2().lightsOn();
+    App.getRoom3().lightsOn();
   }
 
   public void removeHintCounter() {

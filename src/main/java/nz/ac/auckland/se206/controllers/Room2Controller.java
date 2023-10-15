@@ -17,6 +17,7 @@ import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/** This class is the controller for Room 2 in the Escaipe game. */
 public class Room2Controller {
 
   @FXML private Rectangle lightOverlay;
@@ -134,10 +135,10 @@ public class Room2Controller {
   public void clickSawBody(MouseEvent event) throws IOException {
     // If the gpt is running/room turned off, give the player the saw body when clicked
     if (GameState.isGPTRunning) {
-      App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
+      App.getTopBarController().giveItem(TopBarController.Item.SAW_BODY);
       sawBody.setVisible(false);
     } else {
-      SceneManager.addToLogEnviroClick(
+      SceneManager.addToLogEnviroMessage(
           new ChatMessage(
               "user",
               "I'm pretty sure that 7 deadly lasers is above the recommended daily allowance."));
@@ -148,7 +149,7 @@ public class Room2Controller {
   @FXML
   public void clickExit(MouseEvent event) throws IOException {
     // If the player has all the items, go to the win screen
-    if (App.topBarController.hasItem(TopBarController.Item.SAW_FIXED)) {
+    if (App.getTopBarController().hasItem(TopBarController.Item.SAW_FIXED)) {
       ChallengeTimer.cancelTimer();
       App.setRoot(SceneManager.AppUI.WIN);
     }
@@ -156,14 +157,14 @@ public class Room2Controller {
 
   @FXML
   public void clockPrompt(MouseEvent event) throws IOException {
-    SceneManager.addToLogEnviroClick(
+    SceneManager.addToLogEnviroMessage(
         new ChatMessage("user", "This clock is stuck on 0, it must be broken."));
     SceneManager.updateChat();
   }
 
   @FXML
   public void notesPrompt(MouseEvent event) throws IOException {
-    SceneManager.addToLogEnviroClick(new ChatMessage("user", "6 blank sticky notes... weird."));
+    SceneManager.addToLogEnviroMessage(new ChatMessage("user", "6 blank sticky notes... weird."));
     SceneManager.updateChat();
   }
 }
