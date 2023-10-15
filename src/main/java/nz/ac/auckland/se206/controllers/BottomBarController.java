@@ -46,7 +46,7 @@ public class BottomBarController {
         new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(100);
 
     hintCompletionRequest =
-        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(100);
+        new ChatCompletionRequest().setN(1).setTemperature(0.25).setTopP(0.8).setMaxTokens(100);
 
     modifiedNaming = new HashMap<String, String>();
     modifiedNaming.put("assistant", "AI");
@@ -195,7 +195,7 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    appendChatMessage(message, "user");
+    Platform.runLater(() -> appendChatMessage(message, "user"));
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
@@ -228,7 +228,7 @@ public class BottomBarController {
    */
   protected void runGpt(ChatMessage msg) throws ApiProxyException {
 
-    turnOffLights();
+    Platform.runLater(() -> turnOffLights());
     addToLog(msg, false);
     Task<Void> runGptTask = createRunGptTask(msg);
     Thread runGptThread = new Thread(runGptTask);
@@ -252,14 +252,14 @@ public class BottomBarController {
 
   /** Processes the response from the GPT model. */
   private void processGptResponse(ChatMessage msg) {
-    appendChatMessage("Processing...", "assistant");
+    Platform.runLater(() -> appendChatMessage("Processing...", "assistant"));
     try {
       String gptResponse = getGptResponse();
       handleGptResponse(msg, gptResponse);
     } catch (ApiProxyException e) {
       handleGptError(e);
     } finally {
-      turnOnLights();
+      Platform.runLater(() -> turnOnLights());
     }
   }
 

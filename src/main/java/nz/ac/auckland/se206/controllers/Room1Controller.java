@@ -167,7 +167,7 @@ public class Room1Controller {
     terminalPane.setVisible(false);
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
-    translateTransition.setByY(120);
+    translateTransition.setByY(65);
     translateTransition.play();
     terminalPane.setTranslateY(0);
   }
@@ -182,7 +182,7 @@ public class Room1Controller {
     }
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
-    translateTransition.setByY(-120);
+    translateTransition.setByY(-65);
     translateTransition.play();
     riddleAnswerEntry.requestFocus();
   }
