@@ -24,6 +24,7 @@ import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/** This class is the controller for Room 3 in the Escaipe game. */
 public class Room3Controller {
 
   @FXML private Pane pinPadUi;
@@ -172,7 +173,7 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
-                  App.topBarController.giveItem(TopBarController.Item.SAW_BROKEN);
+                  App.getTopBarController().giveItem(TopBarController.Item.SAW_BROKEN);
                   battery.setOpacity(0);
                   TranslateTransition openDoor =
                       new TranslateTransition(Duration.millis(250), imgSlidingDoor);
@@ -284,7 +285,7 @@ public class Room3Controller {
 
   @FXML
   public void shelvesPrompt(MouseEvent event) throws IOException {
-    SceneManager.addToLogEnviroClick(
+    SceneManager.addToLogEnviroMessage(
         new ChatMessage("user", "Huh, nothing of use in any of these five shelves..."));
     SceneManager.updateChat();
   }
@@ -348,12 +349,12 @@ public class Room3Controller {
 
   @FXML
   private void clickConveyor(MouseEvent event) throws IOException {
-    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
+    if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
       // ADD PLAYER ALREADY HAS ITEM CODE
     } else if (conveyorIsActive) {
       // ADD PLAYER CANNOT ACCESS CONVEYOR HINT
     } else if (!conveyorIsActive) {
-      App.topBarController.giveItem(TopBarController.Item.RESIN);
+      App.getTopBarController().giveItem(TopBarController.Item.RESIN);
       imgConveyorResin.setVisible(false);
     }
   }

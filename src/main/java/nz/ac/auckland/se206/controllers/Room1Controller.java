@@ -24,6 +24,7 @@ import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/** This class is the controller for Room 1 in the Escaipe game. */
 public class Room1Controller {
   @FXML private Rectangle triggerConsole;
   @FXML private Rectangle lightOverlay;
@@ -150,10 +151,10 @@ public class Room1Controller {
   private void dropSaw(MouseEvent event) throws IOException {
     if (repairComplete) {
       imgConveyorSaw.setVisible(false);
-      App.topBarController.giveItem(TopBarController.Item.SAW_FIXED);
+      App.getTopBarController().giveItem(TopBarController.Item.SAW_FIXED);
       triggerDropSaw.setCursor(Cursor.DEFAULT);
-    } else if (App.topBarController.hasItem(TopBarController.Item.SAW_BROKEN)) {
-      App.topBarController.removeItem(TopBarController.Item.SAW_BROKEN);
+    } else if (App.getTopBarController().hasItem(TopBarController.Item.SAW_BROKEN)) {
+      App.getTopBarController().removeItem(TopBarController.Item.SAW_BROKEN);
       imgConveyorSaw.setVisible(true);
       takeBrokenSaw.play();
       activateConveyor(false);
@@ -163,8 +164,8 @@ public class Room1Controller {
 
   @FXML
   private void dropResin(MouseEvent event) throws IOException {
-    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
-      App.topBarController.removeItem(TopBarController.Item.RESIN);
+    if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
+      App.getTopBarController().removeItem(TopBarController.Item.RESIN);
       imgMachineResin.setVisible(true);
       materialDeposited = true;
       checkForMachineStart();
@@ -293,7 +294,7 @@ public class Room1Controller {
   public void generateRiddle(MouseEvent event) throws ApiProxyException {
     String riddle = GptPromptEngineering.getRiddleWithGivenWord(wordToGuess);
 
-    SceneManager.addToLogEnviroClick(new ChatMessage("assistant", riddle));
+    SceneManager.addToLogEnviroMessage(new ChatMessage("assistant", riddle));
     SceneManager.updateChat();
   }
 
@@ -305,17 +306,19 @@ public class Room1Controller {
    */
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    if (GameState.isFirstTime) {
+    if (GameState.isFirstTimeForRiddle) {
       try {
-        App.bottomBarController.runGpt(
-            // runGpt is a method in the parent class, it returns the GPT response for the input.
-            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
-            false);
+        App.getBottomBarController()
+            .runGpt(
+                // runGpt is a method in the parent class, it returns the GPT response for the
+                // input.
+                new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+                false);
       } catch (ApiProxyException e) {
         e.printStackTrace();
       }
-      GameState.isFirstTime = false;
-    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+      GameState.isFirstTimeForRiddle = false;
+    } else if (!GameState.isFirstTimeForRiddle && !GameState.isPasswordObtained) {
       showTerminal();
     } else {
       return;
@@ -338,7 +341,7 @@ public class Room1Controller {
   private void showTerminal() {
     terminalWrapperPane.setVisible(true);
     terminalPane.setVisible(true);
-    App.textToSpeech.speak("The... password... is...");
+    App.getTextToSpeech().speak("The... password... is...");
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
     translateTransition.setByY(-120);
@@ -356,7 +359,7 @@ public class Room1Controller {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
 
-      SceneManager.addToLogEnviroClick(new ChatMessage("user", "Success!"));
+      SceneManager.addToLogEnviroMessage(new ChatMessage("user", "Success!"));
       SceneManager.updateChat();
 
       hideTerminal();
@@ -364,7 +367,7 @@ public class Room1Controller {
       checkForMachineStart();
     } else {
 
-      SceneManager.addToLogEnviroClick(new ChatMessage("assistant", "Declined!"));
+      SceneManager.addToLogEnviroMessage(new ChatMessage("assistant", "Declined!"));
       SceneManager.updateChat();
 
       riddleAnswerEntry.clear();
@@ -390,7 +393,7 @@ public class Room1Controller {
    */
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
-    SceneManager.addToLogEnviroClick(
+    SceneManager.addToLogEnviroMessage(
         new ChatMessage(
             "user",
             "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw"

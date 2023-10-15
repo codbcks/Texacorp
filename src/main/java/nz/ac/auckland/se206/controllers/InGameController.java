@@ -14,6 +14,10 @@ import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/**
+ * This class is the controller for the in-game scene. It controls the movement of the room slider
+ * and the display of the top and bottom bars.
+ */
 public class InGameController {
   @FXML private SubScene topBar;
   @FXML private SubScene bottomBar;
@@ -24,8 +28,8 @@ public class InGameController {
   @FXML private ImageView leftArrow;
   @FXML private ImageView rightArrow;
 
-  Boolean moveEnabled = true;
-  int currentRoom = 2;
+  private Boolean moveEnabled = true;
+  private int currentRoom = 2;
 
   @FXML
   public void initialize() throws ApiProxyException {

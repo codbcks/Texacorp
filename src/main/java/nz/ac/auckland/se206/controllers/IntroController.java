@@ -10,6 +10,10 @@ import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/**
+ * This class is the controller for the introduction screen of the game. It handles the setting the
+ * difficulty and time settings, and starting the game.
+ */
 public class IntroController {
 
   @FXML private Button btnStart;
@@ -42,7 +46,7 @@ public class IntroController {
   private void startGame() throws IOException {
 
     /* Set challenge timer */
-    ChallengeTimer.startTimer(GameState.timeSetting, App.topBarController.getTimerLabel());
+    ChallengeTimer.startTimer(GameState.timeSetting, App.getTopBarController().getTimerLabel());
 
     /* This is the entry point for the game */
     App.setRoot(SceneManager.AppUI.IN_GAME);
@@ -55,7 +59,7 @@ public class IntroController {
           .setHintCounter(0);
     }
 
-    App.bottomBarController.giveBackstory();
+    App.getBottomBarController().giveBackstory();
   }
 
   /**

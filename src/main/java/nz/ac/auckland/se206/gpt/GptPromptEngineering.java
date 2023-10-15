@@ -73,15 +73,15 @@ public class GptPromptEngineering {
         return "Give a hint for the riddle. This counts as one of the five hints if on medium"
             + " difficulty.";
       }
-      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BODY)) {
+      if (!App.getTopBarController().hasItem(TopBarController.Item.SAW_BODY)) {
         return "Tell the player they should currently be solving the puzzle in left room. This"
             + " counts as one of the five hints if on medium difficulty.";
       }
-      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
+      if (!App.getTopBarController().hasItem(TopBarController.Item.SAW_BATTERY)) {
         return "Tell the player they should solve the puzzle in right room. This counts as one of"
             + " the five hints if on medium difficulty.";
       }
-      if (!App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)) {
+      if (!App.getTopBarController().hasItem(TopBarController.Item.SAW_BLADE)) {
         return "Tell the player they should solve the riddle in the middle room. This counts as one"
             + " of the five hints if on medium difficulty.";
       }
