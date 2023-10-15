@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -147,9 +148,8 @@ public class Room2Controller {
   @FXML
   public void clickExit(MouseEvent event) throws IOException {
     // If the player has all the items, go to the win screen
-    if (App.topBarController.hasItem(TopBarController.Item.SAW_BODY)
-        && App.topBarController.hasItem(TopBarController.Item.SAW_BLADE)
-        && App.topBarController.hasItem(TopBarController.Item.SAW_BATTERY)) {
+    if (App.topBarController.hasItem(TopBarController.Item.SAW_FIXED)) {
+      ChallengeTimer.cancelTimer();
       App.setRoot(SceneManager.AppUI.WIN);
     }
   }

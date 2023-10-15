@@ -4,12 +4,15 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -32,11 +35,28 @@ public class Room1Controller {
   @FXML private Pane terminalWrapperPane;
   @FXML private PasswordField riddleAnswerEntry;
 
+  @FXML private ImageView imgMachineMoveX;
+  @FXML private ImageView imgConveyorSaw;
+  @FXML private Pane paneMachineMoveY;
+  @FXML private Pane paneConveyorDropBox;
+  @FXML private Rectangle triggerDropSaw;
+  @FXML private ImageView imgConveyor;
+  @FXML private ImageView imgMachineResin;
+
   private Timeline lightsOff;
   private Timeline lightsOn;
+  private Timeline takeBrokenSaw;
+  private Timeline giveFixedSaw;
+  private long conveyorFrameRate = 12;
+  private long repairBayFrameRate = 20;
 
   private static String wordToGuess;
   private static String wordList;
+
+  private boolean conveyorIsActive = false;
+  private boolean sawDeposited = false;
+  private boolean materialDeposited = false;
+  private boolean repairComplete = false;
 
   @FXML
   public void initialize() throws ApiProxyException {
@@ -82,6 +102,38 @@ public class Room1Controller {
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+
+    // triggers conveyor motion when saw is dropped
+    takeBrokenSaw =
+        new Timeline(
+            App.getTranslateKeyFrame(0, -52, paneConveyorDropBox, 52 * conveyorFrameRate, 0),
+            App.getTranslateKeyFrame(
+                -228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 52 * conveyorFrameRate),
+            App.getTranslateKeyFrame(
+                0, 116, paneConveyorDropBox, 116 * conveyorFrameRate, 280 * conveyorFrameRate),
+            new KeyFrame(
+                Duration.millis(396 * conveyorFrameRate),
+                e -> {
+                  sawDeposited = true;
+                  conveyorIsActive = false;
+                  checkForMachineStart();
+                }));
+
+    // triggers conveyor motion when saw is dropped
+    giveFixedSaw =
+        new Timeline(
+            App.getTranslateKeyFrame(0, -116, paneConveyorDropBox, 116 * conveyorFrameRate, 0),
+            App.getTranslateKeyFrame(
+                228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 116 * conveyorFrameRate),
+            App.getTranslateKeyFrame(
+                0, 52, paneConveyorDropBox, 52 * conveyorFrameRate, 344 * conveyorFrameRate),
+            new KeyFrame(
+                Duration.millis(396 * conveyorFrameRate),
+                e -> {
+                  conveyorIsActive = false;
+                  repairComplete = true;
+                  triggerDropSaw.setCursor(Cursor.HAND);
+                }));
   }
 
   /** Turns the lights off in the room. */
@@ -92,6 +144,119 @@ public class Room1Controller {
   /** Turns the lights on in the room. */
   public void lightsOn() {
     lightsOn.playFromStart();
+  }
+
+  @FXML
+  private void dropSaw(MouseEvent event) throws IOException {
+    if (repairComplete) {
+      imgConveyorSaw.setVisible(false);
+      App.topBarController.giveItem(TopBarController.Item.SAW_FIXED);
+      triggerDropSaw.setCursor(Cursor.DEFAULT);
+    } else if (App.topBarController.hasItem(TopBarController.Item.SAW_BROKEN)) {
+      App.topBarController.removeItem(TopBarController.Item.SAW_BROKEN);
+      imgConveyorSaw.setVisible(true);
+      takeBrokenSaw.play();
+      activateConveyor(false);
+      triggerDropSaw.setCursor(Cursor.DEFAULT);
+    }
+  }
+
+  @FXML
+  private void dropResin(MouseEvent event) throws IOException {
+    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
+      App.topBarController.removeItem(TopBarController.Item.RESIN);
+      imgMachineResin.setVisible(true);
+      materialDeposited = true;
+      checkForMachineStart();
+    }
+  }
+
+  private void activateConveyor(boolean backward) {
+    conveyorIsActive = true;
+
+    Task<Void> conveyorMovementTask =
+        new Task<Void>() {
+          @Override
+          protected Void call() throws Exception {
+
+            int conveyorFrame = 1;
+            conveyorIsActive = true;
+
+            while (conveyorIsActive) {
+              if (conveyorFrame == 5) {
+                conveyorFrame = 1;
+              }
+
+              if (conveyorFrame == 0) {
+                conveyorFrame = 4;
+              }
+
+              imgConveyor.setImage(
+                  new Image("/images/leftRoomBelt-Frame" + conveyorFrame + ".png"));
+              try {
+                Thread.sleep(conveyorFrameRate);
+              } catch (Exception e) {
+                System.err.println("ERROR: Exception in Room1Controller.dropSaw!");
+              }
+
+              if (backward) {
+                conveyorFrame--;
+              } else {
+                conveyorFrame++;
+              }
+            }
+            return null;
+          }
+        };
+
+    Thread conveyorMovementThread = new Thread(conveyorMovementTask);
+    conveyorMovementThread.start();
+  }
+
+  private void checkForMachineStart() {
+    if (sawDeposited && materialDeposited && GameState.isPasswordObtained) {
+      Timeline activateRepairBay =
+          new Timeline(
+              App.getTranslateKeyFrame(0, 64, paneMachineMoveY, 110 * repairBayFrameRate, 0),
+              App.getTranslateKeyFrame(50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 0),
+              App.getTranslateKeyFrame(
+                  -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 10 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 20 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 30 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 40 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 50 * repairBayFrameRate),
+              new KeyFrame(
+                  Duration.millis(50 * repairBayFrameRate),
+                  e -> {
+                    imgConveyorSaw.setImage(new Image("/images/SAW_FIXED.png"));
+                  }),
+              App.getTranslateKeyFrame(
+                  50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 60 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 70 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 80 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 90 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 100 * repairBayFrameRate),
+              new KeyFrame(
+                  Duration.millis(110 * repairBayFrameRate),
+                  e -> {
+                    activateConveyor(true);
+                    giveFixedSaw.play();
+                  }),
+              App.getTranslateKeyFrame(
+                  -50, 0, imgMachineMoveX, 40 * repairBayFrameRate, 130 * repairBayFrameRate),
+              App.getTranslateKeyFrame(
+                  0, -64, paneMachineMoveY, 40 * repairBayFrameRate, 130 * repairBayFrameRate));
+
+      activateRepairBay.play();
+    }
   }
 
   /**
@@ -196,7 +361,7 @@ public class Room1Controller {
 
       hideTerminal();
       GameState.isPasswordObtained = true;
-      App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
+      checkForMachineStart();
     } else {
 
       SceneManager.addToLogEnviroClick(new ChatMessage("assistant", "Declined!"));

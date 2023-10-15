@@ -1,10 +1,14 @@
 package nz.ac.auckland.se206;
 
 import java.io.IOException;
+import javafx.animation.KeyFrame;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import nz.ac.auckland.se206.controllers.BottomBarController;
 import nz.ac.auckland.se206.controllers.Room1Controller;
 import nz.ac.auckland.se206.controllers.Room2Controller;
@@ -82,5 +86,18 @@ public class App extends Application {
 
   public static Scene getCurrentScene() {
     return scene;
+  }
+
+  public static KeyFrame getTranslateKeyFrame(
+      double xDist, double yDist, Node nodeToMove, double durationMillis, double startDelayMillis) {
+    return new KeyFrame(
+        Duration.millis(startDelayMillis),
+        e -> {
+          TranslateTransition tempTransition =
+              new TranslateTransition(Duration.millis(durationMillis), nodeToMove);
+          tempTransition.setByX(xDist);
+          tempTransition.setByY(yDist);
+          tempTransition.play();
+        });
   }
 }

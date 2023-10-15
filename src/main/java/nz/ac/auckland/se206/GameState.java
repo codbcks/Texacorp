@@ -15,7 +15,7 @@ public class GameState {
   public static boolean isPasswordObtained = false;
 
   /** Indicates how much time the player had when they finished */
-  public static int finishTime = -1;
+  public static String formattedFinishTime;
 
   /** Points to the relevent room GUI timer label */
   public static Label roomTimerLabel;

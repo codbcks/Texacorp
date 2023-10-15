@@ -3,11 +3,15 @@ package nz.ac.auckland.se206.controllers;
 import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -15,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.controllers.TopBarController.Item;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -45,7 +50,9 @@ public class Room3Controller {
   @FXML private ImageView battery;
   @FXML private Rectangle shelvesPromptTrigger1;
   @FXML private Rectangle shelvesPromptTrigger2;
-  @FXML private Rectangle whiteboardPromptTrigger;
+  @FXML private ImageView imgSlidingDoor;
+  @FXML private ImageView imgConveyor;
+  @FXML private ImageView imgConveyorResin;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -60,6 +67,8 @@ public class Room3Controller {
   private Timeline resolvePinPad;
   private Timeline lightsOff;
   private Timeline lightsOn;
+  private boolean conveyorIsActive;
+  private long conveyorFrameRate = 4;
 
   private String[] pinHints = {
     "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
@@ -71,7 +80,7 @@ public class Room3Controller {
   @FXML
   public void initialize() throws ApiProxyException, IOException {
 
-    mouseInteract(whiteboardPromptTrigger);
+    activateConveyor();
     mouseInteract(shelvesPromptTrigger1);
     mouseInteract(shelvesPromptTrigger2);
     mouseInteract(pinPadOpen);
@@ -165,13 +174,22 @@ public class Room3Controller {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
                   ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR))
-                      .giveItem(Item.SAW_BATTERY);
+                      .giveItem(Item.SAW_BROKEN);
                   battery.setOpacity(0);
+                  TranslateTransition openDoor =
+                      new TranslateTransition(Duration.millis(250), imgSlidingDoor);
+                  openDoor.setByX(70);
+                  openDoor.play();
                 }));
 
     lightsOff =
         new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(
+                Duration.seconds(0.0),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  deactivateConveyor();
+                }),
             new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
@@ -183,7 +201,12 @@ public class Room3Controller {
             new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+            new KeyFrame(
+                Duration.seconds(1.2),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  activateConveyor();
+                }));
   }
 
   /**
@@ -268,13 +291,73 @@ public class Room3Controller {
     SceneManager.updateChat();
   }
 
+  public void activateConveyor() {
+
+    Task<Void> conveyorMovementTask =
+        new Task<Void>() {
+          @Override
+          protected Void call() throws Exception {
+
+            int conveyorFrame = 1;
+            conveyorIsActive = true;
+
+            while (conveyorIsActive) {
+              if (conveyorFrame == 5) {
+                conveyorFrame = 1;
+              }
+
+              imgConveyor.setImage(
+                  new Image("/images/rightRoomBelt-Frame" + conveyorFrame + ".png"));
+
+              if (imgConveyorResin.getLayoutY() <= 0) {
+                Platform.runLater(
+                    () -> {
+                      imgConveyorResin.setLayoutX(830);
+                      imgConveyorResin.setLayoutY(235);
+                    });
+              } else if (imgConveyorResin.getLayoutX() > 295) {
+                Platform.runLater(
+                    () -> {
+                      imgConveyorResin.setLayoutX(imgConveyorResin.getLayoutX() - 4);
+                    });
+              } else {
+                Platform.runLater(
+                    () -> {
+                      imgConveyorResin.setLayoutY(imgConveyorResin.getLayoutY() - 4);
+                    });
+              }
+
+              conveyorFrame++;
+
+              try {
+                Thread.sleep(conveyorFrameRate);
+              } catch (Exception e) {
+                System.err.println("ERROR: Exception in Room1Controller.dropSaw!");
+              }
+            }
+
+            return null;
+          }
+        };
+
+    Thread conveyorMovementThread = new Thread(conveyorMovementTask);
+    conveyorMovementThread.start();
+  }
+
+  public void deactivateConveyor() {
+    conveyorIsActive = false;
+  }
+
   @FXML
-  public void whiteboardPrompt(MouseEvent event) throws IOException {
-    SceneManager.addToLogEnviroClick(
-        new ChatMessage(
-            "user",
-            "Oh thank god, the escape drill class forgot to wipe down this whiteboard... Find"
-                + " saw battery... Find saw motor... Create saw blade. Got it."));
-    SceneManager.updateChat();
+  private void clickConveyor(MouseEvent event) throws IOException {
+    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
+      // ADD PLAYER ALREADY HAS ITEM CODE
+    } else if (conveyorIsActive) {
+      // ADD PLAYER CANNOT ACCESS CONVEYOR HINT
+    } else if (!conveyorIsActive) {
+      App.topBarController.giveItem(TopBarController.Item.RESIN);
+      imgConveyorResin.setVisible(false);
+    }
+    
   }
 }
