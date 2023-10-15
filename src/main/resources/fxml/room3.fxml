@@ -177,5 +177,15 @@
          </children>
       </Pane>
       <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
+      <Rectangle fill="#1f93ff00" height="224.0" layoutX="294.0" layoutY="65.0" onMouseClicked="#clickConveyor" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="48.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Rectangle>
+      <Rectangle fill="#1f93ff00" height="58.0" layoutX="340.0" layoutY="232.0" onMouseClicked="#clickConveyor" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="480.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Rectangle>
    </children>
 </Pane>

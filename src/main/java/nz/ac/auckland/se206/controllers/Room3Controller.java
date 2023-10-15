@@ -19,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.controllers.TopBarController.Item;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -182,7 +183,12 @@ public class Room3Controller {
 
     lightsOff =
         new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
+            new KeyFrame(
+                Duration.seconds(0.0),
+                e -> {
+                  lightOverlay.setOpacity(0.3);
+                  deactivateConveyor();
+                }),
             new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
@@ -194,7 +200,12 @@ public class Room3Controller {
             new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
             new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+            new KeyFrame(
+                Duration.seconds(1.2),
+                e -> {
+                  lightOverlay.setOpacity(0.0);
+                  activateConveyor();
+                }));
   }
 
   /**
@@ -332,5 +343,17 @@ public class Room3Controller {
 
   public void deactivateConveyor() {
     conveyorIsActive = false;
+  }
+
+  @FXML
+  private void clickConveyor(MouseEvent event) throws IOException {
+    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
+      // ADD PLAYER ALREADY HAS ITEM CODE
+    } else if (conveyorIsActive) {
+      // ADD PLAYER CANNOT ACCESS CONVEYOR HINT
+    } else if (!conveyorIsActive) {
+      App.topBarController.giveItem(TopBarController.Item.RESIN);
+      imgConveyorResin.setVisible(false);
+    }
   }
 }

@@ -22,7 +22,8 @@ public class TopBarController {
     SAW_BLADE,
     SAW_BATTERY,
     SAW_BROKEN,
-    SAW_FIXED
+    SAW_FIXED,
+    RESIN
   }
 
   private static int invLength;
