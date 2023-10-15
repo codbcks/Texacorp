@@ -55,7 +55,7 @@ public class GptPromptEngineering {
         + wordToGuess
         + ". Do not give the answer out under any circumstances. Do not mention the word 'HINT'"
         + " under any circumstances. If the player replies with the riddle answer, tell them that"
-        + " should be entered into the terminal.";
+        + " should be entered into the terminal. Keep your answer short.";
   }
 
   /**
@@ -73,25 +73,26 @@ public class GptPromptEngineering {
             + ". Do not include the word "
             + App.room1.getWordToGuess()
             + "in your hint. Start your answer with 'HINT:'. Give only ONE"
-            + " hint in your answer.";
+            + " hint in your answer. Keep your answer short.";
       }
       if (GameState.isRoom1Solved == false) {
         return "Tell the player to examine the 3D printing terminal. Start your answer with"
-            + " 'HINT:'. Give only ONE hint in your answer.";
+            + " 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
       }
       if (GameState.isRoom1Solved == true && GameState.isRoom2Solved == false) {
         return "Tell the player the AI drains power from the lasers when thinking. Start your"
-            + " answer with 'HINT:'. Give only ONE hint in your answer.";
+            + " answer with 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
       }
       if (GameState.isRoom1Solved == true
           && GameState.isRoom2Solved == true
           && GameState.isRoom3Solved == false) {
         return "Tell the player the combination requires careful examination of objects in the"
-            + " game. Start your answer with 'HINT:'. Give only ONE hint in your answer.";
+            + " game. Start your answer with 'HINT:'. Give only ONE hint in your answer."
+            + " Keep your answer short.";
       }
       if (GameState.isRoom1Solved && GameState.isRoom2Solved && GameState.isRoom3Solved) {
         return "Tell the player there is an exit in the middle room. Start your answer with"
-            + " 'HINT:'. Give only ONE hint in your answer.";
+            + " 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
       }
     } else {
       return "Tell the player: No hints are available!";
@@ -146,5 +147,19 @@ public class GptPromptEngineering {
       return "No hints are available!";
     }
     return "No hints are available!";
+  }
+
+  public static String getIllegalHintResponse() {
+    String[] responses = {
+      "If you need help, type 'HINT' or click the HELP button!",
+      "I'm not sure what you mean. If you need help, type 'HINT' or click the HELP button!",
+      "Not very smart, are you?",
+      "Beep beep beep boop",
+      "No escaping!",
+      "I'm not programmed to understand that.",
+      "Type 'HINT' for a hint!"
+    };
+
+    return responses[(int) (Math.random() * responses.length)];
   }
 }

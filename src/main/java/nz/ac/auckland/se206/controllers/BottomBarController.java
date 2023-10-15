@@ -43,10 +43,10 @@ public class BottomBarController {
 
     // initialise GPT
     chatCompletionRequest =
-        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
+        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(100);
 
     hintCompletionRequest =
-        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
+        new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(100);
 
     modifiedNaming = new HashMap<String, String>();
     modifiedNaming.put("assistant", "AI");
@@ -178,11 +178,13 @@ public class BottomBarController {
   }
 
   /**
-   * Sends a message to the GPT model.
+   * onSendMessage can be triggered by clicking the send button or pressing enter in the text area.
+   * It takes the input from the text area and sends it to GPT. It then appends the response from
+   * GPT to the chat text area. If the input string is "HINT", it will trigger the hint function.
    *
-   * @param event the action event triggered by the send button
-   * @throws ApiProxyException if there is an error communicating with the API proxy
-   * @throws IOException if there is an I/O error
+   * @param event the action event.
+   * @throws ApiProxyException
+   * @throws IOException
    */
   @FXML
   private void onSendMessage(ActionEvent event) throws ApiProxyException, IOException {
@@ -197,8 +199,11 @@ public class BottomBarController {
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
-
-    runGpt(msg);
+    if (message.equalsIgnoreCase("HINT")) {
+      runGptForHint(new ChatMessage("user", GptPromptEngineering.getHint()));
+    } else {
+      runGpt(msg);
+    }
   }
 
   /**
@@ -277,38 +282,30 @@ public class BottomBarController {
    * @param gptResponse the response for GPT.
    */
   private void handleGptResponse(ChatMessage msg, String gptResponse) {
+    // check if the GPT response should be a riddle
     if (GameState.isRiddleExpected) {
       Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
       GameState.isRiddleExpected = false;
     } else {
-
-      if ("HINT".equals(msg.getContent())) {
-        if (gptResponse.startsWith("HINT:")) {
-          Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
-          if (GameState.isTextToSpeechOn) {
-            App.textToSpeech.speak(gptResponse);
-          }
-          GameState.hintsRemaining--;
-          Platform.runLater(
-              () -> {
-                setHintCounter();
-              });
-        } else {
-          handleNormalResponse(gptResponse);
+      // If a hint was asked for and if the response is a hint
+      if (("HINT".equals(msg.getContent())) && (gptResponse.startsWith("HINT:"))) {
+        Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+        if (GameState.isTextToSpeechOn) {
+          App.textToSpeech.speak(gptResponse);
         }
+        GameState.hintsRemaining--;
+        Platform.runLater(
+            () -> {
+              setHintCounter();
+            });
+        // If the response is a hint, but a hint was not asked for
+      } else if ((!"HINT".equals(msg.getContent())) && (gptResponse.startsWith("HINT:"))) {
+        handleHintResponse(gptResponse);
       } else {
-        handleNormalResponse(gptResponse);
-      }
-    }
-  }
-
-  private void handleNormalResponse(String gptResponse) {
-    if (gptResponse.startsWith("HINT:")) {
-      handleHintResponse(gptResponse);
-    } else {
-      Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
-      if (GameState.isTextToSpeechOn) {
-        App.textToSpeech.speak(gptResponse);
+        Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+        if (GameState.isTextToSpeechOn) {
+          App.textToSpeech.speak(gptResponse);
+        }
       }
     }
   }
@@ -319,12 +316,10 @@ public class BottomBarController {
    * @param gptResponse the response from GPT.
    */
   private void handleHintResponse(String gptResponse) {
-    Platform.runLater(
-        () ->
-            appendChatMessage(
-                "If you need help, type 'HINT' or click the HELP button!", "assistant"));
+    String response = GptPromptEngineering.getIllegalHintResponse();
+    Platform.runLater(() -> appendChatMessage(response, "assistant"));
     if (GameState.isTextToSpeechOn) {
-      App.textToSpeech.speak("If you need help, type 'HINT' or click the HELP button!");
+      App.textToSpeech.speak(response);
     }
   }
 
@@ -340,7 +335,7 @@ public class BottomBarController {
   }
 
   /**
-   * Adds the chat message to the log of GPT interactions.
+   * Adds the message to one of the logs of GPT interactions.
    *
    * @param msg the chat message to add
    */
