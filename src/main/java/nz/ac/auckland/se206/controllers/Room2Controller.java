@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.ChallengeTimer;
-import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -20,7 +19,6 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 public class Room2Controller {
 
   @FXML private Rectangle lightOverlay;
-  @FXML private ImageView sawBody;
   @FXML private ImageView laser;
   @FXML private Rectangle clockPromptTrigger;
   @FXML private Rectangle notesPromptTrigger;
@@ -33,8 +31,6 @@ public class Room2Controller {
 
     mouseInteract(clockPromptTrigger);
     mouseInteract(notesPromptTrigger);
-    mouseInteract(sawBody);
-    mouseInteract(laser);
 
     // Set up lights off animation
     lightsOff =
@@ -43,31 +39,26 @@ public class Room2Controller {
                 Duration.seconds(0.0),
                 e -> {
                   lightOverlay.setOpacity(0.3);
-                  laser.setOpacity(0);
                 }),
             new KeyFrame(
                 Duration.seconds(0.2),
                 e -> {
                   lightOverlay.setOpacity(0.0);
-                  laser.setOpacity(1);
                 }),
             new KeyFrame(
                 Duration.seconds(0.4),
                 e -> {
                   lightOverlay.setOpacity(0.3);
-                  laser.setOpacity(0);
                 }),
             new KeyFrame(
                 Duration.seconds(0.6),
                 e -> {
                   lightOverlay.setOpacity(0.0);
-                  laser.setOpacity(1);
                 }),
             new KeyFrame(
                 Duration.seconds(1.2),
                 e -> {
                   lightOverlay.setOpacity(0.3);
-                  laser.setOpacity(0);
                 }));
     // Set up lights on animation
     lightsOn =
@@ -76,31 +67,26 @@ public class Room2Controller {
                 Duration.seconds(0.0),
                 e -> {
                   lightOverlay.setOpacity(0.0);
-                  laser.setOpacity(1);
                 }),
             new KeyFrame(
                 Duration.seconds(0.2),
                 e -> {
                   lightOverlay.setOpacity(0.3);
-                  laser.setOpacity(0);
                 }),
             new KeyFrame(
                 Duration.seconds(0.4),
                 e -> {
                   lightOverlay.setOpacity(0.0);
-                  laser.setOpacity(1);
                 }),
             new KeyFrame(
                 Duration.seconds(0.6),
                 e -> {
                   lightOverlay.setOpacity(0.3);
-                  laser.setOpacity(0);
                 }),
             new KeyFrame(
                 Duration.seconds(1.2),
                 e -> {
                   lightOverlay.setOpacity(0.0);
-                  laser.setOpacity(1);
                 }));
   }
 
@@ -128,21 +114,6 @@ public class Room2Controller {
         e -> {
           node.setCursor(Cursor.DEFAULT);
         });
-  }
-
-  @FXML
-  public void clickSawBody(MouseEvent event) throws IOException {
-    // If the gpt is running/room turned off, give the player the saw body when clicked
-    if (GameState.isGPTRunning) {
-      App.topBarController.giveItem(TopBarController.Item.SAW_BODY);
-      sawBody.setVisible(false);
-    } else {
-      SceneManager.addToLogEnviroClick(
-          new ChatMessage(
-              "user",
-              "I'm pretty sure that 7 deadly lasers is above the recommended daily allowance."));
-      SceneManager.updateChat();
-    }
   }
 
   @FXML
