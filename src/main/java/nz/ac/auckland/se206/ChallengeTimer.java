@@ -48,12 +48,10 @@ public class ChallengeTimer {
           }
         };
 
-    Thread countDownThread = new Thread(countDown);
-
     if (timerLabel == null) {
       System.err.println("WARNING: No timer assigned to TimedScenario.currentLabelTimer!");
     } else {
-      countDownThread.start();
+      (new Thread(countDown)).start();
     }
   }
 

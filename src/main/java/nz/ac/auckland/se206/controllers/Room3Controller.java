@@ -4,11 +4,14 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -46,6 +49,8 @@ public class Room3Controller {
   @FXML private Rectangle shelvesPromptTrigger1;
   @FXML private Rectangle shelvesPromptTrigger2;
   @FXML private ImageView imgSlidingDoor;
+  @FXML private ImageView imgConveyor;
+  @FXML private ImageView imgConveyorResin;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -60,6 +65,8 @@ public class Room3Controller {
   private Timeline resolvePinPad;
   private Timeline lightsOff;
   private Timeline lightsOn;
+  private boolean conveyorIsActive;
+  private long conveyorFrameRate = 4;
 
   private String[] pinHints = {
     "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
@@ -71,6 +78,7 @@ public class Room3Controller {
   @FXML
   public void initialize() throws ApiProxyException, IOException {
 
+    activateConveyor();
     mouseInteract(shelvesPromptTrigger1);
     mouseInteract(shelvesPromptTrigger2);
     mouseInteract(pinPadOpen);
@@ -267,5 +275,62 @@ public class Room3Controller {
   @FXML
   public void shelvesPrompt(MouseEvent event) throws IOException {
     SceneManager.appendChatMessage("Huh, nothing of use in any of these five shelves...", "user");
+  }
+
+  public void activateConveyor() {
+
+    Task<Void> conveyorMovementTask =
+        new Task<Void>() {
+          @Override
+          protected Void call() throws Exception {
+
+            int conveyorFrame = 1;
+            conveyorIsActive = true;
+
+            while (conveyorIsActive) {
+              if (conveyorFrame == 5) {
+                conveyorFrame = 1;
+              }
+
+              imgConveyor.setImage(
+                  new Image("/images/rightRoomBelt-Frame" + conveyorFrame + ".png"));
+
+              if (imgConveyorResin.getLayoutY() <= 0) {
+                Platform.runLater(
+                    () -> {
+                      imgConveyorResin.setLayoutX(830);
+                      imgConveyorResin.setLayoutY(235);
+                    });
+              } else if (imgConveyorResin.getLayoutX() > 295) {
+                Platform.runLater(
+                    () -> {
+                      imgConveyorResin.setLayoutX(imgConveyorResin.getLayoutX() - 4);
+                    });
+              } else {
+                Platform.runLater(
+                    () -> {
+                      imgConveyorResin.setLayoutY(imgConveyorResin.getLayoutY() - 4);
+                    });
+              }
+
+              conveyorFrame++;
+
+              try {
+                Thread.sleep(conveyorFrameRate);
+              } catch (Exception e) {
+                System.err.println("ERROR: Exception in Room1Controller.dropSaw!");
+              }
+            }
+
+            return null;
+          }
+        };
+
+    Thread conveyorMovementThread = new Thread(conveyorMovementTask);
+    conveyorMovementThread.start();
+  }
+
+  public void deactivateConveyor() {
+    conveyorIsActive = false;
   }
 }
