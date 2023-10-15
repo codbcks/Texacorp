@@ -26,6 +26,10 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 /** This class is the controller for Room 1 in the Escaipe game. */
 public class Room1Controller {
+
+  private static String wordToGuess;
+  private static String wordList;
+
   @FXML private Rectangle triggerConsole;
   @FXML private Rectangle lightOverlay;
   @FXML private Rectangle printerPromptTrigger;
@@ -51,14 +55,18 @@ public class Room1Controller {
   private long conveyorFrameRate = 12;
   private long repairBayFrameRate = 20;
 
-  private static String wordToGuess;
-  private static String wordList;
-
   private boolean conveyorIsActive = false;
   private boolean sawDeposited = false;
   private boolean materialDeposited = false;
   private boolean repairComplete = false;
 
+  /**
+   * The code initializes the Room1Controller by setting up CSS style classes, mouse interactions,
+   * and click events. It also triggers animations for lights off and on, and conveyor motion when
+   * the saw is dropped or fixed.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   */
   @FXML
   public void initialize() throws ApiProxyException {
 
@@ -147,6 +155,14 @@ public class Room1Controller {
     lightsOn.playFromStart();
   }
 
+  /**
+   * Handles the event when the saw is dropped in Room 1. If the repair is complete, the saw is
+   * removed and the fixed saw is added to the top bar. If the repair is not complete and the player
+   * has a broken saw, the broken saw is removed and the conveyor belt is activated.
+   *
+   * @param event The mouse event that triggered the method.
+   * @throws IOException If an I/O error occurs.
+   */
   @FXML
   private void dropSaw(MouseEvent event) throws IOException {
     if (repairComplete) {
@@ -162,6 +178,15 @@ public class Room1Controller {
     }
   }
 
+  /**
+   * Drops resin into the machine when the user clicks on the resin image. If the user has resin in
+   * their inventory, the resin is removed from the inventory, the resin image is made visible, and
+   * the materialDeposited flag is set to true. Finally, the checkForMachineStart() method is called
+   * to check if the machine can be started.
+   *
+   * @param event The mouse event that triggered the method call.
+   * @throws IOException If an I/O error occurs.
+   */
   @FXML
   private void dropResin(MouseEvent event) throws IOException {
     if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
@@ -172,6 +197,11 @@ public class Room1Controller {
     }
   }
 
+  /**
+   * Activates the conveyor belt animation in Room 1.
+   *
+   * @param backward if true, the conveyor belt moves backward; if false, it moves forward
+   */
   private void activateConveyor(boolean backward) {
     conveyorIsActive = true;
 
@@ -214,10 +244,17 @@ public class Room1Controller {
     conveyorMovementThread.start();
   }
 
+  /**
+   * Checks if the saw and material have been deposited and the password has been obtained. If all
+   * conditions are met, a Timeline animation is created for the repair bay. The animation moves the
+   * machine and saw, changes the saw image to a fixed saw, activates the conveyor, and plays a
+   * sound effect.
+   */
   private void checkForMachineStart() {
     if (sawDeposited && materialDeposited && GameState.isPasswordObtained) {
       Timeline activateRepairBay =
           new Timeline(
+              // Timeline for the repair bay
               App.getTranslateKeyFrame(0, 64, paneMachineMoveY, 110 * repairBayFrameRate, 0),
               App.getTranslateKeyFrame(50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 0),
               App.getTranslateKeyFrame(
@@ -231,8 +268,10 @@ public class Room1Controller {
               App.getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 50 * repairBayFrameRate),
               new KeyFrame(
+                  // Timeline for the saw
                   Duration.millis(50 * repairBayFrameRate),
                   e -> {
+                    // change the saw image to the fixed saw
                     imgConveyorSaw.setImage(new Image("/images/SAW_FIXED.png"));
                   }),
               App.getTranslateKeyFrame(
@@ -256,7 +295,7 @@ public class Room1Controller {
               App.getTranslateKeyFrame(
                   0, -64, paneMachineMoveY, 40 * repairBayFrameRate, 130 * repairBayFrameRate));
 
-      activateRepairBay.play();
+      activateRepairBay.play(); // start the animation
     }
   }
 
@@ -358,18 +397,17 @@ public class Room1Controller {
   private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
-
+      // If the guess is correct, update the chat log and hide the terminal
       SceneManager.addToLogEnviroMessage(new ChatMessage("user", "Success!"));
       SceneManager.updateChat();
-
       hideTerminal();
+      // Set the password obtained flag to true and check for machine start
       GameState.isPasswordObtained = true;
       checkForMachineStart();
     } else {
-
+      // If the guess is incorrect, update the chat log and clear the text field
       SceneManager.addToLogEnviroMessage(new ChatMessage("assistant", "Declined!"));
       SceneManager.updateChat();
-
       riddleAnswerEntry.clear();
     }
   }

@@ -59,6 +59,7 @@ public class ChallengeTimer {
           }
         };
 
+    // If no timer is assigned to TimedScenario.currentLabelTimer, print a warning message
     if (timerLabel == null) {
       System.err.println("WARNING: No timer assigned to TimedScenario.currentLabelTimer!");
     } else {

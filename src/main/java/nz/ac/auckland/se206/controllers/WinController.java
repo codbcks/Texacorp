@@ -3,7 +3,6 @@ package nz.ac.auckland.se206.controllers;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 
@@ -24,8 +23,8 @@ public class WinController {
    * @throws IOException If there is an error loading the intro screen.
    */
   @FXML
-  public void menu(MouseEvent event) throws IOException {
-    App.setRoot(SceneManager.AppUI.INTRO);
+  public void clickMenu() throws IOException {
+    App.setRoot(SceneManager.AppInterface.INTRO);
     App.resetGame();
   }
 }

@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.ChallengeTimer;
@@ -19,6 +18,11 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
  * the inventory.
  */
 public class TopBarController {
+
+  private static int invLength;
+  private static Item[] inventory;
+  private static int nextIndex = 0;
+
   @FXML private Label topBarTimer;
   @FXML private HBox inventoryContainer;
   @FXML private Button forfeitButton;
@@ -33,15 +37,6 @@ public class TopBarController {
     RESIN
   }
 
-  private static int invLength;
-  private static Item[] inventory;
-  private static int nextIndex = 0;
-
-  /**
-   * Initializes the inventory.
-   *
-   * @throws ApiProxyException if there is an error with the API proxy.
-   */
   public void initialize() throws ApiProxyException {
     /* Initialize inventory */
     invLength = Item.values().length;
@@ -129,12 +124,11 @@ public class TopBarController {
   /**
    * Returns to the main menu when the forfeit button is clicked.
    *
-   * @param event the mouse event that triggered the method.
    * @throws IOException if there is an error with the input/output.
    */
   @FXML
-  private void clickToMenu(MouseEvent event) throws IOException {
-    App.setRoot(SceneManager.AppUI.INTRO);
+  private void clickToMenu() throws IOException {
+    App.setRoot(SceneManager.AppInterface.INTRO);
     ChallengeTimer.cancelTimer();
     App.resetGame();
   }

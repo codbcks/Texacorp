@@ -37,16 +37,16 @@ public class GameState {
   /** Indicates which difficulty the player has selected. */
   public static Difficulty currentDifficulty;
 
+  /** Points to the relevant chat GUI timer label. */
+  public static Label chatTimerLabel;
+
+  /** Indicates how much time the player has chosen to play the game. */
+  public static int timeSetting;
+
   /** Enum representing the three difficulty levels of the game. */
   public enum Difficulty {
     EASY,
     MEDIUM,
     HARD
   }
-
-  /** Points to the relevant chat GUI timer label. */
-  public static Label chatTimerLabel;
-
-  /** Indicates how much time the player has chosen to play the game. */
-  public static int timeSetting;
 }

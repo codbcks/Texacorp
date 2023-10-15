@@ -164,6 +164,11 @@ public class BottomBarController {
     gptThread.start();
   }
 
+  /**
+   * Gets the most recent log message.
+   *
+   * @return the most recent log message
+   */
   private String getRecentLogMessage() {
     return orderedGptInteractionLog
         .get(orderedGptInteractionLog.size() - 1)
@@ -196,7 +201,7 @@ public class BottomBarController {
   }
 
   /**
-   * Method that gets GPT to provide a hint to the player.
+   * Provides a hint to the player using the GPT model.
    *
    * @return the hint
    */
@@ -217,6 +222,7 @@ public class BottomBarController {
     }
   }
 
+  /** Turns off the lights in all rooms. */
   private void turnOffLights() {
     GameState.isGPTRunning = true;
     App.getRoom1().lightsOff();
@@ -224,6 +230,7 @@ public class BottomBarController {
     App.getRoom3().lightsOff();
   }
 
+  /** Turns on the lights in all rooms. */
   private void turnOnLights() {
     GameState.isGPTRunning = false;
     App.getRoom1().lightsOn();
@@ -231,14 +238,21 @@ public class BottomBarController {
     App.getRoom3().lightsOn();
   }
 
+  /** Removes the hint counter. */
   public void removeHintCounter() {
     hintCounter.setImage(new Image("/images/countHintsUnlimited.png"));
   }
 
+  /**
+   * Sets the hint counter to a given value.
+   *
+   * @param remainingHints the number of remaining hints
+   */
   public void setHintCounter(int remainingHints) {
     hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
   }
 
+  /** Updates the chat history display. */
   public void updateChat() {
     chatHistoryLabel.setText(
         String.valueOf(logIndex - 2) + "/" + String.valueOf(orderedGptInteractionLog.size() - 2));
@@ -249,8 +263,13 @@ public class BottomBarController {
     }
   }
 
+  /**
+   * Moves the chat history display forward.
+   *
+   * @param event the action event triggered by the forward button
+   */
   @FXML
-  private void onForwardHistory(ActionEvent event) {
+  private void clickForwardHistory(ActionEvent event) {
     if (logIndex >= orderedGptInteractionLog.size()) {
       return;
     }
@@ -258,8 +277,13 @@ public class BottomBarController {
     updateChat();
   }
 
+  /**
+   * Moves the chat history display backward.
+   *
+   * @param event the action event triggered by the backward button
+   */
   @FXML
-  private void onBackwardHistory(ActionEvent event) {
+  private void clickBackwardHistory(ActionEvent event) {
     if (logIndex <= 3) {
       return;
     }
