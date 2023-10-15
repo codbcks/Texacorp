@@ -33,11 +33,11 @@ public class InGameController {
 
   @FXML
   public void initialize() throws ApiProxyException {
-    topBar.setRoot(SceneManager.getUI(SceneManager.AppUI.TOPBAR));
-    bottomBar.setRoot(SceneManager.getUI(SceneManager.AppUI.BOTTOMBAR));
-    room1.setRoot(SceneManager.getUI(SceneManager.AppUI.ROOM1));
-    room2.setRoot(SceneManager.getUI(SceneManager.AppUI.ROOM2));
-    room3.setRoot(SceneManager.getUI(SceneManager.AppUI.ROOM3));
+    topBar.setRoot(SceneManager.getInterface(SceneManager.AppInterface.TOPBAR));
+    bottomBar.setRoot(SceneManager.getInterface(SceneManager.AppInterface.BOTTOMBAR));
+    room1.setRoot(SceneManager.getInterface(SceneManager.AppInterface.ROOM1));
+    room2.setRoot(SceneManager.getInterface(SceneManager.AppInterface.ROOM2));
+    room3.setRoot(SceneManager.getInterface(SceneManager.AppInterface.ROOM3));
   }
 
   @FXML

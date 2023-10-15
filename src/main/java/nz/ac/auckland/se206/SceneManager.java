@@ -15,7 +15,7 @@ import nz.ac.auckland.se206.gpt.ChatMessage;
 public class SceneManager {
 
   /** An enum that lists all the different UI scenes. */
-  public enum AppUI {
+  public enum AppInterface {
     INTRO,
     IN_GAME,
     ROOM1,
@@ -29,10 +29,10 @@ public class SceneManager {
   }
 
   // The HashMap that contains all UI 'roots'
-  private static HashMap<AppUI, Parent> sceneMap = new HashMap<>();
+  private static HashMap<AppInterface, Parent> sceneMap = new HashMap<>();
 
   // The HashMap that contains all UI 'roots'
-  private static HashMap<AppUI, FXMLLoader> loaderMap = new HashMap<>();
+  private static HashMap<AppInterface, FXMLLoader> loaderMap = new HashMap<>();
 
   /**
    * Creates a new UI instance and adds it to the sceneMap and loaderMap.
@@ -41,7 +41,7 @@ public class SceneManager {
    * @param fxml The name of the FXML file to load.
    * @throws IOException If the FXML file cannot be loaded.
    */
-  public static void createAppUi(AppUI ui, String fxml) throws IOException {
+  public static void createAppInterface(AppInterface ui, String fxml) throws IOException {
     loaderMap.put(ui, new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml")));
     sceneMap.put(ui, loaderMap.get(ui).load());
   }
@@ -52,12 +52,12 @@ public class SceneManager {
    * @param ui The UI scene to get the controller for.
    * @return The controller for the specified UI scene.
    */
-  public static Object getController(AppUI ui) {
+  public static Object getController(AppInterface ui) {
     return loaderMap.get(ui).getController();
   }
 
   // OBSELETE, REMOVE
-  public static void addAppUI(AppUI ui, Parent root) {
+  public static void addAppInterface(AppInterface ui, Parent root) {
     sceneMap.put(ui, root);
   }
 
@@ -67,7 +67,7 @@ public class SceneManager {
    * @param ui The UI scene to get the instance for.
    * @return The UI instance corresponding with the requested UI.
    */
-  public static Parent getUI(AppUI ui) {
+  public static Parent getInterface(AppInterface ui) {
     return sceneMap.get(ui);
   }
 
@@ -77,11 +77,11 @@ public class SceneManager {
    * @param chatMessage The chat message to add.
    */
   public static void addToLogEnviroMessage(ChatMessage chatMessage) {
-    ((BottomBarController) getController(AppUI.BOTTOMBAR)).addToLog(chatMessage, true);
+    ((BottomBarController) getController(AppInterface.BOTTOMBAR)).addToLog(chatMessage, true);
   }
 
   /** Updates the chat in the bottom bar. */
   public static void updateChat() {
-    ((BottomBarController) getController(AppUI.BOTTOMBAR)).updateChat();
+    ((BottomBarController) getController(AppInterface.BOTTOMBAR)).updateChat();
   }
 }

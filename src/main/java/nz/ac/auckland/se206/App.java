@@ -50,8 +50,8 @@ public class App extends Application {
    * @param newUI The new UI element to set the root scene to.
    * @throws IOException If the FXML file for the new UI element is not found.
    */
-  public static void setRoot(SceneManager.AppUI newUI) throws IOException {
-    scene.setRoot(SceneManager.getUI(newUI));
+  public static void setRoot(SceneManager.AppInterface newUI) throws IOException {
+    scene.setRoot(SceneManager.getInterface(newUI));
   }
 
   /**
@@ -63,12 +63,12 @@ public class App extends Application {
   @Override
   public void start(final Stage stage) throws IOException {
 
-    SceneManager.createAppUi(SceneManager.AppUI.INTRO, "intro");
-    SceneManager.createAppUi(SceneManager.AppUI.WIN, "win");
-    SceneManager.createAppUi(SceneManager.AppUI.LOSE, "lose");
+    SceneManager.createAppInterface(SceneManager.AppInterface.INTRO, "intro");
+    SceneManager.createAppInterface(SceneManager.AppInterface.WIN, "win");
+    SceneManager.createAppInterface(SceneManager.AppInterface.LOSE, "lose");
     resetGame();
 
-    Parent root = SceneManager.getUI(SceneManager.AppUI.INTRO);
+    Parent root = SceneManager.getInterface(SceneManager.AppInterface.INTRO);
 
     scene = new Scene(root, 960, 640);
     stage.setResizable(false);
@@ -86,20 +86,21 @@ public class App extends Application {
    */
   public static void resetGame() throws IOException {
 
-    SceneManager.createAppUi(SceneManager.AppUI.ROOM1, "room1");
-    SceneManager.createAppUi(SceneManager.AppUI.ROOM2, "room2");
-    SceneManager.createAppUi(SceneManager.AppUI.ROOM3, "room3");
-    SceneManager.createAppUi(SceneManager.AppUI.BOTTOMBAR, "bottomBar");
-    SceneManager.createAppUi(SceneManager.AppUI.TOPBAR, "topBar");
+    SceneManager.createAppInterface(SceneManager.AppInterface.ROOM1, "room1");
+    SceneManager.createAppInterface(SceneManager.AppInterface.ROOM2, "room2");
+    SceneManager.createAppInterface(SceneManager.AppInterface.ROOM3, "room3");
+    SceneManager.createAppInterface(SceneManager.AppInterface.BOTTOMBAR, "bottomBar");
+    SceneManager.createAppInterface(SceneManager.AppInterface.TOPBAR, "topBar");
 
-    room1 = ((Room1Controller) SceneManager.getController(SceneManager.AppUI.ROOM1));
-    room2 = ((Room2Controller) SceneManager.getController(SceneManager.AppUI.ROOM2));
-    room3 = ((Room3Controller) SceneManager.getController(SceneManager.AppUI.ROOM3));
-    topBarController = ((TopBarController) SceneManager.getController(SceneManager.AppUI.TOPBAR));
+    room1 = ((Room1Controller) SceneManager.getController(SceneManager.AppInterface.ROOM1));
+    room2 = ((Room2Controller) SceneManager.getController(SceneManager.AppInterface.ROOM2));
+    room3 = ((Room3Controller) SceneManager.getController(SceneManager.AppInterface.ROOM3));
+    topBarController =
+        ((TopBarController) SceneManager.getController(SceneManager.AppInterface.TOPBAR));
     bottomBarController =
-        ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR));
+        ((BottomBarController) SceneManager.getController(SceneManager.AppInterface.BOTTOMBAR));
 
-    SceneManager.createAppUi(SceneManager.AppUI.IN_GAME, "inGame");
+    SceneManager.createAppInterface(SceneManager.AppInterface.IN_GAME, "inGame");
   }
 
   /**
@@ -123,13 +124,13 @@ public class App extends Application {
    */
   public static KeyFrame getTranslateKeyFrame(
       double xDist, double yDist, Node nodeToMove, double durationMillis, double startDelayMillis) {
-    return new KeyFrame(
+    return new KeyFrame( // KeyFrame for translating a node
         Duration.millis(startDelayMillis),
         e -> {
           TranslateTransition tempTransition =
               new TranslateTransition(Duration.millis(durationMillis), nodeToMove);
-          tempTransition.setByX(xDist);
-          tempTransition.setByY(yDist);
+          tempTransition.setByX(xDist); // set the distance to move in the x direction
+          tempTransition.setByY(yDist); // set the distance to move in the y direction
           tempTransition.play();
         });
   }

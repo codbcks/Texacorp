@@ -20,18 +20,27 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 /** This class is the controller for Room 2 in the Escaipe game. */
 public class Room2Controller {
 
+  // FXML elements
   @FXML private Rectangle lightOverlay;
   @FXML private ImageView sawBody;
   @FXML private ImageView laser;
   @FXML private Rectangle clockPromptTrigger;
   @FXML private Rectangle notesPromptTrigger;
 
+  // Animation timelines
   private Timeline lightsOff;
   private Timeline lightsOn;
 
+  /**
+   * Initializes the Room2Controller by setting up mouse interaction for FXML elements and creating
+   * animations for turning the lights on and off.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   */
   @FXML
   public void initialize() throws ApiProxyException {
 
+    // Set up mouse interaction for FXML elements
     mouseInteract(clockPromptTrigger);
     mouseInteract(notesPromptTrigger);
     mouseInteract(sawBody);
@@ -105,10 +114,12 @@ public class Room2Controller {
                 }));
   }
 
+  /** Turns off the lights. */
   public void lightsOff() {
     lightsOff.playFromStart();
   }
 
+  /** Turns on the lights. */
   public void lightsOn() {
     lightsOn.playFromStart();
   }
@@ -131,6 +142,12 @@ public class Room2Controller {
         });
   }
 
+  /**
+   * Handles clicking on the saw body.
+   *
+   * @param event The mouse event.
+   * @throws IOException if there is an error with the input/output.
+   */
   @FXML
   public void clickSawBody(MouseEvent event) throws IOException {
     // If the gpt is running/room turned off, give the player the saw body when clicked
@@ -146,15 +163,27 @@ public class Room2Controller {
     }
   }
 
+  /**
+   * Handles clicking on the exit.
+   *
+   * @param event The mouse event.
+   * @throws IOException if there is an error with the input/output.
+   */
   @FXML
   public void clickExit(MouseEvent event) throws IOException {
     // If the player has all the items, go to the win screen
     if (App.getTopBarController().hasItem(TopBarController.Item.SAW_FIXED)) {
       ChallengeTimer.cancelTimer();
-      App.setRoot(SceneManager.AppUI.WIN);
+      App.setRoot(SceneManager.AppInterface.WIN);
     }
   }
 
+  /**
+   * Handles clicking on the clock prompt.
+   *
+   * @param event The mouse event.
+   * @throws IOException if there is an error with the input/output.
+   */
   @FXML
   public void clockPrompt(MouseEvent event) throws IOException {
     SceneManager.addToLogEnviroMessage(
@@ -162,6 +191,12 @@ public class Room2Controller {
     SceneManager.updateChat();
   }
 
+  /**
+   * Handles clicking on the notes prompt.
+   *
+   * @param event The mouse event.
+   * @throws IOException if there is an error with the input/output.
+   */
   @FXML
   public void notesPrompt(MouseEvent event) throws IOException {
     SceneManager.addToLogEnviroMessage(new ChatMessage("user", "6 blank sticky notes... weird."));

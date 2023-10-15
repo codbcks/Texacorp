@@ -77,6 +77,14 @@ public class Room3Controller {
 
   private String pin;
 
+  /**
+   * Initializes the Room3Controller by activating the conveyor, setting up the pin pad, and creating
+   * the necessary animation and event timelines for the pin pad and lights. Also sets the text relating
+   * to 4 objects that can help the player guess the pin.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   * @throws IOException if there is an issue with input/output
+   */
   @FXML
   public void initialize() throws ApiProxyException, IOException {
 
@@ -109,7 +117,8 @@ public class Room3Controller {
     pinPadCorrectDark = new Color(0.0, 0.125, 0.03125, 1.0);
     pinPadCorrectLight = new Color(0.0, 1.0, 0.03125, 1.0);
 
-    /* Regardless of the initial colour in SceneBuilder, the pin pad text box uses the default colours */
+    /* Regardless of the initial colour in SceneBuilder, the pin pad text box uses
+    the default colours */
     pinTextField.setTextFill(pinPadLight);
     pinTextFieldBackground.setFill(pinPadDark);
 
@@ -181,6 +190,7 @@ public class Room3Controller {
                   openDoor.play();
                 }));
 
+    /* Animation and event timeline for turning off the lights */
     lightsOff =
         new Timeline(
             new KeyFrame(
@@ -194,6 +204,7 @@ public class Room3Controller {
             new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
             new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
 
+    /* Animation and event timeline for turning on the lights */
     lightsOn =
         new Timeline(
             new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
@@ -226,24 +237,41 @@ public class Room3Controller {
         });
   }
 
+  /** Turns off the lights. */
   public void lightsOff() {
     lightsOff.playFromStart();
   }
 
+  /** Turns on the lights. */
   public void lightsOn() {
     lightsOn.playFromStart();
   }
 
+  /**
+   * Opens the pin pad.
+   *
+   * @param event the mouse event triggered by the pin pad open button
+   */
   @FXML
   public void clickPinPadOpen(MouseEvent event) throws IOException {
     pinPadUi.setVisible(true);
   }
 
+  /**
+   * Closes the pin pad.
+   *
+   * @param event the mouse event triggered by the pin pad close button
+   */
   @FXML
   public void clickPinPadClose(MouseEvent event) throws IOException {
     pinPadUi.setVisible(false);
   }
 
+  /**
+   * Handles the clicking of the pin pad buttons.
+   *
+   * @param event the mouse event triggered by the pin pad buttons
+   */
   @FXML
   public void pinDigitClick(MouseEvent event) throws IOException {
     // Get the button that was clicked
@@ -258,6 +286,11 @@ public class Room3Controller {
     }
   }
 
+  /**
+   * Handles the clicking of the pin pad remove button.
+   *
+   * @param event the mouse event triggered by the pin pad remove button
+   */
   @FXML
   public void pinRemoveClick(MouseEvent event) throws IOException {
     // If the pin pad is ready and the text field is not empty, remove the last digit from the text
@@ -269,6 +302,11 @@ public class Room3Controller {
     }
   }
 
+  /**
+   * Handles the clicking of the pin pad submit button.
+   *
+   * @param event the mouse event triggered by the pin pad submit button
+   */
   @FXML
   public void pinSubmitClick(MouseEvent event) throws IOException {
     // If the pin pad is ready, check if the pin is correct
@@ -283,6 +321,11 @@ public class Room3Controller {
     }
   }
 
+  /**
+   * Handles the clicking of the shelves.
+   *
+   * @param event the mouse event triggered by the shelves
+   */
   @FXML
   public void shelvesPrompt(MouseEvent event) throws IOException {
     SceneManager.addToLogEnviroMessage(
@@ -290,44 +333,55 @@ public class Room3Controller {
     SceneManager.updateChat();
   }
 
+  /** Activates the conveyor belt animation. */
   public void activateConveyor() {
 
+    // Create a new task to move the conveyor belt and resin image
     Task<Void> conveyorMovementTask =
         new Task<Void>() {
           @Override
           protected Void call() throws Exception {
 
+            // Initialize variables
             int conveyorFrame = 1;
             conveyorIsActive = true;
 
+            // Loop through conveyor frames while the conveyor is active
             while (conveyorIsActive) {
+
+              // Reset conveyor frame to 1 if it reaches 5
               if (conveyorFrame == 5) {
                 conveyorFrame = 1;
               }
 
+              // Update conveyor image to the current frame
               imgConveyor.setImage(
                   new Image("/images/rightRoomBelt-Frame" + conveyorFrame + ".png"));
 
+              // Move resin image down the conveyor belt
               if (imgConveyorResin.getLayoutY() <= 0) {
+                // If resin reaches the end of the conveyor, reset its position to the start
                 Platform.runLater(
                     () -> {
                       imgConveyorResin.setLayoutX(830);
                       imgConveyorResin.setLayoutY(235);
                     });
               } else if (imgConveyorResin.getLayoutX() > 295) {
+                // If resin is still on the conveyor, move it to the left
                 Platform.runLater(
                     () -> {
                       imgConveyorResin.setLayoutX(imgConveyorResin.getLayoutX() - 4);
                     });
               } else {
+                // If resin reaches the end of the conveyor, move it down
                 Platform.runLater(
                     () -> {
                       imgConveyorResin.setLayoutY(imgConveyorResin.getLayoutY() - 4);
                     });
               }
 
+              // Increment conveyor frame and wait for a few milliseconds
               conveyorFrame++;
-
               try {
                 Thread.sleep(conveyorFrameRate);
               } catch (Exception e) {
@@ -339,14 +393,21 @@ public class Room3Controller {
           }
         };
 
+    // Create a new thread to run the conveyor movement task
     Thread conveyorMovementThread = new Thread(conveyorMovementTask);
     conveyorMovementThread.start();
   }
 
+  /** Deactivates the conveyor belt animation. */
   public void deactivateConveyor() {
     conveyorIsActive = false;
   }
 
+  /**
+   * Handles the clicking of the conveyor belt.
+   *
+   * @param event the mouse event triggered by the conveyor belt
+   */
   @FXML
   private void clickConveyor(MouseEvent event) throws IOException {
     if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
