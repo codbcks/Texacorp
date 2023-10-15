@@ -33,7 +33,8 @@ public class BottomBarController {
   protected ChatCompletionRequest chatCompletionRequest;
   protected ChatCompletionRequest hintCompletionRequest;
   protected static HashMap<String, String> modifiedNaming;
-  protected List<ChatMessage> gptInteractionLog = new ArrayList<>();
+  protected List<ChatMessage> gptChatLog = new ArrayList<>();
+  protected List<ChatMessage> hintLog = new ArrayList<>();
 
   public void initialize() throws ApiProxyException {
 
@@ -55,6 +56,7 @@ public class BottomBarController {
     inputText.setOnKeyPressed(
         event -> {
           if (event.getCode() == KeyCode.ENTER) {
+
             String message = inputText.getText().trim();
             if (!message.isEmpty()) {
               try {
@@ -74,9 +76,11 @@ public class BottomBarController {
    * @throws ApiProxyException
    */
   public void onRequestHint(ActionEvent event) throws ApiProxyException {
-    hintButton.setDisable(true);
+    Platform.runLater(
+        () -> {
+          hintButton.setDisable(true);
+        });
     runGptForHint(new ChatMessage("user", GptPromptEngineering.getHint()));
-    hintButton.setDisable(false);
   }
 
   /**
@@ -88,7 +92,7 @@ public class BottomBarController {
    */
   private void runGptForHint(ChatMessage chatMessage) {
 
-    addToLog(chatMessage);
+    addToLog(chatMessage, true);
     Task<Void> runGptHintTask =
         new Task<Void>() {
 
@@ -129,18 +133,22 @@ public class BottomBarController {
                           setHintCounter();
                         });
                     if (GameState.isTextToSpeechOn) {
-                      // say aloud specifies whether the program should access text to speech or
-                      // not
                       App.textToSpeech.speak(result.getChatMessage().getContent());
                     }
                   }
                 }
               }
             } catch (ApiProxyException e) {
-              // Exception handling
-              System.out.println("ERROR: Exception in GptInteraction.runGptForHint!");
               e.printStackTrace();
+              // Exception handling
+
+              GameState.isGameOffline = true;
+              provideOfflineHint();
             }
+            Platform.runLater(
+                () -> {
+                  hintButton.setDisable(false);
+                });
             return null;
           }
         };
@@ -178,7 +186,8 @@ public class BottomBarController {
    */
   @FXML
   private void onSendMessage(ActionEvent event) throws ApiProxyException, IOException {
-    String message = inputText.getText();
+
+    String message = inputText.getText().trim();
     inputText.clear();
     if (message == null || message.trim().isEmpty()) {
       // If message is empty, don't do anything.
@@ -188,6 +197,7 @@ public class BottomBarController {
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
+
     runGpt(msg);
   }
 
@@ -212,9 +222,10 @@ public class BottomBarController {
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
   protected void runGpt(ChatMessage msg) throws ApiProxyException {
+
     turnOffLights();
-    addToLog(msg);
-    Task<Void> runGptTask = createRunGptTask();
+    addToLog(msg, false);
+    Task<Void> runGptTask = createRunGptTask(msg);
     Thread runGptThread = new Thread(runGptTask);
     runGptThread.start();
   }
@@ -224,22 +235,22 @@ public class BottomBarController {
    *
    * @return the task.
    */
-  private Task<Void> createRunGptTask() {
+  private Task<Void> createRunGptTask(ChatMessage msg) {
     return new Task<Void>() {
       @Override
       protected Void call() throws Exception {
-        processGptResponse();
+        processGptResponse(msg);
         return null;
       }
     };
   }
 
   /** Processes the response from the GPT model. */
-  private void processGptResponse() {
+  private void processGptResponse(ChatMessage msg) {
     appendChatMessage("Processing...", "assistant");
     try {
       String gptResponse = getGptResponse();
-      handleGptResponse(gptResponse);
+      handleGptResponse(msg, gptResponse);
     } catch (ApiProxyException e) {
       handleGptError(e);
     } finally {
@@ -254,7 +265,7 @@ public class BottomBarController {
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
   private String getGptResponse() throws ApiProxyException {
-    chatCompletionRequest.setMessages(gptInteractionLog);
+    chatCompletionRequest.setMessages(gptChatLog);
     ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
     Choice result = chatCompletionResult.getChoices().iterator().next();
     return result.getChatMessage().getContent();
@@ -265,15 +276,39 @@ public class BottomBarController {
    *
    * @param gptResponse the response for GPT.
    */
-  private void handleGptResponse(String gptResponse) {
+  private void handleGptResponse(ChatMessage msg, String gptResponse) {
     if (GameState.isRiddleExpected) {
       Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
       GameState.isRiddleExpected = false;
     } else {
-      if ((gptResponse.startsWith("HINT:") || gptResponse.contains("hint"))) {
-        handleHintResponse(gptResponse);
+
+      if ("HINT".equals(msg.getContent())) {
+        if (gptResponse.startsWith("HINT:")) {
+          Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+          if (GameState.isTextToSpeechOn) {
+            App.textToSpeech.speak(gptResponse);
+          }
+          GameState.hintsRemaining--;
+          Platform.runLater(
+              () -> {
+                setHintCounter();
+              });
+        } else {
+          handleNormalResponse(gptResponse);
+        }
       } else {
-        Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+        handleNormalResponse(gptResponse);
+      }
+    }
+  }
+
+  private void handleNormalResponse(String gptResponse) {
+    if (gptResponse.startsWith("HINT:")) {
+      handleHintResponse(gptResponse);
+    } else {
+      Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+      if (GameState.isTextToSpeechOn) {
+        App.textToSpeech.speak(gptResponse);
       }
     }
   }
@@ -285,9 +320,11 @@ public class BottomBarController {
    */
   private void handleHintResponse(String gptResponse) {
     Platform.runLater(
-        () -> appendChatMessage("Hints are not given through the chat!", "assistant"));
+        () ->
+            appendChatMessage(
+                "If you need help, type 'HINT' or click the HELP button!", "assistant"));
     if (GameState.isTextToSpeechOn) {
-      App.textToSpeech.speak("Hints are not given through the chat!");
+      App.textToSpeech.speak("If you need help, type 'HINT' or click the HELP button!");
     }
   }
 
@@ -297,8 +334,9 @@ public class BottomBarController {
    * @param e the exception.
    */
   private void handleGptError(ApiProxyException e) {
-    System.out.println("Error. Exception in GptInteraction.runGpt");
+    System.out.println("Error in running GPT API!");
     e.printStackTrace();
+    provideOfflineResponse();
   }
 
   /**
@@ -306,15 +344,20 @@ public class BottomBarController {
    *
    * @param msg the chat message to add
    */
-  protected void addToLog(ChatMessage msg) {
-    gptInteractionLog.add(msg);
+  protected void addToLog(ChatMessage msg, boolean isHint) {
+
+    if (isHint) {
+      hintLog.add(msg);
+    } else {
+      gptChatLog.add(msg);
+    }
   }
 
   /**
    * Clears the GPT interaction log. Initial thinking was that this would help moderate token use.
    */
   public void clearLog() {
-    gptInteractionLog.clear();
+    gptChatLog.clear();
   }
 
   /**
@@ -323,7 +366,7 @@ public class BottomBarController {
    * @param story
    */
   public void provideBackStory(String story) {
-    addToLog(new ChatMessage("assistant", story));
+    addToLog(new ChatMessage("assistant", story), false);
   }
 
   /** Turns off the lights in all rooms. */
@@ -361,6 +404,94 @@ public class BottomBarController {
    * @return the GPT interaction log.
    */
   public List<ChatMessage> getGptInteractionlog() {
-    return gptInteractionLog;
+    return gptChatLog;
+  }
+
+  /**
+   * The following two methods are only used when GPT is unable to be accessed and provide a way for
+   * the game to still progress.
+   */
+
+  /**
+   * *** OFFLINE METHOD ***
+   *
+   * <p>Provides a response so the game can still progress when GPT is unable to be accessed.
+   */
+  protected void provideOfflineResponse() {
+    GameState.isGameOffline = true;
+    if (GameState.isRiddleExpected) {
+      App.room1.setWordToGuess("laser");
+      Platform.runLater(
+          () -> {
+            appendChatMessage(
+                "here's your riddle:\r\n"
+                    + //
+                    "\r\n"
+                    + //
+                    "I'm not a razor, but I can cut with precision,\r\n"
+                    + //
+                    "Bright and focused, but not for vision.\r\n"
+                    + //
+                    "I might read a disc or engrave a design,\r\n"
+                    + //
+                    "But I'm not a beam of sunshine.\r\n"
+                    + //
+                    "What am I??",
+                "assistant");
+          });
+      GameState.isRiddleExpected = false;
+      if (GameState.isTextToSpeechOn) {
+        App.textToSpeech.speak(
+            "here's your riddle: I'm not a razor, but I can cut with precision, Bright and focused,"
+                + " but not for vision. I might read a disc or engrave a design, But I'm not a beam"
+                + " of sunshine. What am I?");
+      }
+    } else {
+      Platform.runLater(
+          () -> {
+            appendChatMessage(
+                "AI cannot be accessed right now. Please try again later.", "assistant");
+          });
+      if (GameState.isTextToSpeechOn) {
+        App.textToSpeech.speak("AI cannot be accessed right now. Please try again later.");
+      }
+    }
+  }
+
+  /**
+   * *** OFFLINE METHOD ***
+   *
+   * <p>Provides a hint so help can still be provided when GPT is unable to be accessed.
+   */
+  protected void provideOfflineHint() {
+    String hint = GptPromptEngineering.getOfflineHint();
+
+    if (GameState.hintsRemaining == 0) {
+      Platform.runLater(
+          () -> {
+            appendChatMessage("No hints available!", "assistant");
+          });
+      if (GameState.isTextToSpeechOn) {
+        App.textToSpeech.speak("No hints available!");
+      }
+    } else {
+      if (GameState.getCurrentDifficulty() == Difficulty.EASY) {
+        Platform.runLater(
+            () -> {
+              appendChatMessage(hint, "assistant");
+            });
+
+      } else if (GameState.getCurrentDifficulty() == Difficulty.MEDIUM) {
+        GameState.hintsRemaining--;
+        Platform.runLater(
+            () -> {
+              appendChatMessage(hint, "assistant");
+              setHintCounter();
+            });
+        if (GameState.isTextToSpeechOn) {
+          App.textToSpeech.speak(hint);
+        }
+      }
+    }
   }
 }

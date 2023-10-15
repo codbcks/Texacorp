@@ -4,6 +4,7 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.SubScene;
@@ -38,7 +39,7 @@ public class Room1Controller {
   private Timeline lightsOff;
   private Timeline lightsOn;
 
-  private static String wordToGuess;
+  private String wordToGuess;
   private static String wordList;
 
   @FXML
@@ -115,6 +116,10 @@ public class Room1Controller {
     return wordToGuess;
   }
 
+  public void setWordToGuess(String wordToGuess) {
+    this.wordToGuess = wordToGuess;
+  }
+
   // Generate a riddle using GPT and set the word to guess
   @FXML
   public void generateRiddle(MouseEvent event) throws ApiProxyException {
@@ -133,7 +138,10 @@ public class Room1Controller {
     if (GameState.isFirstTime) {
       GameState.isFirstTime = false;
       GameState.isRiddleExpected = true;
-      showTerminal();
+      Platform.runLater(
+          () -> {
+            showTerminal();
+          });
       try {
         GameState.isRiddleActive = true;
         App.bottomBarController.runGpt(
@@ -143,7 +151,10 @@ public class Room1Controller {
         e.printStackTrace();
       }
     } else if (!GameState.isFirstTime && !GameState.isRoom1Solved) {
-      showTerminal();
+      Platform.runLater(
+          () -> {
+            showTerminal();
+          });
     } else {
       return;
     }
@@ -185,14 +196,20 @@ public class Room1Controller {
   private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
-      App.bottomBarController.appendChatMessage("Success!", "user");
-      hideTerminal();
+      Platform.runLater(
+          () -> {
+            App.bottomBarController.appendChatMessage("Success!", "user");
+            hideTerminal();
+          });
       GameState.isRiddleActive = false;
       GameState.isRoom1Solved = true;
       App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
     } else {
-      App.bottomBarController.appendChatMessage("Declined!", "assistant");
-      riddleAnswerEntry.clear();
+      Platform.runLater(
+          () -> {
+            App.bottomBarController.appendChatMessage("Declined!", "assistant");
+            riddleAnswerEntry.clear();
+          });
     }
   }
 

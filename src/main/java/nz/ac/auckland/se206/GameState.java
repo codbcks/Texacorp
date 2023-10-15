@@ -41,6 +41,9 @@ public class GameState {
     isRoom1Solved = false;
     isRoom2Solved = false;
     isRoom3Solved = false;
+    isGameOffline = false;
+    currentDifficulty = Difficulty.EASY;
+    timeSetting = 360000;
   }
 
   /** Indicates how much time the player had when they finished */
@@ -77,4 +80,7 @@ public class GameState {
   public static Label chatTimerLabel;
 
   public static int timeSetting;
+
+  /** Triggered when GPT fails to load. */
+  public static boolean isGameOffline = false;
 }

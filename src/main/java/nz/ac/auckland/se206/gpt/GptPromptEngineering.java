@@ -53,8 +53,9 @@ public class GptPromptEngineering {
   public static String getRiddleWithGivenWord(String wordToGuess) {
     return "Provide a riddle with the answer: "
         + wordToGuess
-        + ". Do not give the answer out under any"
-        + " circumstances. Do not mention the word 'HINT' under any circumstances.";
+        + ". Do not give the answer out under any circumstances. Do not mention the word 'HINT'"
+        + " under any circumstances. If the player replies with the riddle answer, tell them that"
+        + " should be entered into the terminal.";
   }
 
   /**
@@ -69,7 +70,9 @@ public class GptPromptEngineering {
       if (GameState.isRiddleActive) {
         return "Give the player a hint regarding the riddle for "
             + App.room1.getWordToGuess()
-            + ". Do not reveal the answer! Start your answer with 'HINT:'. Give only ONE"
+            + ". Do not include the word "
+            + App.room1.getWordToGuess()
+            + "in your hint. Start your answer with 'HINT:'. Give only ONE"
             + " hint in your answer.";
       }
       if (GameState.isRoom1Solved == false) {
@@ -94,5 +97,54 @@ public class GptPromptEngineering {
       return "Tell the player: No hints are available!";
     }
     return "Tell the player: No hints are available!";
+  }
+
+  /**
+   * *** OFFLINE METHOD *** This is the offline version of the getHint() method. It is used when GPT
+   * API cannot be accessed.
+   *
+   * @return the hint as a string
+   */
+  public static String getOfflineHint() {
+    // If on hard mode, then no hints are available
+    if (GameState.hintsRemaining > 0) {
+      // if the player is currently solving the riddle
+      if (GameState.isRiddleActive) {
+        String[] hints = {
+          "Try thinking about something that can be focused and used for reading discs or"
+              + " engraving",
+          "I'm not a pointer in a debate,\r\n"
+              + //
+              "Yet I can light up and indicate.\r\n"
+              + //
+              "From surgery to a music player's tune,\r\n"
+              + //
+              "I work by emitting a concentrated beam, but not from the moon.",
+          "I'm not a blade, but I can slice,\r\n"
+              + //
+              "In tech and tools, I'm quite precise."
+        };
+        return hints[(int) (Math.random() * hints.length)];
+      }
+      if (GameState.isRoom1Solved == false) {
+        return "Maybe you should start by examining that 3D printing terminal.";
+      }
+      if (GameState.isRoom1Solved == true && GameState.isRoom2Solved == false) {
+        return "It looks like the AI drains power from the lasers when thinking. Maybe that could"
+            + " be used to your advantage.";
+      }
+      if (GameState.isRoom1Solved == true
+          && GameState.isRoom2Solved == true
+          && GameState.isRoom3Solved == false) {
+        return "There are clues for each digit of the safe combination. Take note of the number of"
+            + " objects in the three rooms. ";
+      }
+      if (GameState.isRoom1Solved && GameState.isRoom2Solved && GameState.isRoom3Solved) {
+        return "Is there a way to exit in the centre room?";
+      }
+    } else {
+      return "No hints are available!";
+    }
+    return "No hints are available!";
   }
 }
