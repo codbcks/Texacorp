@@ -22,6 +22,7 @@ import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.controllers.TopBarController.Item;
+import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room3Controller {
@@ -285,7 +286,9 @@ public class Room3Controller {
 
   @FXML
   public void shelvesPrompt(MouseEvent event) throws IOException {
-    SceneManager.appendChatMessage("Huh, nothing of use in any of these five shelves...", "user");
+    SceneManager.addToLogEnviroClick(
+        new ChatMessage("user", "Huh, nothing of use in any of these five shelves..."));
+    SceneManager.updateChat();
   }
 
   public void activateConveyor() {
@@ -355,5 +358,6 @@ public class Room3Controller {
       App.topBarController.giveItem(TopBarController.Item.RESIN);
       imgConveyorResin.setVisible(false);
     }
+    
   }
 }

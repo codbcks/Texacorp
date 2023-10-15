@@ -292,7 +292,9 @@ public class Room1Controller {
   @FXML
   public void generateRiddle(MouseEvent event) throws ApiProxyException {
     String riddle = GptPromptEngineering.getRiddleWithGivenWord(wordToGuess);
-    App.bottomBarController.appendChatMessage(riddle, "assistant");
+
+    SceneManager.addToLogEnviroClick(new ChatMessage("assistant", riddle));
+    SceneManager.updateChat();
   }
 
   /**
@@ -353,12 +355,18 @@ public class Room1Controller {
   private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
-      App.bottomBarController.appendChatMessage("Success!", "user");
+
+      SceneManager.addToLogEnviroClick(new ChatMessage("user", "Success!"));
+      SceneManager.updateChat();
+
       hideTerminal();
       GameState.isPasswordObtained = true;
       checkForMachineStart();
     } else {
-      App.bottomBarController.appendChatMessage("Declined!", "assistant");
+
+      SceneManager.addToLogEnviroClick(new ChatMessage("assistant", "Declined!"));
+      SceneManager.updateChat();
+
       riddleAnswerEntry.clear();
     }
   }
@@ -382,8 +390,11 @@ public class Room1Controller {
    */
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
-    SceneManager.appendChatMessage(
-        "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw blade.",
-        "user");
+    SceneManager.addToLogEnviroClick(
+        new ChatMessage(
+            "user",
+            "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw"
+                + " blade."));
+    SceneManager.updateChat();
   }
 }
