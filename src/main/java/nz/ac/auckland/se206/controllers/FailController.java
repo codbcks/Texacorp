@@ -18,12 +18,11 @@ public class FailController {
    * This method is called when the user clicks the "Menu" button on the fail screen. It returns the
    * user to the main menu and resets the game.
    *
-   * @param event The mouse event that triggered this method.
    * @throws IOException If there is an error loading the main menu.
    */
   @FXML
   public void clickMenu() throws IOException {
-    App.setRoot(SceneManager.AppInterface.INTRO);
+    App.setInterface(SceneManager.AppInterface.INTRO);
     App.resetGame();
   }
 }

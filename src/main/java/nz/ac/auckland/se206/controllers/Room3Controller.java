@@ -78,9 +78,9 @@ public class Room3Controller {
   private String pin;
 
   /**
-   * Initializes the Room3Controller by activating the conveyor, setting up the pin pad, and creating
-   * the necessary animation and event timelines for the pin pad and lights. Also sets the text relating
-   * to 4 objects that can help the player guess the pin.
+   * Initializes the Room3Controller by activating the conveyor, setting up the pin pad, and
+   * creating the necessary animation and event timelines for the pin pad and lights. Also sets the
+   * text relating to 4 objects that can help the player guess the pin.
    *
    * @throws ApiProxyException if there is an issue with the API proxy
    * @throws IOException if there is an issue with input/output
@@ -237,18 +237,18 @@ public class Room3Controller {
         });
   }
 
-  /** Turns off the lights. */
+  /** Plays animation for the light flickering off */
   public void lightsOff() {
     lightsOff.playFromStart();
   }
 
-  /** Turns on the lights. */
+  /** Plays animation for the light flickering on */
   public void lightsOn() {
     lightsOn.playFromStart();
   }
 
   /**
-   * Opens the pin pad.
+   * Opens the pin pad pane by changing the visable to true.
    *
    * @param event the mouse event triggered by the pin pad open button
    */
@@ -258,7 +258,7 @@ public class Room3Controller {
   }
 
   /**
-   * Closes the pin pad.
+   * Opens the pin pad pane by changing the visable to false.
    *
    * @param event the mouse event triggered by the pin pad close button
    */

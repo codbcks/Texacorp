@@ -31,6 +31,12 @@ public class InGameController {
   private Boolean moveEnabled = true;
   private int currentRoom = 2;
 
+  /**
+   * Initializes the in-game interface by setting the root of the subscenes to the corresponding
+   * interfaces.
+   *
+   * @throws ApiProxyException if there is an error with the API proxy
+   */
   @FXML
   public void initialize() throws ApiProxyException {
     topBar.setRoot(SceneManager.getInterface(SceneManager.AppInterface.TOPBAR));
@@ -40,6 +46,12 @@ public class InGameController {
     room3.setRoot(SceneManager.getInterface(SceneManager.AppInterface.ROOM3));
   }
 
+  /**
+   * Moves the room slider to the left when the left arrow is clicked.
+   *
+   * @param event the mouse event that triggered the method
+   * @throws IOException if there is an error with the input/output
+   */
   @FXML
   public void moveLeft(MouseEvent event) throws IOException {
     if (currentRoom != 1) {
@@ -48,6 +60,12 @@ public class InGameController {
     }
   }
 
+  /**
+   * Moves the room slider to the right when the right arrow is clicked.
+   *
+   * @param event the mouse event that triggered the method
+   * @throws IOException if there is an error with the input/output
+   */
   @FXML
   public void moveRight(MouseEvent event) throws IOException {
     if (currentRoom != 3) {
@@ -56,6 +74,11 @@ public class InGameController {
     }
   }
 
+  /**
+   * Moves the room slider by the specified distance.
+   *
+   * @param distance the distance to move the room slider
+   */
   public void moveRoomSlider(int distance) {
     if (moveEnabled) {
       setMoveEnable(false);
@@ -79,6 +102,11 @@ public class InGameController {
     }
   }
 
+  /**
+   * Enables or disables the ability to move the room slider.
+   *
+   * @param condition true to enable moving the room slider, false to disable it
+   */
   private void setMoveEnable(boolean condition) {
     moveEnabled = condition;
 

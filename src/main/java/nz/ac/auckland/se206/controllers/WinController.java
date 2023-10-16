@@ -19,12 +19,11 @@ public class WinController {
    * This method handles the menu button click event. It takes the user back to the intro screen and
    * resets the game.
    *
-   * @param event The mouse event triggered by the user clicking the menu button.
    * @throws IOException If there is an error loading the intro screen.
    */
   @FXML
   public void clickMenu() throws IOException {
-    App.setRoot(SceneManager.AppInterface.INTRO);
+    App.setInterface(SceneManager.AppInterface.INTRO);
     App.resetGame();
   }
 }
