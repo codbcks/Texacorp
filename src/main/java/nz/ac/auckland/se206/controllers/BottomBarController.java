@@ -44,6 +44,12 @@ public class BottomBarController {
   private boolean previousEnivroClick;
   private List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
 
+  /**
+   * This method initializes the BottomBarController by configuring CSS styles, initializing a chat
+   * completion request, and setting up event listeners.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   */
   public void initialize() throws ApiProxyException {
     // initialise css style classes
     inputText.getStyleClass().add("terminal-text-area");

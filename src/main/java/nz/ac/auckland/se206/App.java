@@ -50,7 +50,7 @@ public class App extends Application {
    * @param newUI The new UI element to set the root scene to.
    * @throws IOException If the FXML file for the new UI element is not found.
    */
-  public static void setRoot(SceneManager.AppInterface newUI) throws IOException {
+  public static void setInterface(SceneManager.AppInterface newUI) throws IOException {
     scene.setRoot(SceneManager.getInterface(newUI));
   }
 
@@ -115,22 +115,27 @@ public class App extends Application {
   /**
    * This method returns a KeyFrame object for translating a node.
    *
-   * @param xDist The distance to translate the node in the x direction.
-   * @param yDist The distance to translate the node in the y direction.
+   * @param horizontalDistance The distance to translate the node in the x direction.
+   * @param verticalDistance The distance to translate the node in the y direction.
    * @param nodeToMove The node to translate.
    * @param durationMillis The duration of the translation animation in milliseconds.
    * @param startDelayMillis The delay before the translation animation starts in milliseconds.
    * @return A KeyFrame object for translating a node.
    */
   public static KeyFrame getTranslateKeyFrame(
-      double xDist, double yDist, Node nodeToMove, double durationMillis, double startDelayMillis) {
-    return new KeyFrame( // KeyFrame for translating a node
+      double horizontalDistance,
+      double verticalDistance,
+      Node nodeToMove,
+      double durationMillis,
+      double startDelayMillis) {
+    // KeyFrame for translating a node
+    return new KeyFrame(
         Duration.millis(startDelayMillis),
         e -> {
           TranslateTransition tempTransition =
               new TranslateTransition(Duration.millis(durationMillis), nodeToMove);
-          tempTransition.setByX(xDist); // set the distance to move in the x direction
-          tempTransition.setByY(yDist); // set the distance to move in the y direction
+          tempTransition.setByX(horizontalDistance); // set the distance to move in the x direction
+          tempTransition.setByY(verticalDistance); // set the distance to move in the y direction
           tempTransition.play();
         });
   }

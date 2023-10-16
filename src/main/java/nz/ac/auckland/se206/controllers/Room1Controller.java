@@ -328,7 +328,13 @@ public class Room1Controller {
     return wordList.split(",")[(int) (Math.random() * 5)];
   }
 
-  // Generate a riddle using GPT and set the word to guess
+  /**
+   * Generates a riddle using the GptPromptEngineering class with the given word to guess. Adds the
+   * generated riddle to the log and updates the chat.
+   *
+   * @param event The mouse event that triggered the method.
+   * @throws ApiProxyException If an error occurs while generating the riddle.
+   */
   @FXML
   public void generateRiddle(MouseEvent event) throws ApiProxyException {
     String riddle = GptPromptEngineering.getRiddleWithGivenWord(wordToGuess);

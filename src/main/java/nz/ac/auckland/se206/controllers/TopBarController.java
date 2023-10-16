@@ -37,6 +37,12 @@ public class TopBarController {
     RESIN
   }
 
+  /**
+   * The code initializes the top bar controllers by setting the timer label and initializing the
+   * inventory.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   */
   public void initialize() throws ApiProxyException {
     /* Initialize inventory */
     invLength = Item.values().length;
@@ -44,7 +50,7 @@ public class TopBarController {
   }
 
   /**
-   * Returns the timer label.
+   * Returns the timer label for other classes to access.
    *
    * @return the timer label.
    */
@@ -128,7 +134,7 @@ public class TopBarController {
    */
   @FXML
   private void clickToMenu() throws IOException {
-    App.setRoot(SceneManager.AppInterface.INTRO);
+    App.setInterface(SceneManager.AppInterface.INTRO);
     ChallengeTimer.cancelTimer();
     App.resetGame();
   }

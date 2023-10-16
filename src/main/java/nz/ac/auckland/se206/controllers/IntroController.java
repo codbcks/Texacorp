@@ -49,7 +49,7 @@ public class IntroController {
     ChallengeTimer.startTimer(GameState.timeSetting, App.getTopBarController().getTimerLabel());
 
     /* This is the entry point for the game */
-    App.setRoot(SceneManager.AppInterface.IN_GAME);
+    App.setInterface(SceneManager.AppInterface.IN_GAME);
 
     if (GameState.currentDifficulty == GameState.Difficulty.EASY) {
       ((BottomBarController) SceneManager.getController(SceneManager.AppInterface.BOTTOMBAR))

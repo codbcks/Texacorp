@@ -174,7 +174,7 @@ public class Room2Controller {
     // If the player has all the items, go to the win screen
     if (App.getTopBarController().hasItem(TopBarController.Item.SAW_FIXED)) {
       ChallengeTimer.cancelTimer();
-      App.setRoot(SceneManager.AppInterface.WIN);
+      App.setInterface(SceneManager.AppInterface.WIN);
     }
   }
 
