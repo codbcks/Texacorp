@@ -4,8 +4,6 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -24,13 +22,13 @@ import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
-public class Room3Controller {
+public class Room3Controller extends Room {
 
   @FXML private Pane pinPadUi;
   @FXML private Rectangle pinTextFieldBackground;
   @FXML private Rectangle pinPadClose;
   @FXML private Rectangle pinPadOpen;
-  @FXML private Rectangle lightOverlay;
+  @FXML private ImageView lightOverlay;
   @FXML private Label pinTextField;
   @FXML private Label pinHintText;
   @FXML private GridPane pinPad;
@@ -50,8 +48,8 @@ public class Room3Controller {
   @FXML private Rectangle shelvesPromptTrigger1;
   @FXML private Rectangle shelvesPromptTrigger2;
   @FXML private ImageView imgSlidingDoor;
-  @FXML private ImageView imgConveyor;
   @FXML private ImageView imgConveyorResin;
+  @FXML private ImageView imgConveyor;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -64,10 +62,7 @@ public class Room3Controller {
   private boolean pinPadReady;
   private Timeline resetPinPad;
   private Timeline resolvePinPad;
-  private Timeline lightsOff;
-  private Timeline lightsOn;
   private boolean conveyorIsActive;
-  private long conveyorFrameRate = 4;
 
   private String[] pinHints = {
     "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
@@ -113,6 +108,9 @@ public class Room3Controller {
     pinTextFieldBackground.setFill(pinPadDark);
 
     /* >-------- PIN PAD ANIMATION + EVENT TIMELINES -------< */
+
+    /* initialize lighting animations */
+    initializeLightAnim(lightOverlay, "rightRoomShadow", true);
 
     /* Animation and event timeline for entering the wrong pin */
     resetPinPad =
@@ -178,32 +176,6 @@ public class Room3Controller {
                       new TranslateTransition(Duration.millis(250), imgSlidingDoor);
                   openDoor.setByX(70);
                   openDoor.play();
-                }));
-
-    lightsOff =
-        new Timeline(
-            new KeyFrame(
-                Duration.seconds(0.0),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                  deactivateConveyor();
-                }),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
-
-    lightsOn =
-        new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(
-                Duration.seconds(1.2),
-                e -> {
-                  lightOverlay.setOpacity(0.0);
-                  activateConveyor();
                 }));
   }
 
@@ -290,59 +262,12 @@ public class Room3Controller {
   }
 
   public void activateConveyor() {
-
-    Task<Void> conveyorMovementTask =
-        new Task<Void>() {
-          @Override
-          protected Void call() throws Exception {
-
-            int conveyorFrame = 1;
-            conveyorIsActive = true;
-
-            while (conveyorIsActive) {
-              if (conveyorFrame == 5) {
-                conveyorFrame = 1;
-              }
-
-              imgConveyor.setImage(
-                  new Image("/images/rightRoomBelt-Frame" + conveyorFrame + ".png"));
-
-              if (imgConveyorResin.getLayoutY() <= 0) {
-                Platform.runLater(
-                    () -> {
-                      imgConveyorResin.setLayoutX(830);
-                      imgConveyorResin.setLayoutY(235);
-                    });
-              } else if (imgConveyorResin.getLayoutX() > 295) {
-                Platform.runLater(
-                    () -> {
-                      imgConveyorResin.setLayoutX(imgConveyorResin.getLayoutX() - 4);
-                    });
-              } else {
-                Platform.runLater(
-                    () -> {
-                      imgConveyorResin.setLayoutY(imgConveyorResin.getLayoutY() - 4);
-                    });
-              }
-
-              conveyorFrame++;
-
-              try {
-                Thread.sleep(conveyorFrameRate);
-              } catch (Exception e) {
-                System.err.println("ERROR: Exception in Room1Controller.dropSaw!");
-              }
-            }
-
-            return null;
-          }
-        };
-
-    Thread conveyorMovementThread = new Thread(conveyorMovementTask);
-    conveyorMovementThread.start();
+    imgConveyor.setImage(new Image("/images/rightRoomBeltAnimation.gif"));
+    conveyorIsActive = true;
   }
 
   public void deactivateConveyor() {
+    imgConveyor.setImage(new Image("/images/rightRoomBeltStopped.png"));
     conveyorIsActive = false;
   }
 
