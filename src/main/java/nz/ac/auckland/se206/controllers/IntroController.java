@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import nz.ac.auckland.se206.App;
-import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -41,23 +40,11 @@ public class IntroController {
   @FXML
   private void startGame() throws IOException {
 
-    /* Set challenge timer */
-    ChallengeTimer.setCurrentLabelTimer(
-        App.topBarController.getTimerLabel(), GameState.timeSetting);
-    ChallengeTimer.startTimer();
+    App.setRoot(SceneManager.AppUI.INTRO2);
 
-    /* This is the entry point for the game */
-    App.setRoot(SceneManager.AppUI.IN_GAME);
-
-    if (GameState.currentDifficulty == GameState.Difficulty.EASY) {
-      ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
-          .removeHintCounter();
-    } else if (GameState.currentDifficulty == GameState.Difficulty.HARD) {
-      ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
-          .setHintCounter(0);
-    }
-
-    App.bottomBarController.giveBackstory();
+    Intro2Controller controller =
+        (Intro2Controller) SceneManager.getController(SceneManager.AppUI.INTRO2);
+    controller.startPrintingText();
   }
 
   /**

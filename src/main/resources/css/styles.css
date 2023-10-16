@@ -1,3 +1,22 @@
+.introductory-text-area {
+    -fx-background-color: rgb(135, 5, 5);
+    -fx-text-fill: white;
+    -fx-font-family: "Courier New";
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-control-inner-background: rgb(135, 5, 5);
+    -fx-control-inner-background-alt: rgb(135, 5, 5);
+    -fx-focus-color: rgb(135, 5, 5);
+    -fx-faint-focus-color: rgb(135, 5, 5);
+}
+
+.continue-label {
+    -fx-text-fill: white;
+    -fx-font-family: "Courier New";
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
 .terminal-text-area {
     -fx-background-color: black;
     -fx-text-fill: green;

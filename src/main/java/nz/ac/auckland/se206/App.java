@@ -47,6 +47,7 @@ public class App extends Application {
   public void start(final Stage stage) throws IOException {
 
     SceneManager.createAppUi(SceneManager.AppUI.INTRO, "intro");
+    SceneManager.createAppUi(SceneManager.AppUI.INTRO2, "intro2");
     SceneManager.createAppUi(SceneManager.AppUI.WIN, "win");
     SceneManager.createAppUi(SceneManager.AppUI.LOSE, "lose");
     resetGame();

@@ -10,6 +10,7 @@ import nz.ac.auckland.se206.controllers.BottomBarController;
 public class SceneManager {
   public enum AppUI {
     INTRO,
+    INTRO2,
     IN_GAME,
     ROOM1,
     ROOM2,
