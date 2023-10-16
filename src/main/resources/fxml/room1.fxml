@@ -73,7 +73,6 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Rectangle>
-      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
       <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="-70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
       <Pane fx:id="terminalPane" layoutX="239.0" layoutY="67.0" prefHeight="341.0" prefWidth="450.0" visible="false">
          <children>
@@ -101,5 +100,10 @@
       </Pane>
       <Rectangle fill="#00ff0d00" height="348.0" layoutX="136.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="180.0" />
       <Rectangle fill="#00ff0d00" height="192.0" layoutX="316.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
+      <ImageView fx:id="lightOverlay" fitHeight="368.0" fitWidth="960.0" mouseTransparent="true" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomShadow-lightsOn.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>

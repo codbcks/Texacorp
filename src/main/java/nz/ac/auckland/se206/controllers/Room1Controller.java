@@ -26,7 +26,7 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room1Controller {
   @FXML private Rectangle triggerConsole;
-  @FXML private Rectangle lightOverlay;
+  @FXML private ImageView lightOverlay;
   @FXML private Rectangle printerPromptTrigger;
 
   @FXML private Label terminalInstructionsLabel;
@@ -45,6 +45,9 @@ public class Room1Controller {
 
   private Timeline lightsOff;
   private Timeline lightsOn;
+  private Image lightsOffOverlay;
+  private Image lightsOnOverlay;
+
   private Timeline takeBrokenSaw;
   private Timeline giveFixedSaw;
   private long conveyorFrameRate = 12;
@@ -66,6 +69,8 @@ public class Room1Controller {
     terminalInstructionsLabel.getStyleClass().add("terminal-label");
     terminalLabel.getStyleClass().add("terminal-label");
 
+    lightsOnOverlay = new Image("/images/leftRoomShadow-lightsOn.png");
+    lightsOffOverlay = new Image("/images/leftRoomShadow-lightsOff.png");
     wordToGuess = getRandomWord();
 
     mouseInteract(triggerConsole);
@@ -88,20 +93,20 @@ public class Room1Controller {
     // triggers the lights off animation
     lightsOff =
         new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setImage(lightsOffOverlay)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setImage(lightsOnOverlay)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setImage(lightsOffOverlay)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setImage(lightsOnOverlay)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setImage(lightsOffOverlay)));
 
     // triggers the lights on animation
     lightsOn =
         new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
+            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setImage(lightsOnOverlay)),
+            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setImage(lightsOffOverlay)),
+            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setImage(lightsOnOverlay)),
+            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setImage(lightsOffOverlay)),
+            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setImage(lightsOnOverlay)));
 
     // triggers conveyor motion when saw is dropped
     takeBrokenSaw =
@@ -132,6 +137,12 @@ public class Room1Controller {
                 e -> {
                   conveyorIsActive = false;
                   repairComplete = true;
+                  if (lightOverlay.getImage() == lightsOnOverlay) {
+                    lightsOnOverlay = new Image("images/leftRoomShadow-lightsOn.png");
+                    lightOverlay.setImage(lightsOnOverlay);
+                  } else {
+                    lightsOnOverlay = new Image("images/leftRoomShadow-lightsOn.png");
+                  }
                   triggerDropSaw.setCursor(Cursor.HAND);
                 }));
   }
@@ -205,6 +216,7 @@ public class Room1Controller {
                 conveyorFrame++;
               }
             }
+
             return null;
           }
         };
@@ -361,6 +373,12 @@ public class Room1Controller {
 
       hideTerminal();
       GameState.isPasswordObtained = true;
+      if (lightOverlay.getImage() == lightsOnOverlay) {
+        lightsOnOverlay = new Image("images/leftRoomShadow-lightsOn-machineActive.png");
+        lightOverlay.setImage(lightsOnOverlay);
+      } else {
+        lightsOnOverlay = new Image("images/leftRoomShadow-lightsOn-machineActive.png");
+      }
       checkForMachineStart();
     } else {
 
