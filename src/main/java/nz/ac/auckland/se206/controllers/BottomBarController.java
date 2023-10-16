@@ -29,6 +29,9 @@ import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult.Choice;
  * and updating the UI to display the conversation history.
  */
 public class BottomBarController {
+
+  private static HashMap<String, String> modifiedNaming;
+
   @FXML private TextArea chatTextArea;
   @FXML private Button sendButton;
   @FXML private TextArea inputText;
@@ -38,7 +41,6 @@ public class BottomBarController {
   @FXML private Button backwardButton;
 
   private ChatCompletionRequest chatCompletionRequest;
-  private static HashMap<String, String> modifiedNaming;
   private int logIndex;
   private String previousMessageRole;
   private boolean previousEnivroClick;
@@ -228,7 +230,7 @@ public class BottomBarController {
     }
   }
 
-  /** Turns off the lights in all rooms. */
+  /** Turns the lights off in all the room. */
   private void turnOffLights() {
     GameState.isGPTRunning = true;
     App.getRoom1().lightsOff();
@@ -236,7 +238,7 @@ public class BottomBarController {
     App.getRoom3().lightsOff();
   }
 
-  /** Turns on the lights in all rooms. */
+  /** Turns the lights on in all the room. */
   private void turnOnLights() {
     GameState.isGPTRunning = false;
     App.getRoom1().lightsOn();
@@ -244,7 +246,7 @@ public class BottomBarController {
     App.getRoom3().lightsOn();
   }
 
-  /** Removes the hint counter. */
+  /** Removes the hint counter from the bottom bar. */
   public void removeHintCounter() {
     hintCounter.setImage(new Image("/images/countHintsUnlimited.png"));
   }
@@ -275,7 +277,7 @@ public class BottomBarController {
    * @param event the action event triggered by the forward button
    */
   @FXML
-  private void clickForwardHistory(ActionEvent event) {
+  private void onForwardHistory(ActionEvent event) {
     if (logIndex >= orderedGptInteractionLog.size()) {
       return;
     }
@@ -289,7 +291,7 @@ public class BottomBarController {
    * @param event the action event triggered by the backward button
    */
   @FXML
-  private void clickBackwardHistory(ActionEvent event) {
+  private void onBackwardHistory(ActionEvent event) {
     if (logIndex <= 3) {
       return;
     }

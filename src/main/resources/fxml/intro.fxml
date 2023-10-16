@@ -12,7 +12,7 @@
             <Font size="89.0" />
          </font>
       </Label>
-      <Button fx:id="btnStart" layoutX="413.0" layoutY="239.0" mnemonicParsing="false" onAction="#startGame" prefHeight="52.0" prefWidth="136.0" text="PLAY">
+      <Button fx:id="btnStart" layoutX="413.0" layoutY="239.0" mnemonicParsing="false" onAction="#onStart" prefHeight="52.0" prefWidth="136.0" text="PLAY">
          <font>
             <Font size="26.0" />
          </font>
@@ -22,17 +22,17 @@
             <Font size="27.0" />
          </font>
       </Label>
-      <Button fx:id="btnEasy" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="394.0" mnemonicParsing="false" onAction="#setEasy" prefHeight="40.0" prefWidth="85.0" text="EASY" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnEasy" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="394.0" mnemonicParsing="false" onAction="#onEasy" prefHeight="40.0" prefWidth="85.0" text="EASY" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <Button fx:id="btnHard" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="394.0" mnemonicParsing="false" onAction="#setHard" prefHeight="40.0" prefWidth="85.0" text="HARD" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnHard" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="394.0" mnemonicParsing="false" onAction="#onHard" prefHeight="40.0" prefWidth="85.0" text="HARD" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <Button fx:id="btnMedium" contentDisplay="CENTER" ellipsisString="" layoutX="430.0" layoutY="394.0" mnemonicParsing="false" onAction="#setMedium" prefHeight="40.0" prefWidth="104.0" text="MEDIUM" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnMedium" contentDisplay="CENTER" ellipsisString="" layoutX="430.0" layoutY="394.0" mnemonicParsing="false" onAction="#onMedium" prefHeight="40.0" prefWidth="104.0" text="MEDIUM" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
@@ -42,17 +42,17 @@
             <Font size="27.0" />
          </font>
       </Label>
-      <Button fx:id="btnTwoMin" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="514.0" mnemonicParsing="false" onAction="#setTwo" prefHeight="40.0" prefWidth="85.0" text="2 MINS" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnTwoMin" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="514.0" mnemonicParsing="false" onAction="#onTwo" prefHeight="40.0" prefWidth="85.0" text="2 MINS" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <Button fx:id="btnSixMin" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="514.0" mnemonicParsing="false" onAction="#setSix" prefHeight="40.0" prefWidth="85.0" text="6 MINS" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnSixMin" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="514.0" mnemonicParsing="false" onAction="#onSix" prefHeight="40.0" prefWidth="85.0" text="6 MINS" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>
       </Button>
-      <Button fx:id="btnFourMin" contentDisplay="CENTER" ellipsisString="" layoutX="440.0" layoutY="514.0" mnemonicParsing="false" onAction="#setFour" prefHeight="40.0" prefWidth="85.0" text="4 MINS" textAlignment="CENTER" textOverrun="CLIP">
+      <Button fx:id="btnFourMin" contentDisplay="CENTER" ellipsisString="" layoutX="440.0" layoutY="514.0" mnemonicParsing="false" onAction="#onFour" prefHeight="40.0" prefWidth="85.0" text="4 MINS" textAlignment="CENTER" textOverrun="CLIP">
          <font>
             <Font size="19.0" />
          </font>

@@ -19,14 +19,6 @@ import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
  */
 public class TopBarController {
 
-  private static int invLength;
-  private static Item[] inventory;
-  private static int nextIndex = 0;
-
-  @FXML private Label topBarTimer;
-  @FXML private HBox inventoryContainer;
-  @FXML private Button forfeitButton;
-
   /** An enumeration of all the items that can be in the inventory. */
   public enum Item {
     SAW_BODY,
@@ -36,6 +28,14 @@ public class TopBarController {
     SAW_FIXED,
     RESIN
   }
+
+  private static int invLength;
+  private static Item[] inventory;
+  private static int nextIndex = 0;
+
+  @FXML private Label topBarTimer;
+  @FXML private HBox inventoryContainer;
+  @FXML private Button forfeitButton;
 
   /**
    * The code initializes the top bar controllers by setting the timer label and initializing the

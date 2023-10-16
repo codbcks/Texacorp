@@ -400,7 +400,7 @@ public class Room1Controller {
    * @param event the action event
    */
   @FXML
-  private void submitGuess(ActionEvent event) {
+  private void onSubmitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
       // If the guess is correct, update the chat log and hide the terminal

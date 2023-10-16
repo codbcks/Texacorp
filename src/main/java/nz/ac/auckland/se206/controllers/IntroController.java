@@ -43,7 +43,7 @@ public class IntroController {
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void startGame() throws IOException {
+  private void onStart() throws IOException {
 
     /* Set challenge timer */
     ChallengeTimer.startTimer(GameState.timeSetting, App.getTopBarController().getTimerLabel());
@@ -68,7 +68,7 @@ public class IntroController {
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void setEasy() throws IOException {
+  private void onEasy() throws IOException {
     btnEasy.setTextFill(Color.GREEN);
     btnMedium.setTextFill(Color.BLACK);
     btnHard.setTextFill(Color.BLACK);
@@ -81,7 +81,7 @@ public class IntroController {
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void setMedium() throws IOException {
+  private void onMedium() throws IOException {
     btnEasy.setTextFill(Color.BLACK);
     btnMedium.setTextFill(Color.ORANGE);
     btnHard.setTextFill(Color.BLACK);
@@ -94,7 +94,7 @@ public class IntroController {
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void setHard() throws IOException {
+  private void onHard() throws IOException {
     btnEasy.setTextFill(Color.BLACK);
     btnMedium.setTextFill(Color.BLACK);
     btnHard.setTextFill(Color.RED);
@@ -102,12 +102,12 @@ public class IntroController {
   }
 
   /**
-   * This is the method that sets the time to 2 minutes.
+   * This is the method that sets the time to 6 minutes.
    *
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void setSix() throws IOException {
+  private void onSix() throws IOException {
     btnSixMin.setTextFill(Color.GREEN);
     btnFourMin.setTextFill(Color.BLACK);
     btnTwoMin.setTextFill(Color.BLACK);
@@ -120,7 +120,7 @@ public class IntroController {
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void setFour() throws IOException {
+  private void onFour() throws IOException {
     btnSixMin.setTextFill(Color.BLACK);
     btnFourMin.setTextFill(Color.ORANGE);
     btnTwoMin.setTextFill(Color.BLACK);
@@ -128,15 +128,15 @@ public class IntroController {
   }
 
   /**
-   * This is the method that sets the time to 6 minutes.
+   * This is the method that sets the time to 2 minutes.
    *
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
-  private void setTwo() throws IOException {
+  private void onTwo() throws IOException {
     btnSixMin.setTextFill(Color.BLACK);
     btnFourMin.setTextFill(Color.BLACK);
     btnTwoMin.setTextFill(Color.RED);
-    GameState.timeSetting = 10000;
+    GameState.timeSetting = 120000;
   }
 }

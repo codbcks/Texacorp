@@ -22,6 +22,6 @@
             <Font name="System Italic" size="32.0" />
          </font>
       </Label>
-      <Button fx:id="menuBtn" layoutX="440.0" layoutY="395.0" mnemonicParsing="false" onAction="#clickMenu" text="Back to menu" />
+      <Button fx:id="menuBtn" layoutX="440.0" layoutY="395.0" mnemonicParsing="false" onAction="#onMenu" text="Back to menu" />
    </children>
 </Pane>

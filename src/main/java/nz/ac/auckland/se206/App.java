@@ -45,7 +45,7 @@ public class App extends Application {
   }
 
   /**
-   * This method sets the root scene to a new UI element.
+   * This method sets the root scene to a new interface element.
    *
    * @param newUI The new UI element to set the root scene to.
    * @throws IOException If the FXML file for the new UI element is not found.

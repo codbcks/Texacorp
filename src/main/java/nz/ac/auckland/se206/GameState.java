@@ -10,6 +10,13 @@ import javafx.scene.control.Label;
  */
 public class GameState {
 
+  /** Enum representing the three difficulty levels of the game. */
+  public enum Difficulty {
+    EASY,
+    MEDIUM,
+    HARD
+  }
+
   /** Indicates whether the laser is currently active. */
   public static boolean isLaserActive = false;
 
@@ -42,11 +49,4 @@ public class GameState {
 
   /** Indicates how much time the player has chosen to play the game. */
   public static int timeSetting;
-
-  /** Enum representing the three difficulty levels of the game. */
-  public enum Difficulty {
-    EASY,
-    MEDIUM,
-    HARD
-  }
 }
