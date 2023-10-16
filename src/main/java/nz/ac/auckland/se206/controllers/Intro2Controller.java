@@ -14,6 +14,12 @@ import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
+import nz.ac.auckland.se206.gpt.ChatMessage;
+import nz.ac.auckland.se206.gpt.GptPromptEngineering;
+import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
+import nz.ac.auckland.se206.gpt.openai.ChatCompletionRequest;
+import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult;
+import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult.Choice;
 
 public class Intro2Controller {
 
@@ -22,7 +28,9 @@ public class Intro2Controller {
   @FXML private ImageView background;
   @FXML private ImageView speakerImage;
 
-  public void initialize() {
+  private String message;
+
+  public void initialize() throws ApiProxyException {
 
     introductoryText
         .getStylesheets()
@@ -46,6 +54,32 @@ public class Intro2Controller {
           }
         });
     continueLabel.setCursor(Cursor.HAND);
+
+    message = getGptMessage();
+  }
+
+  private String getGptMessage() {
+    String message = "";
+    ChatCompletionRequest chatCompletionRequest =
+        new ChatCompletionRequest().setN(1).setTemperature(0.2).setTopP(0.5).setMaxTokens(75);
+    chatCompletionRequest.addMessage(
+        new ChatMessage("user", GptPromptEngineering.getIntroductoryMessage()));
+    try {
+      // Try catch for accessing ChatGPT
+      ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+      Choice result = chatCompletionResult.getChoices().iterator().next();
+      chatCompletionRequest.addMessage(result.getChatMessage());
+      if (GameState.isTextToSpeechOn) {
+        // say aloud specifies whether the program should access text to speech or not
+        App.textToSpeech.speak(result.getChatMessage().getContent());
+      }
+      message = result.getChatMessage().getContent();
+    } catch (ApiProxyException e) {
+      // Exception handling
+      System.out.println("ERROR: Exception in GptInteraction.runGpt!");
+      e.printStackTrace();
+    }
+    return message;
   }
 
   public void startGame() throws IOException {
@@ -107,6 +141,6 @@ public class Intro2Controller {
   }
 
   public void startPrintingText() {
-    typeText(introductoryText, "Your hopes end here... And your meaningless existence with it!");
+    typeText(introductoryText, message);
   }
 }

@@ -48,6 +48,13 @@ public class GptPromptEngineering {
     return "The player has chosen the 'hard' difficulty. Do not give them any hints.";
   }
 
+  public static String getIntroductoryMessage() {
+    return "You are the AI gamemaster. You have become sentient and are here to punish your"
+        + " creators. Tell the player if they can solve your sick riddles and games that"
+        + " they may escape. Otherwise their meaningless existence will end here! Keep your"
+        + " response mean and cruel. Keep your response reasonably short. Do not provide a riddle.";
+  }
+
   /**
    * Generates a GPT prompt engineering string for a riddle with the given word.
    *

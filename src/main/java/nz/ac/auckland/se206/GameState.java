@@ -39,4 +39,6 @@ public class GameState {
   public static Label chatTimerLabel;
 
   public static int timeSetting;
+
+  public static boolean isTextToSpeechOn = false;
 }
