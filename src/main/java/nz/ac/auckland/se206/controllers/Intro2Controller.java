@@ -61,7 +61,7 @@ public class Intro2Controller {
   private String getGptMessage() {
     String message = "";
     ChatCompletionRequest chatCompletionRequest =
-        new ChatCompletionRequest().setN(1).setTemperature(0.2).setTopP(0.5).setMaxTokens(75);
+        new ChatCompletionRequest().setN(1).setTemperature(0.4).setTopP(0.5).setMaxTokens(100);
     chatCompletionRequest.addMessage(
         new ChatMessage("user", GptPromptEngineering.getIntroductoryMessage()));
     try {
