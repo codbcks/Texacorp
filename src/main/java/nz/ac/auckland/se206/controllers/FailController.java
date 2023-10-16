@@ -21,7 +21,7 @@ public class FailController {
    * @throws IOException If there is an error loading the main menu.
    */
   @FXML
-  public void clickMenu() throws IOException {
+  public void onMenu() throws IOException {
     App.setInterface(SceneManager.AppInterface.INTRO);
     App.resetGame();
   }

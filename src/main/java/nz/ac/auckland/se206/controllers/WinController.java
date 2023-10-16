@@ -22,7 +22,7 @@ public class WinController {
    * @throws IOException If there is an error loading the intro screen.
    */
   @FXML
-  public void clickMenu() throws IOException {
+  public void onMenu() throws IOException {
     App.setInterface(SceneManager.AppInterface.INTRO);
     App.resetGame();
   }

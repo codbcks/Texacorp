@@ -237,12 +237,12 @@ public class Room3Controller {
         });
   }
 
-  /** Plays animation for the light flickering off */
+  /** Plays animation for the light flickering off. */
   public void lightsOff() {
     lightsOff.playFromStart();
   }
 
-  /** Plays animation for the light flickering on */
+  /** Plays animation for the light flickering on. */
   public void lightsOn() {
     lightsOn.playFromStart();
   }
