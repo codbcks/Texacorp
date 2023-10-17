@@ -77,7 +77,7 @@ public class GameState {
   public static Label roomTimerLabel;
 
   /** Number of hints remaining. */
-  public static int hintsRemaining = 0;
+  public static int hintsRemaining = Integer.MAX_VALUE;
 
   /** Indicates whether GPT is currently running. */
   public static boolean isGPTRunning = false;
