@@ -1,50 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.SubScene?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room1Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room1Controller">
    <children>
-      <ImageView fitHeight="640.0" fitWidth="960.0">
+      <ImageView fitHeight="368.0" fitWidth="960.0" smooth="false">
          <image>
             <Image url="@../images/leftRoomBackground.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="850.0" layoutY="297.0" mouseTransparent="true" preserveRatio="true">
+      <ImageView fx:id="imgConveyor" fitHeight="368.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/arrowRight.png" />
+            <Image url="@../images/leftRoomBelt-Frame1.png" />
          </image>
       </ImageView>
-      <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="200.0" layoutX="104.0" layoutY="179.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="358.0">
+      <Pane fx:id="paneConveyorDropBox" layoutX="436.0" layoutY="189.0" prefHeight="32.0" prefWidth="32.0">
+         <children>
+            <ImageView fx:id="imgConveyorSaw" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../images/SAW_BROKEN.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <ImageView fitHeight="368.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomForeground.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="imgMachineResin" fitHeight="48.0" fitWidth="48.0" layoutX="495.0" layoutY="145.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../images/RESIN.png" />
+         </image>
+      </ImageView>
+      <Pane fx:id="paneMachineMoveY" layoutX="168.0" layoutY="210.0" prefHeight="23.0" prefWidth="114.0">
+         <children>
+            <ImageView fitHeight="23.0" fitWidth="114.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/leftRoomMachine-Part2.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="imgMachineMoveX" fitHeight="21.0" fitWidth="28.0" layoutX="18.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/leftRoomMachine-Part1.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="56.0" layoutX="366.0" layoutY="292.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="258.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </Rectangle>
-      <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="80.0" layoutX="767.0" layoutY="165.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="31.0">
+      <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="92.0" layoutX="650.0" layoutY="20.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="121.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Rectangle>
-      <Rectangle fx:id="moveRoom2" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="104.0" layoutX="859.0" layoutY="293.0" onMouseClicked="#clickMoveRoom2" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="102.0">
+      <Rectangle fx:id="triggerDropSaw" fill="#00ff0000" height="190.0" layoutX="424.0" layoutY="54.0" onMouseClicked="#dropSaw" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="56.0">
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></Rectangle>
-      <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
-      <Pane fx:id="terminalPane" layoutX="239.0" layoutY="147.0" prefHeight="341.0" prefWidth="450.0" visible="false">
+         </cursor>
+      </Rectangle>
+      <Rectangle fx:id="triggerDropResin" fill="#00ff0000" height="190.0" layoutX="491.0" layoutY="53.0" onMouseClicked="#dropResin" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="56.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Rectangle>
+      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
+      <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="-70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
+      <Pane fx:id="terminalPane" layoutX="239.0" layoutY="67.0" prefHeight="341.0" prefWidth="450.0" visible="false">
          <children>
             <ImageView fx:id="terminalImage" fitHeight="451.0" fitWidth="484.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/terminalpixed2transparent.png" />
                </image>
             </ImageView>
+
             <PasswordField fx:id="riddleAnswerEntry" layoutX="64.0" layoutY="165.0" onAction="#submitGuess" prefHeight="36.0" prefWidth="317.0" promptText="Enter password here">
+
                <font>
                   <Font name="Courier New" size="18.0" />
                </font>
@@ -61,16 +101,7 @@
             </Label>
          </children>
       </Pane>
-      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" layoutY="80.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
-      <SubScene fx:id="bottomBar" height="192.0" layoutY="448.0" width="960.0">
-        <root>
-          <Region />
-        </root>
-      </SubScene>
-      <SubScene fx:id="topBar" height="80.0" width="960.0">
-         <root>
-            <Region />
-         </root>
-      </SubScene>
+      <Rectangle fill="#00ff0d00" height="348.0" layoutX="136.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="180.0" />
+      <Rectangle fill="#00ff0d00" height="192.0" layoutX="316.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
    </children>
 </Pane>

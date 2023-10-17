@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.SubScene?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.InGameController">
+   <children>
+      <SubScene fx:id="bottomBar" height="192.0" layoutY="448.0" width="960.0">
+         <root>
+            <Region />
+         </root>
+      </SubScene>
+      <SubScene fx:id="topBar" height="80.0" width="960.0">
+         <root>
+            <Region />
+         </root>
+      </SubScene>
+      <Pane fx:id="roomSlider" layoutX="-960.0" layoutY="80.0" prefHeight="368.0" prefWidth="2880.0">
+         <children>
+            <SubScene fx:id="room1" height="368.0" width="960.0">
+              <root>
+                <Region />
+              </root>
+            </SubScene>
+            <SubScene fx:id="room2" height="368.0" layoutX="960.0" width="960.0">
+               <root>
+                  <Region />
+               </root>
+            </SubScene>
+            <SubScene fx:id="room3" height="368.0" layoutX="1920.0" width="960.0">
+               <root>
+                  <Region />
+               </root>
+            </SubScene>
+         </children>
+      </Pane>
+      <ImageView fx:id="leftArrow" fitHeight="96.0" fitWidth="96.0" layoutY="256.0" onMouseClicked="#moveLeft" pickOnBounds="true" preserveRatio="true" smooth="false">
+         <image>
+            <Image url="@../images/arrowLeft.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fx:id="rightArrow" fitHeight="96.0" fitWidth="96.0" layoutX="864.0" layoutY="256.0" onMouseClicked="#moveRight" pickOnBounds="true" preserveRatio="true" smooth="false">
+         <image>
+            <Image url="@../images/arrowRight.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+   </children>
+</Pane>

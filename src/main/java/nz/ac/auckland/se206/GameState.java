@@ -3,6 +3,11 @@ package nz.ac.auckland.se206;
 import javafx.scene.control.Label;
 
 /** Represents the state of the game. */
+/**
+ * This class represents the current state of the game. It contains various static fields that store
+ * information about the game, such as the current difficulty, whether the laser is active, and how
+ * much time the player has left.
+ */
 public class GameState {
 
   /** Indicates whether text to speech is on or not. */
@@ -45,27 +50,40 @@ public class GameState {
     currentDifficulty = Difficulty.EASY;
     timeSetting = 360000;
   }
-
-  /** Indicates how much time the player had when they finished */
-  public static int finishTime = -1;
-
-  /** Points to the relevent room GUI timer label */
-  public static Label roomTimerLabel;
-
-  /** Number of hints remaining for medium difficulty */
-  public static int hintsRemaining = 0;
-
-  /** Indicates whether gpt is running */
-  public static boolean isGPTRunning = false;
-
-  /** Indicates which difficulty the player has clicked */
-  private static Difficulty currentDifficulty;
-
+=======
+  /** Enum representing the three difficulty levels of the game. */
   public enum Difficulty {
     EASY,
     MEDIUM,
     HARD
   }
+
+  /** Indicates whether the laser is currently active. */
+  public static boolean isLaserActive = false;
+
+  /** Indicates whether the player has asked the riddle for the first time. */
+  public static boolean isFirstTimeForRiddle = true;
+
+  /** Indicates whether the player has solved the riddle. */
+  public static boolean isRiddleSolved = false;
+
+  /** Indicates whether the player has obtained the password. */
+  public static boolean isPasswordObtained = false;
+
+  /** Indicates how much time the player had when they finished the game. */
+  public static String formattedFinishTime;
+
+  /** Points to the relevant room GUI timer label. */
+  public static Label roomTimerLabel;
+
+  /** Number of hints remaining. */
+  public static int hintsRemaining = 0;
+
+  /** Indicates whether GPT is currently running. */
+  public static boolean isGPTRunning = false;
+
+  /** Indicates which difficulty the player has clicked */
+  private static Difficulty currentDifficulty;
 
   // Setters and getters for difficulty
   public static Difficulty getCurrentDifficulty() {
@@ -79,6 +97,7 @@ public class GameState {
   /** Points to the relevent chat GUI timer label */
   public static Label chatTimerLabel;
 
+  /** Indicates how much time the player has chosen to play the game. */
   public static int timeSetting;
 
   /** Triggered when GPT fails to load. */

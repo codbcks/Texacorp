@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="192.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.BottomBarController">
    <children>
@@ -22,5 +24,20 @@
       <TextArea fx:id="inputText" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="522.0" promptText="REASON WITH THE AI IF YOU DARE" style="-fx-background-color: transparent; -fx-text-fill: lime; -fx-font-family: 'Courier New'; -fx-font-size: 14px;" wrapText="true" />
       <TextArea fx:id="chatTextArea" editable="false" prefHeight="160.0" prefWidth="716.0" wrapText="true" />
       <Button fx:id="hintButton" alignment="CENTER" layoutX="620.0" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRequestHint" prefHeight="32.0" prefWidth="96.0" text="HELP" />
+      <Button fx:id="forwardButton" layoutX="655.0" mnemonicParsing="false" onAction="#onForwardHistory" prefHeight="40.0" prefWidth="61.0" text="&gt;">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="backwardButton" layoutX="594.0" mnemonicParsing="false" onAction="#onBackwardHistory" prefHeight="40.0" prefWidth="61.0" text="&lt;">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="chatHistoryLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="594.0" layoutY="41.0" prefHeight="35.0" prefWidth="115.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

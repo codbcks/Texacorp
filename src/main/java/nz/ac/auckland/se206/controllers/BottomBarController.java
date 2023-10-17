@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.GameState.Difficulty;
@@ -23,19 +26,43 @@ import nz.ac.auckland.se206.gpt.openai.ChatCompletionRequest;
 import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult;
 import nz.ac.auckland.se206.gpt.openai.ChatCompletionResult.Choice;
 
+/**
+ * This class represents the controller for the bottom bar of the game UI. It handles user input and
+ * communication with the GPT-3 API for generating responses to the user's messages. It also
+ * maintains a log of the conversation history and provides methods for adding messages to the log
+ * and updating the UI to display the conversation history.
+ */
 public class BottomBarController {
+
+  private static HashMap<String, String> modifiedNaming;
+
   @FXML private TextArea chatTextArea;
   @FXML private Button sendButton;
   @FXML private TextArea inputText;
   @FXML private ImageView hintCounter;
+
   @FXML private Button hintButton;
 
-  protected ChatCompletionRequest chatCompletionRequest;
-  protected ChatCompletionRequest hintCompletionRequest;
-  protected static HashMap<String, String> modifiedNaming;
-  protected List<ChatMessage> gptChatLog = new ArrayList<>();
-  protected List<ChatMessage> hintLog = new ArrayList<>();
+  private ChatCompletionRequest chatCompletionRequest;
+  private ChatCompletionRequest hintCompletionRequest;
+  private List<ChatMessage> gptChatLog = new ArrayList<>();
+  private List<ChatMessage> hintLog = new ArrayList<>();
 
+  @FXML private Label chatHistoryLabel;
+  @FXML private Button forwardButton;
+  @FXML private Button backwardButton;
+
+  private int logIndex;
+  private String previousMessageRole;
+  private boolean previousEnivroClick;
+  private List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
+
+  /**
+   * This method initializes the BottomBarController by configuring CSS styles, initializing a chat
+   * completion request, and setting up event listeners.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   */
   public void initialize() throws ApiProxyException {
 
     // initialise css style classes
@@ -51,6 +78,11 @@ public class BottomBarController {
     modifiedNaming = new HashMap<String, String>();
     modifiedNaming.put("assistant", "AI");
     modifiedNaming.put("user", "YOU");
+
+    logIndex = 0;
+    chatHistoryLabel.setText(logIndex + "/0");
+    previousMessageRole = "assistant";
+    previousEnivroClick = false;
 
     /* Pressing enter will send through the player's inputs */
     inputText.setOnKeyPressed(
@@ -92,7 +124,7 @@ public class BottomBarController {
    */
   private void runGptForHint(ChatMessage chatMessage) {
 
-    addToLog(chatMessage, true);
+    addToLog(chatMessage, false, true, true);
     Task<Void> runGptHintTask =
         new Task<Void>() {
 
@@ -100,10 +132,7 @@ public class BottomBarController {
           protected Void call() throws Exception {
             // The following code leverages the appendChatMessage function which is implemented in
             // all children of this class
-            Platform.runLater(
-                () -> {
-                  appendChatMessage("Processing...", "assistant");
-                });
+
             hintCompletionRequest.addMessage(chatMessage);
             try {
               // Try catch for accessing ChatGPT
@@ -111,21 +140,13 @@ public class BottomBarController {
               Choice result = hintCompletionResult.getChoices().iterator().next();
               hintCompletionRequest.addMessage(result.getChatMessage());
               if (GameState.hintsRemaining == 0) {
-                Platform.runLater(
-                    () -> {
-                      appendChatMessage("No hints available!", "assistant");
-                    });
+                addToLog(new ChatMessage("assistant", "No hints available!"), false, true, false);
                 if (GameState.isTextToSpeechOn) {
                   App.textToSpeech.speak("No hints available!");
                 }
               } else {
                 if (result.getChatMessage().getContent().startsWith("HINT:")) {
-                  Platform.runLater(
-                      () -> {
-                        appendChatMessage(
-                            result.getChatMessage().getContent(),
-                            result.getChatMessage().getRole());
-                      });
+                  addToLog(result.getChatMessage(), false, true, false);
                   if (GameState.getCurrentDifficulty() == Difficulty.MEDIUM) {
                     GameState.hintsRemaining--;
                     Platform.runLater(
@@ -158,21 +179,66 @@ public class BottomBarController {
   }
 
   /**
+   * typeText prints text (message) to a textarea. The printing effect is similar to a typewriter.
+   * The speed of this effect can be altered by manipulating the durations in the appropriate lines.
+   * The first "Duration.millis" specifies the delay for the text to appear and the second specifies
+   * the delay for each character printed.
+   *
+   * @param textArea the text area to print the text to.
+   * @param message the text to print.
+   */
+  public void typeText(String message) {
+    Timeline typewriterTimeline = new Timeline();
+    Duration duration = Duration.millis(15);
+    final StringBuilder text = new StringBuilder();
+
+    for (char character : message.toCharArray()) {
+      KeyFrame keyFrame =
+          new KeyFrame(
+              duration,
+              event -> {
+                text.append(character);
+                chatTextArea.setText(text.toString());
+              });
+
+      typewriterTimeline.getKeyFrames().add(keyFrame);
+      duration = duration.add(Duration.millis(35));
+    }
+    typewriterTimeline.play();
+  }
+
+  /**
    * Method that provides GPT with its backstory for the game. A different story is provided
    * depending on the difficulty.
    */
   public void giveBackstory() {
-    provideBackStory(GptPromptEngineering.initializeBackstory());
+    addToLog(
+        new ChatMessage("assistant", GptPromptEngineering.initializeBackstory()),
+        false,
+        false,
+        true);
     GameState.Difficulty difficulty = GameState.getCurrentDifficulty();
     switch (difficulty) {
       case EASY:
-        provideBackStory(GptPromptEngineering.setEasyHintDifficulty());
+        addToLog(
+            new ChatMessage("assistant", GptPromptEngineering.setEasyHintDifficulty()),
+            false,
+            false,
+            true);
         break;
       case MEDIUM:
-        provideBackStory(GptPromptEngineering.setMediumHintDifficulty());
+        addToLog(
+            new ChatMessage("assistant", GptPromptEngineering.setMediumHintDifficulty()),
+            false,
+            false,
+            true);
         break;
       case HARD:
-        provideBackStory(GptPromptEngineering.setHardHintDifficulty());
+        addToLog(
+            new ChatMessage("assistant", GptPromptEngineering.setHardHintDifficulty()),
+            false,
+            false,
+            true);
         break;
     }
   }
@@ -195,7 +261,6 @@ public class BottomBarController {
       // If message is empty, don't do anything.
       return;
     }
-    Platform.runLater(() -> appendChatMessage(message, "user"));
     // The following code clears the entry box, writes the most recent user entry, and
     // then runs chat GPT for the user's entry
     ChatMessage msg = new ChatMessage("user", message);
@@ -204,19 +269,6 @@ public class BottomBarController {
     } else {
       runGpt(msg);
     }
-  }
-
-  /**
-   * Appends a chat message to the chat text area.
-   *
-   * @param msg the chat message to append
-   */
-  public void appendChatMessage(String chatMessage, String role) {
-    // GUI changes are added to the GUI queue
-    Platform.runLater(
-        () -> {
-          chatTextArea.appendText("\n" + modifiedNaming.get(role) + " -> " + chatMessage);
-        });
   }
 
   /**
@@ -229,7 +281,7 @@ public class BottomBarController {
   protected void runGpt(ChatMessage msg) throws ApiProxyException {
 
     Platform.runLater(() -> turnOffLights());
-    addToLog(msg, false);
+    addToLog(msg, false, false, true);
     Task<Void> runGptTask = createRunGptTask(msg);
     Thread runGptThread = new Thread(runGptTask);
     runGptThread.start();
@@ -252,9 +304,8 @@ public class BottomBarController {
 
   /** Processes the response from the GPT model. */
   private void processGptResponse(ChatMessage msg) {
-    Platform.runLater(() -> appendChatMessage("Processing...", "assistant"));
     try {
-      String gptResponse = getGptResponse();
+      ChatMessage gptResponse = getGptResponse();
       handleGptResponse(msg, gptResponse);
     } catch (ApiProxyException e) {
       handleGptError(e);
@@ -269,11 +320,12 @@ public class BottomBarController {
    * @return the response.
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
-  private String getGptResponse() throws ApiProxyException {
-    chatCompletionRequest.setMessages(gptChatLog);
+  private ChatMessage getGptResponse() throws ApiProxyException {
+    chatCompletionRequest.setMessages(
+        orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1));
     ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
     Choice result = chatCompletionResult.getChoices().iterator().next();
-    return result.getChatMessage().getContent();
+    return result.getChatMessage();
   }
 
   /**
@@ -281,17 +333,18 @@ public class BottomBarController {
    *
    * @param gptResponse the response for GPT.
    */
-  private void handleGptResponse(ChatMessage msg, String gptResponse) {
+  private void handleGptResponse(ChatMessage userMessage, ChatMessage gptMessage) {
     // check if the GPT response should be a riddle
     if (GameState.isRiddleExpected) {
-      Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+      //       Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+      addToLog(gptMessage, false, false, false);
       GameState.isRiddleExpected = false;
     } else {
       // If a hint was asked for and if the response is a hint
       if (("HINT".equals(msg.getContent())) && (gptResponse.startsWith("HINT:"))) {
-        Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+        addToLog(gptMessage, false, false, false);
         if (GameState.isTextToSpeechOn) {
-          App.textToSpeech.speak(gptResponse);
+          App.textToSpeech.speak(gptMessage.getContent());
         }
         GameState.hintsRemaining--;
         Platform.runLater(
@@ -299,12 +352,13 @@ public class BottomBarController {
               setHintCounter();
             });
         // If the response is a hint, but a hint was not asked for
-      } else if ((!"HINT".equals(msg.getContent())) && (gptResponse.startsWith("HINT:"))) {
-        handleHintResponse(gptResponse);
+      } else if ((!"HINT".equals(userMessage.getContent()))
+          && (gptMessage.getContent().startsWith("HINT:"))) {
+        handleHintResponse(gptMessage);
       } else {
-        Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
+        addToLog(gptMessage, false, false, false);
         if (GameState.isTextToSpeechOn) {
-          App.textToSpeech.speak(gptResponse);
+          App.textToSpeech.speak(gptMessage.getContent());
         }
       }
     }
@@ -315,9 +369,9 @@ public class BottomBarController {
    *
    * @param gptResponse the response from GPT.
    */
-  private void handleHintResponse(String gptResponse) {
+  private void handleHintResponse(ChatMessage gptResponse) {
     String response = GptPromptEngineering.getIllegalHintResponse();
-    Platform.runLater(() -> appendChatMessage(response, "assistant"));
+    addToLog(gptMessage, false);
     if (GameState.isTextToSpeechOn) {
       App.textToSpeech.speak(response);
     }
@@ -334,50 +388,77 @@ public class BottomBarController {
     provideOfflineResponse();
   }
 
-  /**
-   * Adds the message to one of the logs of GPT interactions.
-   *
-   * @param msg the chat message to add
-   */
-  protected void addToLog(ChatMessage msg, boolean isHint) {
-
-    if (isHint) {
-      hintLog.add(msg);
-    } else {
-      gptChatLog.add(msg);
-    }
-  }
-
-  /**
-   * Clears the GPT interaction log. Initial thinking was that this would help moderate token use.
-   */
-  public void clearLog() {
-    gptChatLog.clear();
-  }
-
-  /**
-   * Method that provides GPT with its backstory for the game.
-   *
-   * @param story
-   */
-  public void provideBackStory(String story) {
-    addToLog(new ChatMessage("assistant", story), false);
+  private String getRecentLogMessage() {
+    return orderedGptInteractionLog
+        .get(orderedGptInteractionLog.size() - 1)
+        .get(orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).size() - 1)
+        .getContent();
   }
 
   /** Turns off the lights in all rooms. */
-  private void turnOffLights() {
-    GameState.isGPTRunning = true;
-    App.room1.lightsOff();
-    App.room2.lightsOff();
-    App.room3.lightsOff();
+  public void addToLog(ChatMessage msg, boolean enviroClick, boolean isHint, boolean isWilsons) {
+
+    if (isWilsons) {
+      if (isHint) {
+        hintLog.add(msg);
+      } else {
+        gptChatLog.add(msg);
+      }
+    }
+
+    if (msg.getRole().equals("assistant")
+        && previousMessageRole.equals("user")
+        && !enviroClick
+        && !previousEnivroClick) {
+      // save to same list
+      orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
+    } else {
+      // save to new list
+      orderedGptInteractionLog.add(new ArrayList<ChatMessage>());
+      orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).add(msg);
+      logIndex = orderedGptInteractionLog.size();
+    }
+
+    previousMessageRole = msg.getRole();
+    previousEnivroClick = enviroClick;
   }
 
-  /** Turns on the lights in all rooms. */
+  /**
+   * Provides a hint to the player using the GPT model.
+   *
+   * @return the hint
+   */
+  public String provideHint() {
+    try {
+      if (chatCompletionRequest == null) {
+        chatCompletionRequest =
+            new ChatCompletionRequest().setN(1).setTemperature(0.5).setTopP(0.7).setMaxTokens(150);
+      }
+      chatCompletionRequest.addMessage(new ChatMessage("user", "Can you provide a hint?"));
+      ChatCompletionResult chatCompletionResult = chatCompletionRequest.execute();
+      Choice result = chatCompletionResult.getChoices().iterator().next();
+      return result.getChatMessage().getContent();
+    } catch (ApiProxyException e) {
+      System.out.println("Exception in GptInteraction.provideHint()");
+      e.printStackTrace();
+      return "An error has occurred. Please try again.";
+    }
+  }
+
+  /** Turns the lights off in all the room. */
+  private void turnOffLights() {
+    GameState.isGPTRunning = true;
+    App.getRoom1().lightsOff();
+    App.getRoom2().lightsOff();
+    App.getRoom3().lightsOff();
+  }
+
+  /** Turns the lights on in all the room. */
   private void turnOnLights() {
     GameState.isGPTRunning = false;
-    App.room1.lightsOn();
-    App.room2.lightsOn();
-    App.room3.lightsOn();
+    App.getRoom1().lightsOn();
+    App.getRoom2().lightsOn();
+    App.getRoom3().lightsOn();
   }
 
   /** Method to display infinity in the hint counter area for EASY difficulty. */
@@ -403,90 +484,56 @@ public class BottomBarController {
   }
 
   /**
-   * The following two methods are only used when GPT is unable to be accessed and provide a way for
-   * the game to still progress.
-   */
-
-  /**
-   * *** OFFLINE METHOD ***
+   * Sets the hint counter to a given value.
    *
-   * <p>Provides a response so the game can still progress when GPT is unable to be accessed.
+   * @param remainingHints the number of remaining hints
    */
-  protected void provideOfflineResponse() {
-    GameState.isGameOffline = true;
-    if (GameState.isRiddleExpected) {
-      App.room1.setWordToGuess("laser");
-      Platform.runLater(
-          () -> {
-            appendChatMessage(
-                "here's your riddle:\r\n"
-                    + //
-                    "\r\n"
-                    + //
-                    "I'm not a razor, but I can cut with precision,\r\n"
-                    + //
-                    "Bright and focused, but not for vision.\r\n"
-                    + //
-                    "I might read a disc or engrave a design,\r\n"
-                    + //
-                    "But I'm not a beam of sunshine.\r\n"
-                    + //
-                    "What am I??",
-                "assistant");
-          });
-      GameState.isRiddleExpected = false;
-      if (GameState.isTextToSpeechOn) {
-        App.textToSpeech.speak(
-            "here's your riddle: I'm not a razor, but I can cut with precision, Bright and focused,"
-                + " but not for vision. I might read a disc or engrave a design, But I'm not a beam"
-                + " of sunshine. What am I?");
-      }
-    } else {
-      Platform.runLater(
-          () -> {
-            appendChatMessage(
-                "AI cannot be accessed right now. Please try again later.", "assistant");
-          });
-      if (GameState.isTextToSpeechOn) {
-        App.textToSpeech.speak("AI cannot be accessed right now. Please try again later.");
-      }
+  public void setHintCounter(int remainingHints) {
+    hintCounter.setImage(new Image("/images/countHints" + remainingHints + ".png"));
+  }
+
+  /** Updates the chat history display. */
+  public void updateChat() {
+    chatHistoryLabel.setText(
+        String.valueOf(logIndex - 2) + "/" + String.valueOf(orderedGptInteractionLog.size() - 2));
+    chatTextArea.clear();
+
+    String addedMessage = "";
+
+    for (ChatMessage msg : orderedGptInteractionLog.get(logIndex - 1)) {
+
+      addedMessage =
+          addedMessage + "\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent();
     }
+
+    typeText(addedMessage);
   }
 
   /**
-   * *** OFFLINE METHOD ***
+   * Moves the chat history display forward.
    *
-   * <p>Provides a hint so help can still be provided when GPT is unable to be accessed.
+   * @param event the action event triggered by the forward button
    */
-  protected void provideOfflineHint() {
-    String hint = GptPromptEngineering.getOfflineHint();
-
-    if (GameState.hintsRemaining == 0) {
-      Platform.runLater(
-          () -> {
-            appendChatMessage("No hints available!", "assistant");
-          });
-      if (GameState.isTextToSpeechOn) {
-        App.textToSpeech.speak("No hints available!");
-      }
-    } else {
-      if (GameState.getCurrentDifficulty() == Difficulty.EASY) {
-        Platform.runLater(
-            () -> {
-              appendChatMessage(hint, "assistant");
-            });
-
-      } else if (GameState.getCurrentDifficulty() == Difficulty.MEDIUM) {
-        GameState.hintsRemaining--;
-        Platform.runLater(
-            () -> {
-              appendChatMessage(hint, "assistant");
-              setHintCounter();
-            });
-        if (GameState.isTextToSpeechOn) {
-          App.textToSpeech.speak(hint);
-        }
-      }
+  @FXML
+  private void onForwardHistory(ActionEvent event) {
+    if (logIndex >= orderedGptInteractionLog.size()) {
+      return;
     }
+    logIndex++;
+    updateChat();
+  }
+
+  /**
+   * Moves the chat history display backward.
+   *
+   * @param event the action event triggered by the backward button
+   */
+  @FXML
+  private void onBackwardHistory(ActionEvent event) {
+    if (logIndex <= 3) {
+      return;
+    }
+    logIndex--;
+    updateChat();
   }
 }

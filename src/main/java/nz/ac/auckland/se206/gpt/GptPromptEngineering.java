@@ -75,6 +75,7 @@ public class GptPromptEngineering {
             + "in your hint. Start your answer with 'HINT:'. Give only ONE"
             + " hint in your answer. Keep your answer short.";
       }
+
       if (GameState.isRoom1Solved == false) {
         return "Tell the player to examine the 3D printing terminal. Start your answer with"
             + " 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
@@ -89,6 +90,7 @@ public class GptPromptEngineering {
         return "Tell the player the combination requires careful examination of objects in the"
             + " game. Start your answer with 'HINT:'. Give only ONE hint in your answer."
             + " Keep your answer short.";
+
       }
       if (GameState.isRoom1Solved && GameState.isRoom2Solved && GameState.isRoom3Solved) {
         return "Tell the player there is an exit in the middle room. Start your answer with"
