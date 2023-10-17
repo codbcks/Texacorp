@@ -98,7 +98,7 @@ public class BottomBarController {
    * @param textArea the text area to print the text to.
    * @param message the text to print.
    */
-  public static void typeText(TextArea textArea, String message) {
+  public void typeText(String message) {
     Timeline typewriterTimeline = new Timeline();
     Duration duration = Duration.millis(15);
     final StringBuilder text = new StringBuilder();
@@ -109,7 +109,7 @@ public class BottomBarController {
               duration,
               event -> {
                 text.append(character);
-                textArea.setText(text.toString());
+                chatTextArea.setText(text.toString());
               });
 
       typewriterTimeline.getKeyFrames().add(keyFrame);
@@ -169,7 +169,6 @@ public class BottomBarController {
   void runGpt(ChatMessage msg, boolean sayAloud) throws ApiProxyException {
     turnOffLights();
     addToLog(msg, false);
-    updateChat();
 
     Thread gptThread =
         new Thread(
@@ -298,10 +297,15 @@ public class BottomBarController {
         String.valueOf(logIndex - 2) + "/" + String.valueOf(orderedGptInteractionLog.size() - 2));
     chatTextArea.clear();
 
+    String addedMessage = "";
+
     for (ChatMessage msg : orderedGptInteractionLog.get(logIndex - 1)) {
-//       chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
-      typeText(chatTextArea, msg);
+
+      addedMessage =
+          addedMessage + "\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent();
     }
+
+    typeText(addedMessage);
   }
 
   /**
