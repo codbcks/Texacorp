@@ -69,8 +69,8 @@ public class Room3Controller extends Room {
   private TranslateTransition tempTransition;
 
   private String[] pinHints = {
-    "Clock", "AI eyes", "3D Printers", "Rooms", "16 mod 6",
-    "Shelves", "Sticky Note", "Lasers", "AI Version Number", "(3 ^ 3) - 18"
+    "Clock", "AI eyes", "14 * 2 - 26", "Rooms", "16 mod 6",
+    "15 / 3", "2 ^ 2 + 2", "15 / 2 - 0.5", "AI Version Number", "Sticky Notes"
   };
 
   private String pin;
@@ -92,7 +92,7 @@ public class Room3Controller extends Room {
 
     /* Setting text relating to 4 objects that can help the player guess the pin */
     pinHintText.setText(
-        "Saw is broken, take to repair bay to fix it :)\n\n"
+        "Saw is broken,\ntake to repair bay\n\n"
             + pinHints[pin.charAt(0) - 48]
             + "\n"
             + pinHints[pin.charAt(1) - 48]
