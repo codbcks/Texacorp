@@ -44,7 +44,7 @@ public class Room1Controller extends Room {
 
   private Timeline takeBrokenSaw;
   private Timeline giveFixedSaw;
-  private long conveyorFrameRate = 12;
+  private long conveyorAnimPause = 12;
   private long repairBayFrameRate = 20;
 
   private static String wordToGuess;
@@ -87,13 +87,13 @@ public class Room1Controller extends Room {
     // triggers conveyor motion when saw is dropped
     takeBrokenSaw =
         new Timeline(
-            getTranslateKeyFrame(0, -52, paneConveyorDropBox, 52 * conveyorFrameRate, 0),
+            getTranslateKeyFrame(0, -52, paneConveyorDropBox, 52 * conveyorAnimPause, 0),
             getTranslateKeyFrame(
-                -228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 52 * conveyorFrameRate),
+                -228, 0, paneConveyorDropBox, 228 * conveyorAnimPause, 52 * conveyorAnimPause),
             getTranslateKeyFrame(
-                0, 116, paneConveyorDropBox, 116 * conveyorFrameRate, 280 * conveyorFrameRate),
+                0, 116, paneConveyorDropBox, 116 * conveyorAnimPause, 280 * conveyorAnimPause),
             new KeyFrame(
-                Duration.millis(396 * conveyorFrameRate),
+                Duration.millis(396 * conveyorAnimPause),
                 e -> {
                   sawDeposited = true;
                   deactivateConveyor();
@@ -103,13 +103,13 @@ public class Room1Controller extends Room {
     // triggers conveyor motion when saw is dropped
     giveFixedSaw =
         new Timeline(
-            getTranslateKeyFrame(0, -116, paneConveyorDropBox, 116 * conveyorFrameRate, 0),
+            getTranslateKeyFrame(0, -116, paneConveyorDropBox, 116 * conveyorAnimPause, 0),
             getTranslateKeyFrame(
-                228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 116 * conveyorFrameRate),
+                228, 0, paneConveyorDropBox, 228 * conveyorAnimPause, 116 * conveyorAnimPause),
             getTranslateKeyFrame(
-                0, 52, paneConveyorDropBox, 52 * conveyorFrameRate, 344 * conveyorFrameRate),
+                0, 52, paneConveyorDropBox, 52 * conveyorAnimPause, 344 * conveyorAnimPause),
             new KeyFrame(
-                Duration.millis(396 * conveyorFrameRate),
+                Duration.millis(396 * conveyorAnimPause),
                 e -> {
                   deactivateConveyor();
                   repairComplete = true;

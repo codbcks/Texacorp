@@ -78,6 +78,7 @@ public class Room3Controller extends Room {
     mouseInteract(shelvesPromptTrigger1);
     mouseInteract(shelvesPromptTrigger2);
     mouseInteract(pinPadOpen);
+
     /* >-------- PIN + PIN PAD CREATION -------< */
 
     /* Generating pseudo-random 4 digit pin */
