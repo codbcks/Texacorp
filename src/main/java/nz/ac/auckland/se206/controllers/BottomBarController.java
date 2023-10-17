@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.gpt.ChatMessage;
@@ -84,6 +87,35 @@ public class BottomBarController {
             event.consume();
           }
         });
+  }
+
+  /**
+   * typeText prints text (message) to a textarea. The printing effect is similar to a typewriter.
+   * The speed of this effect can be altered by manipulating the durations in the appropriate lines.
+   * The first "Duration.millis" specifies the delay for the text to appear and the second specifies
+   * the delay for each character printed.
+   *
+   * @param textArea the text area to print the text to.
+   * @param message the text to print.
+   */
+  public static void typeText(TextArea textArea, String message) {
+    Timeline typewriterTimeline = new Timeline();
+    Duration duration = Duration.millis(15);
+    final StringBuilder text = new StringBuilder();
+
+    for (char character : message.toCharArray()) {
+      KeyFrame keyFrame =
+          new KeyFrame(
+              duration,
+              event -> {
+                text.append(character);
+                textArea.setText(text.toString());
+              });
+
+      typewriterTimeline.getKeyFrames().add(keyFrame);
+      duration = duration.add(Duration.millis(35));
+    }
+    typewriterTimeline.play();
   }
 
   /**
@@ -267,7 +299,8 @@ public class BottomBarController {
     chatTextArea.clear();
 
     for (ChatMessage msg : orderedGptInteractionLog.get(logIndex - 1)) {
-      chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
+//       chatTextArea.appendText("\n" + modifiedNaming.get(msg.getRole()) + " -> " + msg.getContent());
+      typeText(chatTextArea, msg);
     }
   }
 
