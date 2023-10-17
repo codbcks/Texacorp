@@ -50,7 +50,7 @@ public class GameState {
     currentDifficulty = Difficulty.EASY;
     timeSetting = 360000;
   }
-=======
+
   /** Enum representing the three difficulty levels of the game. */
   public enum Difficulty {
     EASY,

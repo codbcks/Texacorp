@@ -4,7 +4,6 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -321,25 +320,12 @@ public class Room1Controller {
   /**
    * Generates a random word from a list of words to be used in the riddle.
    *
-   * @return a random word from the list.
+   * @return a random word from the list
    */
-  public String getRandomWord() {
+  private String getRandomWord() {
     wordList = "star,laser,satellite,cat,potato,computer,mouse,pyramid,phone,camera";
     // Splitting the list into an array of individual entries
-    return wordList.split(",")[(int) (Math.random() * 10)];
-  }
-
-  /**
-   * Getter method for the word to guess for the riddle for this round.
-   *
-   * @return the word to guess.
-   */
-  public String getWordToGuess() {
-    return wordToGuess;
-  }
-
-  public void setWordToGuess(String wordToGuess) {
-    this.wordToGuess = wordToGuess;
+    return wordList.split(",")[(int) (Math.random() * 5)];
   }
 
   /**
@@ -365,26 +351,21 @@ public class Room1Controller {
    */
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    if (GameState.isFirstTime) {
-      GameState.isFirstTime = false;
-      GameState.isRiddleExpected = true;
-      Platform.runLater(
-          () -> {
-            showTerminal();
-          });
+    if (GameState.isFirstTimeForRiddle) {
       try {
-        GameState.isRiddleActive = true;
-        App.bottomBarController.runGpt(
-            // runGpt is a method in the parent class, it returns the GPT response for the input.
-            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)));
+        App.getBottomBarController()
+            .runGpt(
+                // runGpt is a method in the parent class, it returns the GPT response for the
+                // input.
+                new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+                true);
+        showTerminal();
       } catch (ApiProxyException e) {
         e.printStackTrace();
       }
-    } else if (!GameState.isFirstTime && !GameState.isRoom1Solved) {
-      Platform.runLater(
-          () -> {
-            showTerminal();
-          });
+      GameState.isFirstTimeForRiddle = false;
+    } else if (!GameState.isFirstTimeForRiddle && !GameState.isPasswordObtained) {
+      showTerminal();
     } else {
       return;
     }
@@ -397,8 +378,7 @@ public class Room1Controller {
     terminalPane.setVisible(false);
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
-    translateTransition.setByY(65);
-    translateTransition.play();
+    translateTransition.setByY(120);
     terminalPane.setTranslateY(0);
   }
 
@@ -407,14 +387,10 @@ public class Room1Controller {
   private void showTerminal() {
     terminalWrapperPane.setVisible(true);
     terminalPane.setVisible(true);
-
-    if (GameState.isTextToSpeechOn) {
-      App.textToSpeech.speak("The... password... is...");
-    }
-
+    App.getTextToSpeech().speak("The... password... is...");
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
-    translateTransition.setByY(-65);
+    translateTransition.setByY(-120);
     translateTransition.play();
     riddleAnswerEntry.requestFocus();
   }
@@ -425,24 +401,23 @@ public class Room1Controller {
    * @param event the action event
    */
   @FXML
-  private void onSubmitGuess(ActionEvent event) {
+  private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
-
-      Platform.runLater(
-          () -> {
-            SceneManager.appendChatMessage("Success!", "assistant");
-            hideTerminal();
-          });
+      // If the guess is correct, update the chat log and hide the terminal
+      SceneManager.addToLogEnviroMessage(new ChatMessage("user", "Success!"));
+      SceneManager.updateChat();
+      hideTerminal();
+      // Set the password obtained flag to true and check for machine start
+      GameState.isPasswordObtained = true;
       GameState.isRiddleActive = false;
       GameState.isRoom1Solved = true;
-      App.topBarController.giveItem(TopBarController.Item.SAW_BLADE);
+      checkForMachineStart();
     } else {
-      Platform.runLater(
-          () -> {
-            SceneManager.appendChatMessage("Declined!", "assistant");
-            riddleAnswerEntry.clear();
-          });
+      // If the guess is incorrect, update the chat log and clear the text field
+      SceneManager.addToLogEnviroMessage(new ChatMessage("assistant", "Declined!"));
+      SceneManager.updateChat();
+      riddleAnswerEntry.clear();
     }
   }
 
@@ -465,9 +440,15 @@ public class Room1Controller {
    */
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
-    SceneManager.appendChatMessage(
-        "Two 3D printers loaded with high-tensile steel. Perfect for producing a durable saw"
-            + " blade.",
-        "user");
+    SceneManager.addToLogEnviroMessage(
+        new ChatMessage(
+            "user",
+            "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw"
+                + " blade."));
+    SceneManager.updateChat();
+  }
+
+  public String getWordToGuess() {
+    return wordToGuess;
   }
 }

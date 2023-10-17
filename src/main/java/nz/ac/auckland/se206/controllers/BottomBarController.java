@@ -7,6 +7,7 @@ import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -53,6 +54,7 @@ public class BottomBarController {
   @FXML private Button backwardButton;
 
   private int logIndex;
+  private int riddleIndex;
   private String previousMessageRole;
   private boolean previousEnivroClick;
   private List<List<ChatMessage>> orderedGptInteractionLog = new ArrayList<>();
@@ -142,7 +144,7 @@ public class BottomBarController {
               if (GameState.hintsRemaining == 0) {
                 addToLog(new ChatMessage("assistant", "No hints available!"), false, true, false);
                 if (GameState.isTextToSpeechOn) {
-                  App.textToSpeech.speak("No hints available!");
+                  App.getTextToSpeech().speak("No hints available!");
                 }
               } else {
                 if (result.getChatMessage().getContent().startsWith("HINT:")) {
@@ -154,7 +156,7 @@ public class BottomBarController {
                           setHintCounter();
                         });
                     if (GameState.isTextToSpeechOn) {
-                      App.textToSpeech.speak(result.getChatMessage().getContent());
+                      App.getTextToSpeech().speak(result.getChatMessage().getContent());
                     }
                   }
                 }
@@ -164,7 +166,6 @@ public class BottomBarController {
               // Exception handling
 
               GameState.isGameOffline = true;
-              provideOfflineHint();
             }
             Platform.runLater(
                 () -> {
@@ -267,7 +268,7 @@ public class BottomBarController {
     if (message.equalsIgnoreCase("HINT")) {
       runGptForHint(new ChatMessage("user", GptPromptEngineering.getHint()));
     } else {
-      runGpt(msg);
+      runGpt(msg, false);
     }
   }
 
@@ -278,10 +279,14 @@ public class BottomBarController {
    * @return the response chat message
    * @throws ApiProxyException if there is an error communicating with the API proxy
    */
-  protected void runGpt(ChatMessage msg) throws ApiProxyException {
+  protected void runGpt(ChatMessage msg, boolean isRiddle) throws ApiProxyException {
 
     Platform.runLater(() -> turnOffLights());
     addToLog(msg, false, false, true);
+    if (isRiddle) {
+      riddleIndex = orderedGptInteractionLog.size();
+    }
+
     Task<Void> runGptTask = createRunGptTask(msg);
     Thread runGptThread = new Thread(runGptTask);
     runGptThread.start();
@@ -336,20 +341,22 @@ public class BottomBarController {
   private void handleGptResponse(ChatMessage userMessage, ChatMessage gptMessage) {
     // check if the GPT response should be a riddle
     if (GameState.isRiddleExpected) {
-      //       Platform.runLater(() -> appendChatMessage(gptResponse, "assistant"));
       addToLog(gptMessage, false, false, false);
       GameState.isRiddleExpected = false;
+      updateChat();
     } else {
       // If a hint was asked for and if the response is a hint
-      if (("HINT".equals(msg.getContent())) && (gptResponse.startsWith("HINT:"))) {
+      if (("HINT".equals(userMessage.getContent()))
+          && (gptMessage.getContent().startsWith("HINT:"))) {
         addToLog(gptMessage, false, false, false);
         if (GameState.isTextToSpeechOn) {
-          App.textToSpeech.speak(gptMessage.getContent());
+          App.getTextToSpeech().speak(gptMessage.getContent());
         }
         GameState.hintsRemaining--;
         Platform.runLater(
             () -> {
               setHintCounter();
+              updateChat();
             });
         // If the response is a hint, but a hint was not asked for
       } else if ((!"HINT".equals(userMessage.getContent()))
@@ -357,8 +364,9 @@ public class BottomBarController {
         handleHintResponse(gptMessage);
       } else {
         addToLog(gptMessage, false, false, false);
+        Platform.runLater(() -> updateChat());
         if (GameState.isTextToSpeechOn) {
-          App.textToSpeech.speak(gptMessage.getContent());
+          App.getTextToSpeech().speak(gptMessage.getContent());
         }
       }
     }
@@ -371,9 +379,10 @@ public class BottomBarController {
    */
   private void handleHintResponse(ChatMessage gptResponse) {
     String response = GptPromptEngineering.getIllegalHintResponse();
-    addToLog(gptMessage, false);
+    addToLog(gptResponse, false, false, true);
+    Platform.runLater(() -> updateChat());
     if (GameState.isTextToSpeechOn) {
-      App.textToSpeech.speak(response);
+      App.getTextToSpeech().speak(response);
     }
   }
 
@@ -385,14 +394,6 @@ public class BottomBarController {
   private void handleGptError(ApiProxyException e) {
     System.out.println("Error in running GPT API!");
     e.printStackTrace();
-    provideOfflineResponse();
-  }
-
-  private String getRecentLogMessage() {
-    return orderedGptInteractionLog
-        .get(orderedGptInteractionLog.size() - 1)
-        .get(orderedGptInteractionLog.get(orderedGptInteractionLog.size() - 1).size() - 1)
-        .getContent();
   }
 
   /** Turns off the lights in all rooms. */
@@ -499,6 +500,12 @@ public class BottomBarController {
     chatTextArea.clear();
 
     String addedMessage = "";
+
+    if (riddleIndex == logIndex) {
+      ChatMessage msge = orderedGptInteractionLog.get(logIndex - 1).get(1);
+      typeText("\n" + modifiedNaming.get(msge.getRole()) + " -> " + msge.getContent());
+      return;
+    }
 
     for (ChatMessage msg : orderedGptInteractionLog.get(logIndex - 1)) {
 
