@@ -6,50 +6,69 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room1Controller">
+
+<StackPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.Room1Controller">
    <children>
-      <ImageView fitHeight="368.0" fitWidth="960.0" smooth="false">
-         <image>
-            <Image url="@../images/leftRoomBackground.png" />
-         </image>
-      </ImageView>
-      <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="200.0" layoutX="104.0" layoutY="96.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="358.0">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Rectangle>
-      <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="80.0" layoutX="767.0" layoutY="85.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="31.0">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></Rectangle>
-      <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="-70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
-      <Pane fx:id="terminalPane" layoutX="239.0" layoutY="67.0" prefHeight="341.0" prefWidth="450.0" visible="false">
+      <Pane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="368.0" prefWidth="960.0">
          <children>
-            <ImageView fx:id="terminalImage" fitHeight="451.0" fitWidth="484.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="368.0" fitWidth="960.0" smooth="false">
                <image>
-                  <Image url="@../images/terminal2.jpg" />
+                  <Image url="@../images/leftRoomBackground.png" />
                </image>
             </ImageView>
-            <PasswordField fx:id="riddleAnswerEntry" layoutX="45.0" layoutY="240.0" onAction="#submitGuess" prefHeight="56.0" prefWidth="340.0" promptText="Enter password here">
-               <font>
-                  <Font name="Courier New" size="18.0" />
-               </font>
-            </PasswordField>
-            <Label fx:id="terminalInstructionsLabel" layoutX="46.0" layoutY="195.0" prefHeight="56.0" prefWidth="424.0" text="Password:">
-               <font>
-                  <Font name="Courier New" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="terminalLabel" layoutX="46.0" layoutY="117.0" prefHeight="56.0" prefWidth="404.0" text="TEXACORP INDUSTRIES 3D PRINTING">
-               <font>
-                  <Font name="Courier New" size="18.0" />
-               </font>
-            </Label>
+            <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="200.0" layoutX="104.0" layoutY="96.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="358.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Rectangle>
+            <Rectangle fx:id="triggerConsole" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="80.0" layoutX="767.0" layoutY="85.0" onMouseClicked="#clickTriggerConsole" stroke="TRANSPARENT" strokeType="INSIDE" width="31.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Rectangle>
+            <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="-70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
+            <Pane fx:id="terminalPane" layoutX="239.0" layoutY="67.0" prefHeight="341.0" prefWidth="450.0" visible="false">
+               <children>
+                  <ImageView fx:id="terminalImage" fitHeight="451.0" fitWidth="484.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/terminal2.jpg" />
+                     </image>
+                  </ImageView>
+                  <PasswordField fx:id="riddleAnswerEntry" layoutX="45.0" layoutY="240.0" onAction="#submitGuess" prefHeight="56.0" prefWidth="340.0" promptText="Enter password here">
+                     <font>
+                        <Font name="Courier New" size="18.0" />
+                     </font>
+                  </PasswordField>
+                  <Label fx:id="terminalInstructionsLabel" layoutX="46.0" layoutY="195.0" prefHeight="56.0" prefWidth="424.0" text="Password:">
+                     <font>
+                        <Font name="Courier New" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="terminalLabel" layoutX="46.0" layoutY="117.0" prefHeight="56.0" prefWidth="404.0" text="TEXACORP INDUSTRIES 3D PRINTING">
+                     <font>
+                        <Font name="Courier New" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
          </children>
       </Pane>
-      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
+      <Pane fx:id="menuPane" prefHeight="368.0" prefWidth="960.0">
+         <children>
+            <ImageView fx:id="menu" fitHeight="742.0" fitWidth="846.0" layoutX="112.0" layoutY="-167.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/clipboard.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="returnLabel" layoutX="441.0" layoutY="111.0" text="Return to Game" />
+            <Label fx:id="quitLabel" layoutX="445.0" layoutY="217.0" text="Quit Game" />
+            <Label fx:id="mainMenuLabel" layoutX="444.0" layoutY="167.0" text="Main Menu" />
+         </children>
+      </Pane>
    </children>
-</Pane>
+</StackPane>
