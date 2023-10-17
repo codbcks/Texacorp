@@ -4,7 +4,6 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -24,14 +23,14 @@ import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+public class Room1Controller extends Room {
 /** This class is the controller for Room 1 in the Escaipe game. */
-public class Room1Controller {
 
   private static String wordToGuess;
   private static String wordList;
 
   @FXML private Rectangle triggerConsole;
-  @FXML private Rectangle lightOverlay;
+  @FXML private ImageView lightOverlay;
   @FXML private Rectangle printerPromptTrigger;
 
   @FXML private Label terminalInstructionsLabel;
@@ -47,15 +46,18 @@ public class Room1Controller {
   @FXML private Rectangle triggerDropSaw;
   @FXML private ImageView imgConveyor;
   @FXML private ImageView imgMachineResin;
+  @FXML private ImageView resinScreen;
+  @FXML private ImageView sawScreen;
 
-  private Timeline lightsOff;
-  private Timeline lightsOn;
   private Timeline takeBrokenSaw;
   private Timeline giveFixedSaw;
-  private long conveyorFrameRate = 12;
+  private long conveyorAnimPause = 12;
   private long repairBayFrameRate = 20;
 
+  private static String wordToGuess;
+  private static String wordList;
   private boolean conveyorIsActive = false;
+
   private boolean sawDeposited = false;
   private boolean materialDeposited = false;
   private boolean repairComplete = false;
@@ -70,7 +72,10 @@ public class Room1Controller {
   @FXML
   public void initialize() throws ApiProxyException {
 
-    // initialise css style classes
+    // initialize lighting animations
+    initializeLightAnim(lightOverlay, "leftRoomShadow", true);
+
+    // initialize css style classes
     riddleAnswerEntry.getStyleClass().add("riddle-answer-entry");
     terminalInstructionsLabel.getStyleClass().add("terminal-label");
     terminalLabel.getStyleClass().add("terminal-label");
@@ -94,53 +99,39 @@ public class Room1Controller {
           }
         });
 
-    // triggers the lights off animation
-    lightsOff =
-        new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
-
-    // triggers the lights on animation
-    lightsOn =
-        new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.0)));
-
     // triggers conveyor motion when saw is dropped
     takeBrokenSaw =
         new Timeline(
-            App.getTranslateKeyFrame(0, -52, paneConveyorDropBox, 52 * conveyorFrameRate, 0),
-            App.getTranslateKeyFrame(
-                -228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 52 * conveyorFrameRate),
-            App.getTranslateKeyFrame(
-                0, 116, paneConveyorDropBox, 116 * conveyorFrameRate, 280 * conveyorFrameRate),
+            getTranslateKeyFrame(0, -52, paneConveyorDropBox, 52 * conveyorAnimPause, 0),
+            getTranslateKeyFrame(
+                -228, 0, paneConveyorDropBox, 228 * conveyorAnimPause, 52 * conveyorAnimPause),
+            getTranslateKeyFrame(
+                0, 116, paneConveyorDropBox, 116 * conveyorAnimPause, 280 * conveyorAnimPause),
             new KeyFrame(
-                Duration.millis(396 * conveyorFrameRate),
+                Duration.millis(396 * conveyorAnimPause),
                 e -> {
                   sawDeposited = true;
-                  conveyorIsActive = false;
+                  deactivateConveyor();
                   checkForMachineStart();
                 }));
 
     // triggers conveyor motion when saw is dropped
     giveFixedSaw =
         new Timeline(
-            App.getTranslateKeyFrame(0, -116, paneConveyorDropBox, 116 * conveyorFrameRate, 0),
-            App.getTranslateKeyFrame(
-                228, 0, paneConveyorDropBox, 228 * conveyorFrameRate, 116 * conveyorFrameRate),
-            App.getTranslateKeyFrame(
-                0, 52, paneConveyorDropBox, 52 * conveyorFrameRate, 344 * conveyorFrameRate),
+            getTranslateKeyFrame(0, -116, paneConveyorDropBox, 116 * conveyorAnimPause, 0),
+            getTranslateKeyFrame(
+                228, 0, paneConveyorDropBox, 228 * conveyorAnimPause, 116 * conveyorAnimPause),
+            getTranslateKeyFrame(
+                0, 52, paneConveyorDropBox, 52 * conveyorAnimPause, 344 * conveyorAnimPause),
             new KeyFrame(
-                Duration.millis(396 * conveyorFrameRate),
+                Duration.millis(396 * conveyorAnimPause),
                 e -> {
-                  conveyorIsActive = false;
+                  deactivateConveyor();
                   repairComplete = true;
+                  initializeLightAnim(
+                      lightOverlay,
+                      "leftRoomShadow",
+                      (lightOverlay.getImage().equals(lightsOnOverlay)));
                   triggerDropSaw.setCursor(Cursor.HAND);
                 }));
   }
@@ -171,6 +162,7 @@ public class Room1Controller {
       triggerDropSaw.setCursor(Cursor.DEFAULT);
     } else if (App.getTopBarController().hasItem(TopBarController.Item.SAW_BROKEN)) {
       App.getTopBarController().removeItem(TopBarController.Item.SAW_BROKEN);
+      sawScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
       imgConveyorSaw.setVisible(true);
       takeBrokenSaw.play();
       activateConveyor(false);
@@ -193,6 +185,7 @@ public class Room1Controller {
       App.getTopBarController().removeItem(TopBarController.Item.RESIN);
       imgMachineResin.setVisible(true);
       materialDeposited = true;
+      resinScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
       checkForMachineStart();
     }
   }
@@ -203,45 +196,15 @@ public class Room1Controller {
    * @param backward if true, the conveyor belt moves backward; if false, it moves forward
    */
   private void activateConveyor(boolean backward) {
-    conveyorIsActive = true;
+    if (backward) {
+      imgConveyor.setImage(new Image("/images/leftRoomBeltAnimation-backward.gif"));
+    } else {
+      imgConveyor.setImage(new Image("/images/leftRoomBeltAnimation.gif"));
+    }
+  }
 
-    Task<Void> conveyorMovementTask =
-        new Task<Void>() {
-          @Override
-          protected Void call() throws Exception {
-
-            int conveyorFrame = 1;
-            conveyorIsActive = true;
-
-            while (conveyorIsActive) {
-              if (conveyorFrame == 5) {
-                conveyorFrame = 1;
-              }
-
-              if (conveyorFrame == 0) {
-                conveyorFrame = 4;
-              }
-
-              imgConveyor.setImage(
-                  new Image("/images/leftRoomBelt-Frame" + conveyorFrame + ".png"));
-              try {
-                Thread.sleep(conveyorFrameRate);
-              } catch (Exception e) {
-                System.err.println("ERROR: Exception in Room1Controller.dropSaw!");
-              }
-
-              if (backward) {
-                conveyorFrame--;
-              } else {
-                conveyorFrame++;
-              }
-            }
-            return null;
-          }
-        };
-
-    Thread conveyorMovementThread = new Thread(conveyorMovementTask);
-    conveyorMovementThread.start();
+  private void deactivateConveyor() {
+    imgConveyor.setImage(new Image("/images/leftRoomBeltStopped.png"));
   }
 
   /**
@@ -255,17 +218,17 @@ public class Room1Controller {
       Timeline activateRepairBay =
           new Timeline(
               // Timeline for the repair bay
-              App.getTranslateKeyFrame(0, 64, paneMachineMoveY, 110 * repairBayFrameRate, 0),
-              App.getTranslateKeyFrame(50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 0),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(0, 64, paneMachineMoveY, 110 * repairBayFrameRate, 0),
+              getTranslateKeyFrame(50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 0),
+              getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 10 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 20 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 30 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 40 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 50 * repairBayFrameRate),
               new KeyFrame(
                   // Timeline for the saw
@@ -274,15 +237,15 @@ public class Room1Controller {
                     // change the saw image to the fixed saw
                     imgConveyorSaw.setImage(new Image("/images/SAW_FIXED.png"));
                   }),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 60 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 70 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 80 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 90 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 100 * repairBayFrameRate),
               new KeyFrame(
                   Duration.millis(110 * repairBayFrameRate),
@@ -290,9 +253,9 @@ public class Room1Controller {
                     activateConveyor(true);
                     giveFixedSaw.play();
                   }),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 40 * repairBayFrameRate, 130 * repairBayFrameRate),
-              App.getTranslateKeyFrame(
+              getTranslateKeyFrame(
                   0, -64, paneMachineMoveY, 40 * repairBayFrameRate, 130 * repairBayFrameRate));
 
       activateRepairBay.play(); // start the animation
@@ -412,6 +375,10 @@ public class Room1Controller {
       GameState.isPasswordObtained = true;
       GameState.isRiddleActive = false;
       GameState.isRoom1Solved = true;
+      initializeLightAnim(
+          lightOverlay,
+          "leftRoomShadow-machineActive",
+          (lightOverlay.getImage().equals(lightsOnOverlay)));
       checkForMachineStart();
     } else {
       // If the guess is incorrect, update the chat log and clear the text field
@@ -420,17 +387,6 @@ public class Room1Controller {
       riddleAnswerEntry.clear();
     }
   }
-
-  /* ------- NOTE: This is how we will be animating items into the inventory --------
-
-    TranslateTransition translate = new TranslateTransition();
-    translate.setByX((INVX + (INVGAPX * invIndex)) - imageToMove.getLayoutX());
-    translate.setByY(INVY - imageToMove.getLayoutY());
-    translate.setDuration(Duration.millis(600));
-    translate.setNode(imageToMove);
-    translate.play();
-
-  */
 
   /**
    * Clicking this will prompt the player to pick up the 3D printer.

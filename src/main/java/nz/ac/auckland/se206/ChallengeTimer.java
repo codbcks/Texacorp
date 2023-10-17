@@ -3,6 +3,7 @@ package nz.ac.auckland.se206;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
+import nz.ac.auckland.se206.controllers.InGameController;
 
 /**
  * This class represents a timer for a challenge in the game. It uses multithreading to avoid
@@ -53,6 +54,11 @@ public class ChallengeTimer {
                   });
 
               Thread.sleep(1000);
+            }
+
+            if (timerActive) {
+              timerActive = false;
+              ((InGameController)(SceneManager.getController(SceneManager.AppUI.IN_GAME))).showLose();
             }
 
             return null;

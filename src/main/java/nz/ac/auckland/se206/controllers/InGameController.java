@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.ChallengeTimer;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
@@ -27,6 +28,7 @@ public class InGameController {
   @FXML private Pane roomSlider;
   @FXML private ImageView leftArrow;
   @FXML private ImageView rightArrow;
+  @FXML private Pane loseScreen;
 
   private Boolean moveEnabled = true;
   private int currentRoom = 2;
@@ -52,6 +54,17 @@ public class InGameController {
    * @param event the mouse event that triggered the method
    * @throws IOException if there is an error with the input/output
    */
+  @FXML
+  public void clickBackToMenu(MouseEvent event) throws IOException {
+    App.setRoot(SceneManager.AppUI.INTRO);
+    ChallengeTimer.cancelTimer();
+    App.resetGame();
+  }
+
+  public void showLose() {
+    loseScreen.setVisible(true);
+  }
+
   @FXML
   public void moveLeft(MouseEvent event) throws IOException {
     if (currentRoom != 1) {

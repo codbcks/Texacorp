@@ -4,8 +4,6 @@ import java.io.IOException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -26,13 +24,13 @@ import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 /** This class is the controller for Room 3 in the Escaipe game. */
-public class Room3Controller {
+public class Room3Controller extends Room {
 
   @FXML private Pane pinPadUi;
   @FXML private Rectangle pinTextFieldBackground;
   @FXML private Rectangle pinPadClose;
   @FXML private Rectangle pinPadOpen;
-  @FXML private Rectangle lightOverlay;
+  @FXML private ImageView lightOverlay;
   @FXML private Label pinTextField;
   @FXML private Label pinHintText;
   @FXML private GridPane pinPad;
@@ -52,8 +50,9 @@ public class Room3Controller {
   @FXML private Rectangle shelvesPromptTrigger1;
   @FXML private Rectangle shelvesPromptTrigger2;
   @FXML private ImageView imgSlidingDoor;
-  @FXML private ImageView imgConveyor;
   @FXML private ImageView imgConveyorResin;
+  @FXML private ImageView imgConveyor;
+  @FXML private ImageView lockedScreen;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -66,14 +65,11 @@ public class Room3Controller {
   private boolean pinPadReady;
   private Timeline resetPinPad;
   private Timeline resolvePinPad;
-  private Timeline lightsOff;
-  private Timeline lightsOn;
   private boolean conveyorIsActive;
-  private long conveyorFrameRate = 4;
 
   private String[] pinHints = {
-    "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
-    "Shelves", "Sticky Note", "Lasers", "AI Version Number", "(3 ^ 3) - 18"
+    "Clock", "AI eyes", "14 * 2 - 26", "Rooms", "16 mod 6",
+    "15 / 3", "2 ^ 2 + 2", "15 / 2 - 0.5", "AI Version Number", "Sticky Notes"
   };
 
   private String pin;
@@ -93,6 +89,7 @@ public class Room3Controller {
     mouseInteract(shelvesPromptTrigger1);
     mouseInteract(shelvesPromptTrigger2);
     mouseInteract(pinPadOpen);
+
     /* >-------- PIN + PIN PAD CREATION -------< */
 
     /* Generating pseudo-random 4 digit pin */
@@ -102,7 +99,8 @@ public class Room3Controller {
 
     /* Setting text relating to 4 objects that can help the player guess the pin */
     pinHintText.setText(
-        pinHints[pin.charAt(0) - 48]
+        "Saw is broken,\ntake to repair bay\n\n"
+            + pinHints[pin.charAt(0) - 48]
             + "\n"
             + pinHints[pin.charAt(1) - 48]
             + "\n"
@@ -124,6 +122,9 @@ public class Room3Controller {
     pinTextFieldBackground.setFill(pinPadDark);
 
     /* >-------- PIN PAD ANIMATION + EVENT TIMELINES -------< */
+
+    /* initialize lighting animations */
+    initializeLightAnim(lightOverlay, "rightRoomShadow", true);
 
     /* Animation and event timeline for entering the wrong pin */
     resetPinPad =
@@ -183,43 +184,14 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
-
                   App.getTopBarController().giveItem(TopBarController.Item.SAW_BROKEN);
+                  lockedScreen.setImage(new Image("/images/rightRoomScreenUnlocked.png"));
                   GameState.isRoom3Solved = true;
-
                   battery.setOpacity(0);
                   TranslateTransition openDoor =
                       new TranslateTransition(Duration.millis(250), imgSlidingDoor);
                   openDoor.setByX(70);
                   openDoor.play();
-                }));
-
-    /* Animation and event timeline for turning off the lights */
-    lightsOff =
-        new Timeline(
-            new KeyFrame(
-                Duration.seconds(0.0),
-                e -> {
-                  lightOverlay.setOpacity(0.3);
-                  deactivateConveyor();
-                }),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(1.2), e -> lightOverlay.setOpacity(0.3)));
-
-    /* Animation and event timeline for turning on the lights */
-    lightsOn =
-        new Timeline(
-            new KeyFrame(Duration.seconds(0.0), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.2), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(Duration.seconds(0.4), e -> lightOverlay.setOpacity(0.0)),
-            new KeyFrame(Duration.seconds(0.6), e -> lightOverlay.setOpacity(0.3)),
-            new KeyFrame(
-                Duration.seconds(1.2),
-                e -> {
-                  lightOverlay.setOpacity(0.0);
-                  activateConveyor();
                 }));
   }
 
@@ -244,11 +216,13 @@ public class Room3Controller {
   /** Plays animation for the light flickering off. */
   public void lightsOff() {
     lightsOff.playFromStart();
+    deactivateConveyor();
   }
 
   /** Plays animation for the light flickering on. */
   public void lightsOn() {
     lightsOn.playFromStart();
+    activateConveyor();
   }
 
   /**
@@ -339,71 +313,13 @@ public class Room3Controller {
 
   /** Activates the conveyor belt animation. */
   public void activateConveyor() {
-
-    // Create a new task to move the conveyor belt and resin image
-    Task<Void> conveyorMovementTask =
-        new Task<Void>() {
-          @Override
-          protected Void call() throws Exception {
-
-            // Initialize variables
-            int conveyorFrame = 1;
-            conveyorIsActive = true;
-
-            // Loop through conveyor frames while the conveyor is active
-            while (conveyorIsActive) {
-
-              // Reset conveyor frame to 1 if it reaches 5
-              if (conveyorFrame == 5) {
-                conveyorFrame = 1;
-              }
-
-              // Update conveyor image to the current frame
-              imgConveyor.setImage(
-                  new Image("/images/rightRoomBelt-Frame" + conveyorFrame + ".png"));
-
-              // Move resin image down the conveyor belt
-              if (imgConveyorResin.getLayoutY() <= 0) {
-                // If resin reaches the end of the conveyor, reset its position to the start
-                Platform.runLater(
-                    () -> {
-                      imgConveyorResin.setLayoutX(830);
-                      imgConveyorResin.setLayoutY(235);
-                    });
-              } else if (imgConveyorResin.getLayoutX() > 295) {
-                // If resin is still on the conveyor, move it to the left
-                Platform.runLater(
-                    () -> {
-                      imgConveyorResin.setLayoutX(imgConveyorResin.getLayoutX() - 4);
-                    });
-              } else {
-                // If resin reaches the end of the conveyor, move it down
-                Platform.runLater(
-                    () -> {
-                      imgConveyorResin.setLayoutY(imgConveyorResin.getLayoutY() - 4);
-                    });
-              }
-
-              // Increment conveyor frame and wait for a few milliseconds
-              conveyorFrame++;
-              try {
-                Thread.sleep(conveyorFrameRate);
-              } catch (Exception e) {
-                System.err.println("ERROR: Exception in Room1Controller.dropSaw!");
-              }
-            }
-
-            return null;
-          }
-        };
-
-    // Create a new thread to run the conveyor movement task
-    Thread conveyorMovementThread = new Thread(conveyorMovementTask);
-    conveyorMovementThread.start();
+    imgConveyor.setImage(new Image("/images/rightRoomBeltAnimation.gif"));
+    conveyorIsActive = true;
   }
 
   /** Deactivates the conveyor belt animation. */
   public void deactivateConveyor() {
+    imgConveyor.setImage(new Image("/images/rightRoomBeltStopped.png"));
     conveyorIsActive = false;
   }
 

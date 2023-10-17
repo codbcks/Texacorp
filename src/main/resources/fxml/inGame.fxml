@@ -2,11 +2,14 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.SubScene?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
-
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.InGameController">
    <children>
@@ -55,5 +58,21 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
+      <Pane fx:id="loseScreen" prefHeight="640.0" prefWidth="960.0" visible="false">
+         <children>
+            <Rectangle fill="#2b0101" height="640.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="960.0" />
+            <Text fill="RED" layoutX="237.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time's up!" textAlignment="CENTER" wrappingWidth="485.123046875">
+               <font>
+                  <Font name="Consolas Bold" size="72.0" />
+               </font>
+            </Text>
+            <Text fill="RED" layoutX="237.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ORGANIC LIFE IS WEAK." textAlignment="CENTER" wrappingWidth="485.123046875">
+               <font>
+                  <Font name="Consolas" size="32.0" />
+               </font>
+            </Text>
+            <Button layoutX="418.0" layoutY="399.0" mnemonicParsing="false" onMouseClicked="#clickBackToMenu" prefHeight="53.0" prefWidth="124.0" text="Back to menu" textAlignment="CENTER" textFill="RED" />
+         </children>
+      </Pane>
    </children>
 </Pane>

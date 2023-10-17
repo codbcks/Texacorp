@@ -16,9 +16,9 @@
             <Image url="@../images/leftRoomBackground.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="imgConveyor" fitHeight="368.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imgConveyor" fitHeight="203.0" fitWidth="275.0" layoutX="201.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/leftRoomBelt-Frame1.png" />
+            <Image url="@../images/leftRoomBeltStopped.png" />
          </image>
       </ImageView>
       <Pane fx:id="paneConveyorDropBox" layoutX="436.0" layoutY="189.0" prefHeight="32.0" prefWidth="32.0">
@@ -54,6 +54,21 @@
             </ImageView>
          </children>
       </Pane>
+      <ImageView fx:id="lightOverlay" fitHeight="368.0" fitWidth="960.0" mouseTransparent="true" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomShadow-lightsOn.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="resinScreen" fitHeight="46.0" fitWidth="30.0" layoutX="499.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomResinScreenActive.gif" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="sawScreen" fitHeight="46.0" fitWidth="30.0" layoutX="431.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomSawScreenActive.gif" />
+         </image>
+      </ImageView>
       <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="56.0" layoutX="366.0" layoutY="292.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="258.0">
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -73,7 +88,6 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Rectangle>
-      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
       <Pane fx:id="terminalWrapperPane" layoutX="10.0" layoutY="-70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1200.0" visible="false" />
       <Pane fx:id="terminalPane" layoutX="239.0" layoutY="67.0" prefHeight="341.0" prefWidth="450.0" visible="false">
          <children>

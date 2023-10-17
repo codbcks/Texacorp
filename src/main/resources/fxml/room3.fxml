@@ -19,6 +19,16 @@
             <Image url="@../images/rightRoomBackground.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="lockedScreen" fitHeight="48.0" fitWidth="30.0" layoutX="412.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/rightRoomScreenLocked.gif" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="imgConveyor" fitHeight="214.0" fitWidth="527.0" layoutX="295.0" layoutY="69.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/rightRoomBeltAnimation.gif" />
+         </image>
+      </ImageView>
       <ImageView fx:id="battery" fitHeight="48.0" fitWidth="48.0" layoutX="460.0" layoutY="40.0">
          <image>
             <Image url="@../images/SAW_BROKEN.png" />
@@ -29,25 +39,24 @@
             <Image url="@../images/rightRoomSlidingDoor.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="imgConveyor" fitHeight="368.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/rightRoomBelt-Frame1.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="imgConveyorResin" fitHeight="48.0" fitWidth="48.0" layoutX="830.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/RESIN.png" />
-         </image>
-      </ImageView>
       <ImageView fitHeight="368.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/rightRoomForeground.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="lightOverlay" fitHeight="368.0" fitWidth="960.0" mouseTransparent="true" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/rightRoomShadow-lightsOn.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="imgConveyorResin" fitHeight="48.0" fitWidth="48.0" layoutX="630.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/RESIN.png" />
+         </image>
+      </ImageView>
       <Rectangle fx:id="shelvesPromptTrigger1" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="112.0" layoutX="541.0" layoutY="11.0" onMouseClicked="#shelvesPrompt" stroke="TRANSPARENT" strokeType="INSIDE" width="277.0" />
       <Rectangle fx:id="shelvesPromptTrigger2" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="112.0" layoutX="147.0" layoutY="42.0" onMouseClicked="#shelvesPrompt" stroke="TRANSPARENT" strokeType="INSIDE" width="74.0" />
       <Rectangle fx:id="pinPadOpen" fill="#868686" height="112.0" layoutX="404.0" layoutY="10.0" onMouseClicked="#clickPinPadOpen" opacity="0.0" stroke="TRANSPARENT" strokeType="INSIDE" width="122.0" />
-      <Rectangle fx:id="lightOverlay" arcHeight="5.0" arcWidth="5.0" height="368.0" mouseTransparent="true" opacity="0.0" stroke="BLACK" strokeType="INSIDE" width="960.0" />
       <Rectangle fill="#1f93ff00" height="224.0" layoutX="294.0" layoutY="65.0" onMouseClicked="#clickConveyor" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="48.0">
          <cursor>
             <Cursor fx:constant="HAND" />
