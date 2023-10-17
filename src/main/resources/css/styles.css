@@ -31,3 +31,27 @@
     -fx-text-fill: lime;
     -fx-prompt-text-fill: lime;
 }
+
+.intro-screen-label {
+    -fx-font-family: "Orbitron";
+}
+
+.regular-intro-screen-label {
+    -fx-font-size: 20px;
+}
+
+.hovered-intro-screen-label {
+    -fx-font-size: 24px;
+}
+
+.heading-intro-screen-label {
+    -fx-font-size: 36px;
+}
+
+.hovered-heading-intro-label {
+    -fx-font-size: 48px;
+}
+
+.title-intro-screen-label {
+    -fx-font-size: 70px;
+}

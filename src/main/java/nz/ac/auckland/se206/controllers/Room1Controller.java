@@ -24,6 +24,11 @@ import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room1Controller extends Room {
+/** This class is the controller for Room 1 in the Escaipe game. */
+
+  private static String wordToGuess;
+  private static String wordList;
+
   @FXML private Rectangle triggerConsole;
   @FXML private ImageView lightOverlay;
   @FXML private Rectangle printerPromptTrigger;
@@ -51,11 +56,19 @@ public class Room1Controller extends Room {
 
   private static String wordToGuess;
   private static String wordList;
+  private boolean conveyorIsActive = false;
 
   private boolean sawDeposited = false;
   private boolean materialDeposited = false;
   private boolean repairComplete = false;
 
+  /**
+   * The code initializes the Room1Controller by setting up CSS style classes, mouse interactions,
+   * and click events. It also triggers animations for lights off and on, and conveyor motion when
+   * the saw is dropped or fixed.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   */
   @FXML
   public void initialize() throws ApiProxyException {
 
@@ -133,14 +146,22 @@ public class Room1Controller extends Room {
     lightsOn.playFromStart();
   }
 
+  /**
+   * Handles the event when the saw is dropped in Room 1. If the repair is complete, the saw is
+   * removed and the fixed saw is added to the top bar. If the repair is not complete and the player
+   * has a broken saw, the broken saw is removed and the conveyor belt is activated.
+   *
+   * @param event The mouse event that triggered the method.
+   * @throws IOException If an I/O error occurs.
+   */
   @FXML
   private void dropSaw(MouseEvent event) throws IOException {
     if (repairComplete) {
       imgConveyorSaw.setVisible(false);
-      App.topBarController.giveItem(TopBarController.Item.SAW_FIXED);
+      App.getTopBarController().giveItem(TopBarController.Item.SAW_FIXED);
       triggerDropSaw.setCursor(Cursor.DEFAULT);
-    } else if (App.topBarController.hasItem(TopBarController.Item.SAW_BROKEN)) {
-      App.topBarController.removeItem(TopBarController.Item.SAW_BROKEN);
+    } else if (App.getTopBarController().hasItem(TopBarController.Item.SAW_BROKEN)) {
+      App.getTopBarController().removeItem(TopBarController.Item.SAW_BROKEN);
       sawScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
       imgConveyorSaw.setVisible(true);
       takeBrokenSaw.play();
@@ -149,10 +170,19 @@ public class Room1Controller extends Room {
     }
   }
 
+  /**
+   * Drops resin into the machine when the user clicks on the resin image. If the user has resin in
+   * their inventory, the resin is removed from the inventory, the resin image is made visible, and
+   * the materialDeposited flag is set to true. Finally, the checkForMachineStart() method is called
+   * to check if the machine can be started.
+   *
+   * @param event The mouse event that triggered the method call.
+   * @throws IOException If an I/O error occurs.
+   */
   @FXML
   private void dropResin(MouseEvent event) throws IOException {
-    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
-      App.topBarController.removeItem(TopBarController.Item.RESIN);
+    if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
+      App.getTopBarController().removeItem(TopBarController.Item.RESIN);
       imgMachineResin.setVisible(true);
       materialDeposited = true;
       resinScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
@@ -160,6 +190,11 @@ public class Room1Controller extends Room {
     }
   }
 
+  /**
+   * Activates the conveyor belt animation in Room 1.
+   *
+   * @param backward if true, the conveyor belt moves backward; if false, it moves forward
+   */
   private void activateConveyor(boolean backward) {
     if (backward) {
       imgConveyor.setImage(new Image("/images/leftRoomBeltAnimation-backward.gif"));
@@ -172,10 +207,17 @@ public class Room1Controller extends Room {
     imgConveyor.setImage(new Image("/images/leftRoomBeltStopped.png"));
   }
 
+  /**
+   * Checks if the saw and material have been deposited and the password has been obtained. If all
+   * conditions are met, a Timeline animation is created for the repair bay. The animation moves the
+   * machine and saw, changes the saw image to a fixed saw, activates the conveyor, and plays a
+   * sound effect.
+   */
   private void checkForMachineStart() {
     if (sawDeposited && materialDeposited && GameState.isPasswordObtained) {
       Timeline activateRepairBay =
           new Timeline(
+              // Timeline for the repair bay
               getTranslateKeyFrame(0, 64, paneMachineMoveY, 110 * repairBayFrameRate, 0),
               getTranslateKeyFrame(50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 0),
               getTranslateKeyFrame(
@@ -189,8 +231,10 @@ public class Room1Controller extends Room {
               getTranslateKeyFrame(
                   -50, 0, imgMachineMoveX, 10 * repairBayFrameRate, 50 * repairBayFrameRate),
               new KeyFrame(
+                  // Timeline for the saw
                   Duration.millis(50 * repairBayFrameRate),
                   e -> {
+                    // change the saw image to the fixed saw
                     imgConveyorSaw.setImage(new Image("/images/SAW_FIXED.png"));
                   }),
               getTranslateKeyFrame(
@@ -214,7 +258,7 @@ public class Room1Controller extends Room {
               getTranslateKeyFrame(
                   0, -64, paneMachineMoveY, 40 * repairBayFrameRate, 130 * repairBayFrameRate));
 
-      activateRepairBay.play();
+      activateRepairBay.play(); // start the animation
     }
   }
 
@@ -247,12 +291,18 @@ public class Room1Controller extends Room {
     return wordList.split(",")[(int) (Math.random() * 5)];
   }
 
-  // Generate a riddle using GPT and set the word to guess
+  /**
+   * Generates a riddle using the GptPromptEngineering class with the given word to guess. Adds the
+   * generated riddle to the log and updates the chat.
+   *
+   * @param event The mouse event that triggered the method.
+   * @throws ApiProxyException If an error occurs while generating the riddle.
+   */
   @FXML
   public void generateRiddle(MouseEvent event) throws ApiProxyException {
     String riddle = GptPromptEngineering.getRiddleWithGivenWord(wordToGuess);
 
-    SceneManager.addToLogEnviroClick(new ChatMessage("assistant", riddle));
+    SceneManager.addToLogEnviroMessage(new ChatMessage("assistant", riddle));
     SceneManager.updateChat();
   }
 
@@ -264,17 +314,20 @@ public class Room1Controller extends Room {
    */
   @FXML
   public void clickTriggerConsole(MouseEvent event) throws IOException {
-    if (GameState.isFirstTime) {
+    if (GameState.isFirstTimeForRiddle) {
       try {
-        App.bottomBarController.runGpt(
-            // runGpt is a method in the parent class, it returns the GPT response for the input.
-            new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
-            false);
+        App.getBottomBarController()
+            .runGpt(
+                // runGpt is a method in the parent class, it returns the GPT response for the
+                // input.
+                new ChatMessage("user", GptPromptEngineering.getRiddleWithGivenWord(wordToGuess)),
+                true);
+        showTerminal();
       } catch (ApiProxyException e) {
         e.printStackTrace();
       }
-      GameState.isFirstTime = false;
-    } else if (!GameState.isFirstTime && !GameState.isPasswordObtained) {
+      GameState.isFirstTimeForRiddle = false;
+    } else if (!GameState.isFirstTimeForRiddle && !GameState.isPasswordObtained) {
       showTerminal();
     } else {
       return;
@@ -297,7 +350,7 @@ public class Room1Controller extends Room {
   private void showTerminal() {
     terminalWrapperPane.setVisible(true);
     terminalPane.setVisible(true);
-    App.textToSpeech.speak("The... password... is...");
+    App.getTextToSpeech().speak("The... password... is...");
     TranslateTransition translateTransition =
         new TranslateTransition(Duration.millis(1000), terminalPane);
     translateTransition.setByY(-120);
@@ -314,22 +367,23 @@ public class Room1Controller extends Room {
   private void submitGuess(ActionEvent event) {
     String guess = riddleAnswerEntry.getText();
     if (guess.equalsIgnoreCase(wordToGuess)) {
-
-      SceneManager.addToLogEnviroClick(new ChatMessage("user", "Success!"));
+      // If the guess is correct, update the chat log and hide the terminal
+      SceneManager.addToLogEnviroMessage(new ChatMessage("user", "Success!"));
       SceneManager.updateChat();
-
       hideTerminal();
+      // Set the password obtained flag to true and check for machine start
       GameState.isPasswordObtained = true;
+      GameState.isRiddleActive = false;
+      GameState.isRoom1Solved = true;
       initializeLightAnim(
           lightOverlay,
           "leftRoomShadow-machineActive",
           (lightOverlay.getImage().equals(lightsOnOverlay)));
       checkForMachineStart();
     } else {
-
-      SceneManager.addToLogEnviroClick(new ChatMessage("assistant", "Declined!"));
+      // If the guess is incorrect, update the chat log and clear the text field
+      SceneManager.addToLogEnviroMessage(new ChatMessage("assistant", "Declined!"));
       SceneManager.updateChat();
-
       riddleAnswerEntry.clear();
     }
   }
@@ -342,11 +396,15 @@ public class Room1Controller extends Room {
    */
   @FXML
   public void printerPrompt(MouseEvent event) throws ApiProxyException {
-    SceneManager.addToLogEnviroClick(
+    SceneManager.addToLogEnviroMessage(
         new ChatMessage(
             "user",
             "Two 3D printers loaded with high-tensile steel. Pefect for producing a durable saw"
                 + " blade."));
     SceneManager.updateChat();
+  }
+
+  public String getWordToGuess() {
+    return wordToGuess;
   }
 }

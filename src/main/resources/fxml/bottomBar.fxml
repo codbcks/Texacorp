@@ -20,9 +20,10 @@
             <Image url="@../images/countHints5.png" />
          </image>
       </ImageView>
-      <Button fx:id="sendButton" alignment="CENTER" layoutX="620.0" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSendMessage" prefHeight="32.0" prefWidth="96.0" text="SEND" />
-      <TextArea fx:id="inputText" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="620.0" promptText="REASON WITH THE AI IF YOU DARE" style="-fx-background-color: transparent; -fx-text-fill: lime; -fx-font-family: 'Courier New'; -fx-font-size: 14px;" wrapText="true" />
+      <Button fx:id="sendButton" alignment="CENTER" layoutX="522.0" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSendMessage" prefHeight="32.0" prefWidth="96.0" text="SEND" />
+      <TextArea fx:id="inputText" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="522.0" promptText="REASON WITH THE AI IF YOU DARE" style="-fx-background-color: transparent; -fx-text-fill: lime; -fx-font-family: 'Courier New'; -fx-font-size: 14px;" wrapText="true" />
       <TextArea fx:id="chatTextArea" editable="false" prefHeight="160.0" prefWidth="716.0" wrapText="true" />
+      <Button fx:id="hintButton" alignment="CENTER" layoutX="620.0" layoutY="160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRequestHint" prefHeight="32.0" prefWidth="96.0" text="HELP" />
       <Button fx:id="forwardButton" layoutX="655.0" mnemonicParsing="false" onAction="#onForwardHistory" prefHeight="40.0" prefWidth="61.0" text="&gt;">
          <font>
             <Font size="18.0" />

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.WinController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.FailController">
    <children>
       <Label layoutX="243.0" layoutY="184.0" text="CONGRATULATIONS!">
          <font>
@@ -22,6 +22,6 @@
             <Font name="System Italic" size="32.0" />
          </font>
       </Label>
-      <Button fx:id="menuBtn" layoutX="440.0" layoutY="395.0" mnemonicParsing="false" onMouseClicked="#menu" text="Back to menu" />
+      <Button fx:id="menuBtn" layoutX="440.0" layoutY="395.0" mnemonicParsing="false" onAction="#onMenu" text="Back to menu" />
    </children>
 </Pane>

@@ -18,10 +18,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
+/** This class is the controller for Room 3 in the Escaipe game. */
 public class Room3Controller extends Room {
 
   @FXML private Pane pinPadUi;
@@ -72,6 +74,14 @@ public class Room3Controller extends Room {
 
   private String pin;
 
+  /**
+   * Initializes the Room3Controller by activating the conveyor, setting up the pin pad, and
+   * creating the necessary animation and event timelines for the pin pad and lights. Also sets the
+   * text relating to 4 objects that can help the player guess the pin.
+   *
+   * @throws ApiProxyException if there is an issue with the API proxy
+   * @throws IOException if there is an issue with input/output
+   */
   @FXML
   public void initialize() throws ApiProxyException, IOException {
 
@@ -106,7 +116,8 @@ public class Room3Controller extends Room {
     pinPadCorrectDark = new Color(0.0, 0.125, 0.03125, 1.0);
     pinPadCorrectLight = new Color(0.0, 1.0, 0.03125, 1.0);
 
-    /* Regardless of the initial colour in SceneBuilder, the pin pad text box uses the default colours */
+    /* Regardless of the initial colour in SceneBuilder, the pin pad text box uses
+    the default colours */
     pinTextField.setTextFill(pinPadLight);
     pinTextFieldBackground.setFill(pinPadDark);
 
@@ -173,8 +184,9 @@ public class Room3Controller extends Room {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
-                  App.topBarController.giveItem(TopBarController.Item.SAW_BROKEN);
+                  App.getTopBarController().giveItem(TopBarController.Item.SAW_BROKEN);
                   lockedScreen.setImage(new Image("/images/rightRoomScreenUnlocked.png"));
+                  GameState.isRoom3Solved = true;
                   battery.setOpacity(0);
                   TranslateTransition openDoor =
                       new TranslateTransition(Duration.millis(250), imgSlidingDoor);
@@ -201,26 +213,43 @@ public class Room3Controller extends Room {
         });
   }
 
+  /** Plays animation for the light flickering off. */
   public void lightsOff() {
     lightsOff.playFromStart();
     deactivateConveyor();
   }
 
+  /** Plays animation for the light flickering on. */
   public void lightsOn() {
     lightsOn.playFromStart();
     activateConveyor();
   }
 
+  /**
+   * Opens the pin pad pane by changing the visable to true.
+   *
+   * @param event the mouse event triggered by the pin pad open button
+   */
   @FXML
   public void clickPinPadOpen(MouseEvent event) throws IOException {
     pinPadUi.setVisible(true);
   }
 
+  /**
+   * Opens the pin pad pane by changing the visable to false.
+   *
+   * @param event the mouse event triggered by the pin pad close button
+   */
   @FXML
   public void clickPinPadClose(MouseEvent event) throws IOException {
     pinPadUi.setVisible(false);
   }
 
+  /**
+   * Handles the clicking of the pin pad buttons.
+   *
+   * @param event the mouse event triggered by the pin pad buttons
+   */
   @FXML
   public void pinDigitClick(MouseEvent event) throws IOException {
     // Get the button that was clicked
@@ -235,6 +264,11 @@ public class Room3Controller extends Room {
     }
   }
 
+  /**
+   * Handles the clicking of the pin pad remove button.
+   *
+   * @param event the mouse event triggered by the pin pad remove button
+   */
   @FXML
   public void pinRemoveClick(MouseEvent event) throws IOException {
     // If the pin pad is ready and the text field is not empty, remove the last digit from the text
@@ -246,6 +280,11 @@ public class Room3Controller extends Room {
     }
   }
 
+  /**
+   * Handles the clicking of the pin pad submit button.
+   *
+   * @param event the mouse event triggered by the pin pad submit button
+   */
   @FXML
   public void pinSubmitClick(MouseEvent event) throws IOException {
     // If the pin pad is ready, check if the pin is correct
@@ -260,31 +299,43 @@ public class Room3Controller extends Room {
     }
   }
 
+  /**
+   * Handles the clicking of the shelves.
+   *
+   * @param event the mouse event triggered by the shelves
+   */
   @FXML
   public void shelvesPrompt(MouseEvent event) throws IOException {
-    SceneManager.addToLogEnviroClick(
+    SceneManager.addToLogEnviroMessage(
         new ChatMessage("user", "Huh, nothing of use in any of these five shelves..."));
     SceneManager.updateChat();
   }
 
+  /** Activates the conveyor belt animation. */
   public void activateConveyor() {
     imgConveyor.setImage(new Image("/images/rightRoomBeltAnimation.gif"));
     conveyorIsActive = true;
   }
 
+  /** Deactivates the conveyor belt animation. */
   public void deactivateConveyor() {
     imgConveyor.setImage(new Image("/images/rightRoomBeltStopped.png"));
     conveyorIsActive = false;
   }
 
+  /**
+   * Handles the clicking of the conveyor belt.
+   *
+   * @param event the mouse event triggered by the conveyor belt
+   */
   @FXML
   private void clickConveyor(MouseEvent event) throws IOException {
-    if (App.topBarController.hasItem(TopBarController.Item.RESIN)) {
+    if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
       // ADD PLAYER ALREADY HAS ITEM CODE
     } else if (conveyorIsActive) {
       // ADD PLAYER CANNOT ACCESS CONVEYOR HINT
     } else if (!conveyorIsActive) {
-      App.topBarController.giveItem(TopBarController.Item.RESIN);
+      App.getTopBarController().giveItem(TopBarController.Item.RESIN);
       imgConveyorResin.setVisible(false);
     }
   }

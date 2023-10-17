@@ -1,61 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nz.ac.auckland.se206.controllers.IntroController">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="210.0" layoutY="62.0" prefHeight="133.0" prefWidth="542.0" text="TEXACORP" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="89.0" />
-         </font>
-      </Label>
-      <Button fx:id="btnStart" layoutX="413.0" layoutY="239.0" mnemonicParsing="false" onAction="#startGame" prefHeight="52.0" prefWidth="136.0" text="PLAY">
-         <font>
-            <Font size="26.0" />
-         </font>
-      </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="410.0" layoutY="343.0" prefHeight="39.0" prefWidth="147.0" text="DIFFICULTY" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="27.0" />
-         </font>
-      </Label>
-      <Button fx:id="btnEasy" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="394.0" mnemonicParsing="false" onAction="#setEasy" prefHeight="40.0" prefWidth="85.0" text="EASY" textAlignment="CENTER" textOverrun="CLIP">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnHard" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="394.0" mnemonicParsing="false" onAction="#setHard" prefHeight="40.0" prefWidth="85.0" text="HARD" textAlignment="CENTER" textOverrun="CLIP">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnMedium" contentDisplay="CENTER" ellipsisString="" layoutX="430.0" layoutY="394.0" mnemonicParsing="false" onAction="#setMedium" prefHeight="40.0" prefWidth="104.0" text="MEDIUM" textAlignment="CENTER" textOverrun="CLIP">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="446.0" layoutY="465.0" prefHeight="39.0" prefWidth="74.0" text="TIME" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="27.0" />
-         </font>
-      </Label>
-      <Button fx:id="btnTwoMin" contentDisplay="CENTER" ellipsisString="" layoutX="544.0" layoutY="514.0" mnemonicParsing="false" onAction="#setTwo" prefHeight="40.0" prefWidth="85.0" text="2 MINS" textAlignment="CENTER" textOverrun="CLIP">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnSixMin" contentDisplay="CENTER" ellipsisString="" layoutX="334.0" layoutY="514.0" mnemonicParsing="false" onAction="#setSix" prefHeight="40.0" prefWidth="85.0" text="6 MINS" textAlignment="CENTER" textOverrun="CLIP">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnFourMin" contentDisplay="CENTER" ellipsisString="" layoutX="440.0" layoutY="514.0" mnemonicParsing="false" onAction="#setFour" prefHeight="40.0" prefWidth="85.0" text="4 MINS" textAlignment="CENTER" textOverrun="CLIP">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Button>
+      <AnchorPane prefHeight="640.0" prefWidth="960.0">
+         <children>
+            <ImageView fitHeight="640.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/redbackground.jpg" />
+               </image>
+            </ImageView>
+            <Label fx:id="difficultyLabel" layoutX="216.0" layoutY="228.0" text="DIFFICULTY" textFill="WHITE">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="timeLabel" layoutX="627.0" layoutY="223.0" text="TIME" textFill="WHITE">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="easyLabel" layoutX="216.0" layoutY="286.0" text="EASY" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="mediumLabel" layoutX="216.0" layoutY="320.0" text="MEDIUM" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="hardLabel" layoutX="216.0" layoutY="353.0" text="HARD" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="twoMinLabel" layoutX="627.0" layoutY="281.0" text="2 MINUTES" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="fourMinLabel" layoutX="627.0" layoutY="315.0" text="4 MINUTES" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="sixMinLabel" layoutX="627.0" layoutY="348.0" text="6 MINUTES" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="playLabel" layoutX="428.0" layoutY="410.0" onMouseClicked="#startGame" text="PLAY" textFill="WHITE">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="texacorpLabel" layoutX="272.0" layoutY="151.0" text="TEXACORP" textFill="WHITE">
+               <font>
+                  <Font size="70.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="textToSpeechCheckbox" layoutX="218.0" layoutY="395.0" mnemonicParsing="false" text="Text-to-Speech" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </CheckBox>
+         </children>
+      </AnchorPane>
    </children>
 </Pane>
