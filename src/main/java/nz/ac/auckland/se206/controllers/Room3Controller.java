@@ -121,7 +121,7 @@ public class Room3Controller extends Room {
     resinMovement =
         new Timeline(
             new KeyFrame(
-                Duration.millis(500),
+                Duration.millis(0),
                 e -> {
                   imgConveyorResin.setVisible(true);
                   tempTransition = new TranslateTransition(Duration.millis(500), imgConveyorResin);
@@ -129,14 +129,14 @@ public class Room3Controller extends Room {
                   tempTransition.play();
                 }),
             new KeyFrame(
-                Duration.millis(750),
+                Duration.millis(500),
                 e -> {
                   tempTransition = new TranslateTransition(Duration.millis(250), imgConveyorResin);
                   tempTransition.setByY(-235);
                   tempTransition.play();
                 }),
             new KeyFrame(
-                Duration.millis(850),
+                Duration.millis(750),
                 e -> {
                   imgConveyorResin.setVisible(false);
                   tempTransition = new TranslateTransition(Duration.millis(100), imgConveyorResin);
