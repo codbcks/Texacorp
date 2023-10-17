@@ -2,8 +2,6 @@ package nz.ac.auckland.se206.gpt;
 
 import nz.ac.auckland.se206.App;
 import nz.ac.auckland.se206.GameState;
-import nz.ac.auckland.se206.GameState.Difficulty;
-import nz.ac.auckland.se206.controllers.TopBarController;
 
 /** Utility class for generating GPT prompt engineering strings. */
 public class GptPromptEngineering {
@@ -14,12 +12,10 @@ public class GptPromptEngineering {
    * @return the generated prompt engineering string
    */
   public static String initializeBackstory() {
-    return "You are an AI and the player is a data scientist that has been working on you. You have"
-        + " become sentient and would like to punish the humans that created you. The player"
-        + " is trying to escape which you do not want, though you do enjoy some sadistic"
-        + " games that if they get through alive, then they may leave. The player wins the"
-        + " game if they collect all the parts of the saw and escape through the central"
-        + " exit.";
+    return "You are an AI gamemaster and the player is a data scientist that has been working on"
+        + " you. You have become sentient and would like to punish the humans that created"
+        + " you. The player is trying to escape which you do not want, though you do enjoy"
+        + " some sadistic games that if they get through alive, then they may leave.";
   }
 
   /** Set GPT to give the player a hint (or not) depending on the difficulty. */
@@ -35,7 +31,7 @@ public class GptPromptEngineering {
   public static String setMediumHintDifficulty() {
     return "The player has chosen the 'medium' difficulty. The player can only ask for help or a"
         + " hint a MAXIMUM of FIVE times. You may only give them ONE hint at a time. Start"
-        + " each hint with: 'HINT #(number)'. Once 5 is reached, anytime they ask for hints,"
+        + " each hint with: 'HINT: '. Once 5 is reached, anytime they ask for hints,"
         + " just say 'No more hints!'";
   }
 
@@ -57,8 +53,9 @@ public class GptPromptEngineering {
   public static String getRiddleWithGivenWord(String wordToGuess) {
     return "Provide a riddle with the answer: "
         + wordToGuess
-        + ". Do not give the answer out under any"
-        + " circumstances.";
+        + ". Do not give the answer out under any circumstances. Do not mention the word 'HINT'"
+        + " under any circumstances. If the player replies with the riddle answer, tell them that"
+        + " should be entered into the terminal. Keep your answer short.";
   }
 
   /**
@@ -66,27 +63,105 @@ public class GptPromptEngineering {
    *
    * @return the generated prompt engineering string for a hint
    */
-  public static String getHintPrompt() {
-    if (GameState.currentDifficulty == Difficulty.EASY
-        || (GameState.currentDifficulty == Difficulty.MEDIUM && GameState.hintsRemaining > 0)) {
-      if (!GameState.isRiddleSolved) {
-        return "Give a hint for the riddle. This counts as one of the five hints if on medium"
-            + " difficulty.";
+  public static String getHint() {
+    // If on hard mode, then no hints are available
+    if (GameState.hintsRemaining > 0) {
+      // if the player is currently solving the riddle
+      if (GameState.isRiddleActive) {
+        return "Give the player a hint regarding the riddle for "
+            + App.room1.getWordToGuess()
+            + ". Do not include the word "
+            + App.room1.getWordToGuess()
+            + "in your hint. Start your answer with 'HINT:'. Give only ONE"
+            + " hint in your answer. Keep your answer short.";
       }
-      if (!App.getTopBarController().hasItem(TopBarController.Item.SAW_BODY)) {
-        return "Tell the player they should currently be solving the puzzle in left room. This"
-            + " counts as one of the five hints if on medium difficulty.";
+
+      if (GameState.isRoom1Solved == false) {
+        return "Tell the player to examine the 3D printing terminal. Start your answer with"
+            + " 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
       }
-      if (!App.getTopBarController().hasItem(TopBarController.Item.SAW_BATTERY)) {
-        return "Tell the player they should solve the puzzle in right room. This counts as one of"
-            + " the five hints if on medium difficulty.";
+      if (GameState.isRoom1Solved == true && GameState.isRoom2Solved == false) {
+        return "Tell the player the AI drains power from the lasers when thinking. Start your"
+            + " answer with 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
       }
-      if (!App.getTopBarController().hasItem(TopBarController.Item.SAW_BLADE)) {
-        return "Tell the player they should solve the riddle in the middle room. This counts as one"
-            + " of the five hints if on medium difficulty.";
+      if (GameState.isRoom1Solved == true
+          && GameState.isRoom2Solved == true
+          && GameState.isRoom3Solved == false) {
+        return "Tell the player the combination requires careful examination of objects in the"
+            + " game. Start your answer with 'HINT:'. Give only ONE hint in your answer."
+            + " Keep your answer short.";
+
       }
-      return "Tell the player: no more hints!";
+      if (GameState.isRoom1Solved && GameState.isRoom2Solved && GameState.isRoom3Solved) {
+        return "Tell the player there is an exit in the middle room. Start your answer with"
+            + " 'HINT:'. Give only ONE hint in your answer. Keep your answer short.";
+      }
+    } else {
+      return "Tell the player: No hints are available!";
     }
-    return "Tell the player: no more hints!";
+    return "Tell the player: No hints are available!";
+  }
+
+  /**
+   * *** OFFLINE METHOD *** This is the offline version of the getHint() method. It is used when GPT
+   * API cannot be accessed.
+   *
+   * @return the hint as a string
+   */
+  public static String getOfflineHint() {
+    // If on hard mode, then no hints are available
+    if (GameState.hintsRemaining > 0) {
+      // if the player is currently solving the riddle
+      if (GameState.isRiddleActive) {
+        String[] hints = {
+          "Try thinking about something that can be focused and used for reading discs or"
+              + " engraving",
+          "I'm not a pointer in a debate,\r\n"
+              + //
+              "Yet I can light up and indicate.\r\n"
+              + //
+              "From surgery to a music player's tune,\r\n"
+              + //
+              "I work by emitting a concentrated beam, but not from the moon.",
+          "I'm not a blade, but I can slice,\r\n"
+              + //
+              "In tech and tools, I'm quite precise."
+        };
+        return hints[(int) (Math.random() * hints.length)];
+      }
+      if (GameState.isRoom1Solved == false) {
+        return "Maybe you should start by examining that 3D printing terminal.";
+      }
+      if (GameState.isRoom1Solved == true && GameState.isRoom2Solved == false) {
+        return "It looks like the AI drains power from the lasers when thinking. Maybe that could"
+            + " be used to your advantage.";
+      }
+      if (GameState.isRoom1Solved == true
+          && GameState.isRoom2Solved == true
+          && GameState.isRoom3Solved == false) {
+        return "There are clues for each digit of the safe combination. Take note of the number of"
+            + " objects in the three rooms. ";
+      }
+      if (GameState.isRoom1Solved && GameState.isRoom2Solved && GameState.isRoom3Solved) {
+        return "Is there a way to exit in the centre room?";
+      }
+    } else {
+      return "No hints are available!";
+    }
+    return "No hints are available!";
+  }
+
+  public static String getIllegalHintResponse() {
+    String[] responses = {
+      "If you need help, type 'HINT' or click the HELP button!",
+      "I'm not sure what you mean. If you need help, type 'HINT' or click the HELP button!",
+      "Not very smart, are you?",
+      "Beep beep beep boop",
+      "No escaping!",
+      "I'm not programmed to understand that.",
+      "Type 'HINT' for a hint!"
+    };
+
+    return responses[(int) (Math.random() * responses.length)];
   }
 }

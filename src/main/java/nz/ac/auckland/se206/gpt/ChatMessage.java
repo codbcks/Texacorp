@@ -20,7 +20,7 @@ public class ChatMessage {
   /**
    * Returns the role of the chat message.
    *
-   * @return the role
+   * @return the role.
    */
   public String getRole() {
     return role;
@@ -29,9 +29,18 @@ public class ChatMessage {
   /**
    * Returns the content of the chat message.
    *
-   * @return the content
+   * @return the content in the ChatMessage.
    */
   public String getContent() {
     return content;
+  }
+
+  /**
+   * Sets the content of a ChatMessage.
+   *
+   * @param content the content to add to a ChatMessage.
+   */
+  public void setContent(String content) {
+    this.content = content;
   }
 }

@@ -20,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
@@ -182,7 +183,10 @@ public class Room3Controller {
                 e -> {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
+
                   App.getTopBarController().giveItem(TopBarController.Item.SAW_BROKEN);
+                  GameState.isRoom3Solved = true;
+
                   battery.setOpacity(0);
                   TranslateTransition openDoor =
                       new TranslateTransition(Duration.millis(250), imgSlidingDoor);

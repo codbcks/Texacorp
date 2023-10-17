@@ -152,7 +152,10 @@ public class Room2Controller {
   public void clickSawBody(MouseEvent event) throws IOException {
     // If the gpt is running/room turned off, give the player the saw body when clicked
     if (GameState.isGPTRunning) {
+
       App.getTopBarController().giveItem(TopBarController.Item.SAW_BODY);
+      GameState.isRoom2Solved = true;
+
       sawBody.setVisible(false);
     } else {
       SceneManager.addToLogEnviroMessage(

@@ -4,6 +4,7 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import nz.ac.auckland.se206.App;
+import nz.ac.auckland.se206.GameState;
 import nz.ac.auckland.se206.SceneManager;
 
 /**
@@ -24,5 +25,6 @@ public class FailController {
   public void onMenu() throws IOException {
     App.setInterface(SceneManager.AppInterface.INTRO);
     App.resetGame();
+    GameState.resetGameVariables();
   }
 }
