@@ -59,6 +59,16 @@
             <Image url="@../images/leftRoomShadow-lightsOn.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="resinScreen" fitHeight="46.0" fitWidth="30.0" layoutX="499.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomResinScreenActive.gif" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="sawScreen" fitHeight="46.0" fitWidth="30.0" layoutX="431.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/leftRoomSawScreenActive.gif" />
+         </image>
+      </ImageView>
       <Rectangle fx:id="printerPromptTrigger" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="56.0" layoutX="366.0" layoutY="292.0" onMouseClicked="#printerPrompt" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="258.0">
          <cursor>
             <Cursor fx:constant="HAND" />

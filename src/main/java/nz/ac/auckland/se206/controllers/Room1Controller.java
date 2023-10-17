@@ -41,6 +41,8 @@ public class Room1Controller extends Room {
   @FXML private Rectangle triggerDropSaw;
   @FXML private ImageView imgConveyor;
   @FXML private ImageView imgMachineResin;
+  @FXML private ImageView resinScreen;
+  @FXML private ImageView sawScreen;
 
   private Timeline takeBrokenSaw;
   private Timeline giveFixedSaw;
@@ -139,6 +141,7 @@ public class Room1Controller extends Room {
       triggerDropSaw.setCursor(Cursor.DEFAULT);
     } else if (App.topBarController.hasItem(TopBarController.Item.SAW_BROKEN)) {
       App.topBarController.removeItem(TopBarController.Item.SAW_BROKEN);
+      sawScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
       imgConveyorSaw.setVisible(true);
       takeBrokenSaw.play();
       activateConveyor(false);
@@ -152,6 +155,7 @@ public class Room1Controller extends Room {
       App.topBarController.removeItem(TopBarController.Item.RESIN);
       imgMachineResin.setVisible(true);
       materialDeposited = true;
+      resinScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
       checkForMachineStart();
     }
   }

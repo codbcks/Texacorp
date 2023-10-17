@@ -19,6 +19,11 @@
             <Image url="@../images/rightRoomBackground.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="lockedScreen" fitHeight="48.0" fitWidth="30.0" layoutX="412.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/rightRoomScreenLocked.gif" />
+         </image>
+      </ImageView>
       <ImageView fx:id="imgConveyor" fitHeight="214.0" fitWidth="527.0" layoutX="295.0" layoutY="69.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/rightRoomBeltAnimation.gif" />

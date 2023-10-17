@@ -1,6 +1,7 @@
 package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -50,6 +51,7 @@ public class Room3Controller extends Room {
   @FXML private ImageView imgSlidingDoor;
   @FXML private ImageView imgConveyorResin;
   @FXML private ImageView imgConveyor;
+  @FXML private ImageView lockedScreen;
 
   private Color pinPadDark;
   private Color pinPadLight;
@@ -63,9 +65,11 @@ public class Room3Controller extends Room {
   private Timeline resetPinPad;
   private Timeline resolvePinPad;
   private boolean conveyorIsActive;
+  private Timeline resinMovement;
+  private TranslateTransition tempTransition;
 
   private String[] pinHints = {
-    "Clock", "AI Eyes", "3D Printers", "Rooms", "16 mod 6",
+    "Clock", "AI eyes", "3D Printers", "Rooms", "16 mod 6",
     "Shelves", "Sticky Note", "Lasers", "AI Version Number", "(3 ^ 3) - 18"
   };
 
@@ -88,7 +92,8 @@ public class Room3Controller extends Room {
 
     /* Setting text relating to 4 objects that can help the player guess the pin */
     pinHintText.setText(
-        pinHints[pin.charAt(0) - 48]
+        "Saw is broken, take to repair bay to fix it :)\n\n"
+            + pinHints[pin.charAt(0) - 48]
             + "\n"
             + pinHints[pin.charAt(1) - 48]
             + "\n"
@@ -112,6 +117,36 @@ public class Room3Controller extends Room {
 
     /* initialize lighting animations */
     initializeLightAnim(lightOverlay, "rightRoomShadow", true);
+
+    resinMovement =
+        new Timeline(
+            new KeyFrame(
+                Duration.millis(500),
+                e -> {
+                  imgConveyorResin.setVisible(true);
+                  tempTransition = new TranslateTransition(Duration.millis(500), imgConveyorResin);
+                  tempTransition.setByX(-535);
+                  tempTransition.play();
+                }),
+            new KeyFrame(
+                Duration.millis(750),
+                e -> {
+                  tempTransition = new TranslateTransition(Duration.millis(250), imgConveyorResin);
+                  tempTransition.setByY(-235);
+                  tempTransition.play();
+                }),
+            new KeyFrame(
+                Duration.millis(850),
+                e -> {
+                  imgConveyorResin.setVisible(false);
+                  tempTransition = new TranslateTransition(Duration.millis(100), imgConveyorResin);
+                  tempTransition.setByX(535);
+                  tempTransition.setByY(235);
+                  tempTransition.play();
+                }));
+
+    resinMovement.setCycleCount(Animation.INDEFINITE);
+    resinMovement.play();
 
     /* Animation and event timeline for entering the wrong pin */
     resetPinPad =
@@ -172,6 +207,7 @@ public class Room3Controller extends Room {
                   pinPadUi.setVisible(false);
                   pinTextField.setText(pinPadResolvedMessage);
                   App.topBarController.giveItem(TopBarController.Item.SAW_BROKEN);
+                  lockedScreen.setImage(new Image("/images/rightRoomScreenUnlocked.png"));
                   battery.setOpacity(0);
                   TranslateTransition openDoor =
                       new TranslateTransition(Duration.millis(250), imgSlidingDoor);
@@ -200,10 +236,12 @@ public class Room3Controller extends Room {
 
   public void lightsOff() {
     lightsOff.playFromStart();
+    deactivateConveyor();
   }
 
   public void lightsOn() {
     lightsOn.playFromStart();
+    activateConveyor();
   }
 
   @FXML
