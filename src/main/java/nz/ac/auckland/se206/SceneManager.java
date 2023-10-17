@@ -77,7 +77,8 @@ public class SceneManager {
    * @param chatMessage The chat message to add.
    */
   public static void addToLogEnviroMessage(ChatMessage chatMessage) {
-    ((BottomBarController) getController(AppInterface.BOTTOMBAR)).addToLog(chatMessage, true);
+    ((BottomBarController) getController(AppInterface.BOTTOMBAR))
+        .addToLog(chatMessage, true, false, false);
   }
 
   /** Updates the chat in the bottom bar. */

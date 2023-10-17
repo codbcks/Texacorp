@@ -27,15 +27,6 @@ public class IntroController {
 
   private Label currentSelectedDifficulty = null;
   private Label currentSelectedTime = null;
-  
-  @FXML private Button btnStart;
-  @FXML private Button btnEasy;
-  @FXML private Button btnMedium;
-  @FXML private Button btnHard;
-  @FXML private Button btnTwoMin;
-  @FXML private Button btnFourMin;
-  @FXML private Button btnSixMin;
-
 
   /**
    * This is the method that is called when the scene is loaded.
@@ -95,57 +86,6 @@ public class IntroController {
               GameState.isTextToSpeechOn = newValue;
             });
   }
-
-  /**
-   * This is the method that starts the game.
-   *
-   * @throws IOException if the fxml file cannot be found.
-   */
-  @FXML
-  private void onStart() throws IOException {
-
-    /* Set challenge timer */
-    ChallengeTimer.startTimer(GameState.timeSetting, App.getTopBarController().getTimerLabel());
-
-    /* This is the entry point for the game */
-    App.setInterface(SceneManager.AppInterface.IN_GAME);
-
-    if (GameState.currentDifficulty == GameState.Difficulty.EASY) {
-      ((BottomBarController) SceneManager.getController(SceneManager.AppInterface.BOTTOMBAR))
-          .removeHintCounter();
-    } else if (GameState.currentDifficulty == GameState.Difficulty.HARD) {
-      ((BottomBarController) SceneManager.getController(SceneManager.AppInterface.BOTTOMBAR))
-          .setHintCounter(0);
-    }
-
-    App.getBottomBarController().giveBackstory();
-  }
-
-  /**
-   * This is the method that sets the difficulty to easy.
-   *
-   * @throws IOException if the fxml file cannot be found.
-   */
-  @FXML
-  private void onEasy() throws IOException {
-    btnEasy.setTextFill(Color.GREEN);
-    btnMedium.setTextFill(Color.BLACK);
-    btnHard.setTextFill(Color.BLACK);
-    GameState.currentDifficulty = GameState.Difficulty.EASY;
-  }
-
-  /**
-   * This is the method that sets the difficulty to medium.
-   *
-   * @throws IOException if the fxml file cannot be found.
-   */
-  @FXML
-  private void onMedium() throws IOException {
-    btnEasy.setTextFill(Color.BLACK);
-    btnMedium.setTextFill(Color.ORANGE);
-    btnHard.setTextFill(Color.BLACK);
-    GameState.currentDifficulty = GameState.Difficulty.MEDIUM;
-  
 
   /**
    * This method sets up the label to show that it is clickable and also handles what happens when a
@@ -224,66 +164,31 @@ public class IntroController {
   }
 
   /**
-   * This is the method that starts the game.
-  @FXML
-  private void onHard() throws IOException {
-    btnEasy.setTextFill(Color.BLACK);
-    btnMedium.setTextFill(Color.BLACK);
-    btnHard.setTextFill(Color.RED);
-    GameState.currentDifficulty = GameState.Difficulty.HARD;
-  }
-
-  /**
-   * This is the method that sets the time to 6 minutes.
+   * This is the method that starts the game. @FXML private void onHard() throws IOException {
+   * easyLabel.setTextFill(Color.BLACK); btnMedium.setTextFill(Color.BLACK);
+   * btnHard.setTextFill(Color.RED); GameState.currentDifficulty = GameState.Difficulty.HARD; }
    *
-   * @throws IOException if the fxml file cannot be found.
-   */
-  @FXML
-  private void onSix() throws IOException {
-    btnSixMin.setTextFill(Color.GREEN);
-    btnFourMin.setTextFill(Color.BLACK);
-    btnTwoMin.setTextFill(Color.BLACK);
-    GameState.timeSetting = 360000;
-  }
-
-  /**
-   * This is the method that sets the time to 4 minutes.
-   *
-   * @throws IOException if the fxml file cannot be found.
-   */
-  @FXML
-  private void onFour() throws IOException {
-    btnSixMin.setTextFill(Color.BLACK);
-    btnFourMin.setTextFill(Color.ORANGE);
-    btnTwoMin.setTextFill(Color.BLACK);
-    GameState.timeSetting = 240000;
-  }
-
-  /**
-   * This is the method that sets the time to 2 minutes.
+   * <p>/** This is the method that sets the time to 2 minutes.
    *
    * @throws IOException if the fxml file cannot be found.
    */
   @FXML
   private void startGame() throws IOException {
-    // This is the entry point for the game
-    App.setRoot(SceneManager.AppUI.ROOM1);
-    ChallengeTimer.startTimer();
-    GameState.Difficulty difficulty = GameState.getCurrentDifficulty();
 
-    if (difficulty == GameState.Difficulty.EASY) {
-      ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
+    /* Set challenge timer */
+    ChallengeTimer.startTimer(GameState.timeSetting, App.getTopBarController().getTimerLabel());
+
+    /* This is the entry point for the game */
+    App.setInterface(SceneManager.AppInterface.IN_GAME);
+
+    if (GameState.getCurrentDifficulty() == GameState.Difficulty.EASY) {
+      ((BottomBarController) SceneManager.getController(SceneManager.AppInterface.BOTTOMBAR))
           .removeHintCounter();
-    } else if (difficulty == GameState.Difficulty.HARD) {
-      ((BottomBarController) SceneManager.getController(SceneManager.AppUI.BOTTOMBAR))
-          .setHintCounter();
+    } else if (GameState.getCurrentDifficulty() == GameState.Difficulty.HARD) {
+      ((BottomBarController) SceneManager.getController(SceneManager.AppInterface.BOTTOMBAR))
+          .setHintCounter(0);
     }
-    App.bottomBarController.giveBackstory();
 
-  private void onTwo() throws IOException {
-    btnSixMin.setTextFill(Color.BLACK);
-    btnFourMin.setTextFill(Color.BLACK);
-    btnTwoMin.setTextFill(Color.RED);
-    GameState.timeSetting = 120000;
+    App.getBottomBarController().giveBackstory();
   }
 }
