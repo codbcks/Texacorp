@@ -1,7 +1,6 @@
 package nz.ac.auckland.se206.controllers;
 
 import java.io.IOException;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -65,8 +64,6 @@ public class Room3Controller extends Room {
   private Timeline resetPinPad;
   private Timeline resolvePinPad;
   private boolean conveyorIsActive;
-  private Timeline resinMovement;
-  private TranslateTransition tempTransition;
 
   private String[] pinHints = {
     "Clock", "AI eyes", "14 * 2 - 26", "Rooms", "16 mod 6",
@@ -117,36 +114,6 @@ public class Room3Controller extends Room {
 
     /* initialize lighting animations */
     initializeLightAnim(lightOverlay, "rightRoomShadow", true);
-
-    resinMovement =
-        new Timeline(
-            new KeyFrame(
-                Duration.millis(0),
-                e -> {
-                  imgConveyorResin.setVisible(true);
-                  tempTransition = new TranslateTransition(Duration.millis(500), imgConveyorResin);
-                  tempTransition.setByX(-535);
-                  tempTransition.play();
-                }),
-            new KeyFrame(
-                Duration.millis(500),
-                e -> {
-                  tempTransition = new TranslateTransition(Duration.millis(250), imgConveyorResin);
-                  tempTransition.setByY(-235);
-                  tempTransition.play();
-                }),
-            new KeyFrame(
-                Duration.millis(750),
-                e -> {
-                  imgConveyorResin.setVisible(false);
-                  tempTransition = new TranslateTransition(Duration.millis(100), imgConveyorResin);
-                  tempTransition.setByX(535);
-                  tempTransition.setByY(235);
-                  tempTransition.play();
-                }));
-
-    resinMovement.setCycleCount(Animation.INDEFINITE);
-    resinMovement.play();
 
     /* Animation and event timeline for entering the wrong pin */
     resetPinPad =

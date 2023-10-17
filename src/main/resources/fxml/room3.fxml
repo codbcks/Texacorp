@@ -49,7 +49,7 @@
             <Image url="@../images/rightRoomShadow-lightsOn.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="imgConveyorResin" fitHeight="48.0" fitWidth="48.0" layoutX="830.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imgConveyorResin" fitHeight="48.0" fitWidth="48.0" layoutX="630.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/RESIN.png" />
          </image>
