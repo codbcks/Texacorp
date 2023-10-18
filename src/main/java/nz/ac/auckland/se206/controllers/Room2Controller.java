@@ -14,13 +14,14 @@ import nz.ac.auckland.se206.gpt.ChatMessage;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room2Controller extends Room {
-/** This class is the controller for Room 2 in the Escaipe game. */
-
+  /** This class is the controller for Room 2 in the Escaipe game. */
   @FXML private ImageView lightOverlay;
+
   @FXML private ImageView laser;
   @FXML private Rectangle clockPromptTrigger;
   @FXML private Rectangle notesPromptTrigger;
   @FXML private ImageView imgWhiteboard;
+  @FXML private Rectangle exit;
 
   /**
    * Initializes the Room2Controller by setting up mouse interaction for FXML elements and creating
@@ -34,6 +35,7 @@ public class Room2Controller extends Room {
     // Set up mouse interaction for FXML elements
     mouseInteract(clockPromptTrigger);
     mouseInteract(notesPromptTrigger);
+    mouseInteract(exit);
 
     // initialize lighting animations
     initializeLightAnim(lightOverlay, "middleRoomShadow", true);
@@ -79,6 +81,10 @@ public class Room2Controller extends Room {
     if (App.getTopBarController().hasItem(TopBarController.Item.SAW_FIXED)) {
       ChallengeTimer.cancelTimer();
       App.setInterface(SceneManager.AppInterface.WIN);
+    } else {
+      SceneManager.addToLogEnviroMessage(
+          new ChatMessage("user", "It'd take a very powerful saw to cut this shutdown open..."));
+      SceneManager.updateChat();
     }
   }
 

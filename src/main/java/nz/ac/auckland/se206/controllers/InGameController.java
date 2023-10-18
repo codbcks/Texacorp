@@ -56,7 +56,7 @@ public class InGameController {
    */
   @FXML
   public void clickBackToMenu(MouseEvent event) throws IOException {
-    App.setRoot(SceneManager.AppUI.INTRO);
+    App.setInterface(SceneManager.AppInterface.INTRO);
     ChallengeTimer.cancelTimer();
     App.resetGame();
   }

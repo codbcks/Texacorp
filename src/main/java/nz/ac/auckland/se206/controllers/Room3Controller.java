@@ -331,9 +331,17 @@ public class Room3Controller extends Room {
   @FXML
   private void clickConveyor(MouseEvent event) throws IOException {
     if (App.getTopBarController().hasItem(TopBarController.Item.RESIN)) {
-      // ADD PLAYER ALREADY HAS ITEM CODE
+      SceneManager.addToLogEnviroMessage(
+          new ChatMessage(
+              "user",
+              "I don't think anything important is coming down that conveyor any time soon..."));
+      SceneManager.updateChat();
     } else if (conveyorIsActive) {
-      // ADD PLAYER CANNOT ACCESS CONVEYOR HINT
+      SceneManager.addToLogEnviroMessage(
+          new ChatMessage(
+              "user",
+              "I have to find a way to power down the conveyor before I can take that resin..."));
+      SceneManager.updateChat();
     } else if (!conveyorIsActive) {
       App.getTopBarController().giveItem(TopBarController.Item.RESIN);
       imgConveyorResin.setVisible(false);
