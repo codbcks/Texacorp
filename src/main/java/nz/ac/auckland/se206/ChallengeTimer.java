@@ -58,7 +58,8 @@ public class ChallengeTimer {
 
             if (timerActive) {
               timerActive = false;
-              ((InGameController)(SceneManager.getController(SceneManager.AppUI.IN_GAME))).showLose();
+              ((InGameController) (SceneManager.getController(SceneManager.AppInterface.IN_GAME)))
+                  .showLose();
             }
 
             return null;

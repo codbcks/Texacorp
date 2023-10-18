@@ -24,12 +24,9 @@ import nz.ac.auckland.se206.gpt.GptPromptEngineering;
 import nz.ac.auckland.se206.gpt.openai.ApiProxyException;
 
 public class Room1Controller extends Room {
-/** This class is the controller for Room 1 in the Escaipe game. */
-
-  private static String wordToGuess;
-  private static String wordList;
-
+  /** This class is the controller for Room 1 in the Escaipe game. */
   @FXML private Rectangle triggerConsole;
+
   @FXML private ImageView lightOverlay;
   @FXML private Rectangle printerPromptTrigger;
 
@@ -56,7 +53,6 @@ public class Room1Controller extends Room {
 
   private static String wordToGuess;
   private static String wordList;
-  private boolean conveyorIsActive = false;
 
   private boolean sawDeposited = false;
   private boolean materialDeposited = false;
@@ -160,6 +156,9 @@ public class Room1Controller extends Room {
       imgConveyorSaw.setVisible(false);
       App.getTopBarController().giveItem(TopBarController.Item.SAW_FIXED);
       triggerDropSaw.setCursor(Cursor.DEFAULT);
+      SceneManager.addToLogEnviroMessage(
+          new ChatMessage("user", "Time to shut this AI down once and for all."));
+      SceneManager.updateChat();
     } else if (App.getTopBarController().hasItem(TopBarController.Item.SAW_BROKEN)) {
       App.getTopBarController().removeItem(TopBarController.Item.SAW_BROKEN);
       sawScreen.setImage(new Image("/images/leftRoomScreenComplete.png"));
